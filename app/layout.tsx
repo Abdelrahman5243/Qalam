@@ -3,13 +3,13 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "A Sanity-powered portfolio hero.",
+  title: "شركة المصاعد",
+  description: "حلول المصاعد والتركيب والصيانة للمشاريع السكنية والتجارية.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="ar" dir="rtl" className="h-full antialiased">
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

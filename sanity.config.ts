@@ -5,7 +5,7 @@ import { schemaTypes } from "./sanity/schemas";
 
 export default defineConfig({
   name: "default",
-  title: "Portfolio",
+  title: "Elevator Company",
   basePath: "/studio",
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "",
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",

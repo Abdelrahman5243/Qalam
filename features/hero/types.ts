@@ -1,10 +1,6 @@
 export type HeroImage = {
-  _type: "image";
-  asset: {
-    _ref: string;
-    _type: "reference";
-  };
-  alt?: string;
+  url: string;
+  alt: string;
 };
 
 export type Hero = {
@@ -12,5 +8,5 @@ export type Hero = {
   title: string;
   description: string;
   image: HeroImage;
-  ctaText?: string;
+  ctaText: string | null;
 };

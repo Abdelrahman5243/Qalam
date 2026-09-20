@@ -1,6 +1,6 @@
-# Sanity + Next.js Hero
+# موقع شركة مصاعد — Next.js + Sanity
 
-A small proof of concept: one Next.js App Router page that renders a single editable hero from Sanity Studio.
+مشروع موقع إلكتروني احترافي لشركة متخصصة في المصاعد، مبني باستخدام Next.js وTypeScript وTailwind CSS وSanity CMS.
 
 ## 1. Create the Sanity project
 
@@ -37,3 +37,24 @@ npm run build
 ```
 
 The page reads the newest published `hero` document from Sanity and uses Sanity's image URL builder for the hero image.
+
+## Project structure
+
+```text
+app/
+  page.tsx                         # Route composition only
+  studio/[[...tool]]/page.tsx      # Embedded Sanity Studio route
+features/hero/
+  components/                      # Hero UI components
+  schemas/                         # Runtime validation for Sanity responses
+  services/                        # Hero data access and mapping
+  types.ts                         # UI/domain types
+lib/sanity/
+  config.ts                        # Sanity client configuration
+  image.ts                         # Sanity image URL helper
+sanity/
+  schemas/                         # Sanity Studio document schemas
+sanity.config.ts                   # Studio configuration
+```
+
+The route does not import Sanity data or render the Hero markup directly. The service fetches and validates external content, then returns a UI-safe `Hero` model to the feature components. This keeps a future Strapi or another API data source isolated from the UI.
