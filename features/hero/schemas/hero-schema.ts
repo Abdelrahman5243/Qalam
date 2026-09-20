@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const sanityHeroSchema = z.object({
   _id: z.string(),
+  eyebrow: z.string().nullable().optional(),
   title: z.string().min(1),
   description: z.string().min(1),
   image: z.object({
@@ -13,4 +14,5 @@ export const sanityHeroSchema = z.object({
     alt: z.string().nullable().optional(),
   }),
   ctaText: z.string().nullable().optional(),
+  secondaryCtaText: z.string().nullable().optional(),
 });
