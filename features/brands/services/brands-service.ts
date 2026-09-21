@@ -43,7 +43,8 @@ export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
   const demoNames = locale === "ar"
     ? ["شريك تجريبي 01", "شريك تجريبي 02", "شريك تجريبي 03", "شريك تجريبي 04", "شريك تجريبي 05", "شريك تجريبي 06"]
     : ["Demo Partner 01", "Demo Partner 02", "Demo Partner 03", "Demo Partner 04", "Demo Partner 05", "Demo Partner 06"];
-  const demoItems = demoNames.map((name) => ({ name, url: null, logo: { url: "/logo.png", alt: name } }));
+  const demoLogos = ["orbit", "vertex", "nova", "ascent", "axis", "liftline"];
+  const demoItems = demoNames.map((name, index) => ({ name, url: null, logo: { url: `/brands/${demoLogos[index]}.svg`, alt: name } }));
 
   if (!sanityClient.config().projectId) {
     return process.env.NODE_ENV !== "production" ? { enabled: true, ...defaults, items: demoItems } : null;

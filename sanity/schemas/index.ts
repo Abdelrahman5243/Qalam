@@ -6,6 +6,5 @@ import { siteSettings } from "./site-settings";
 import { services } from "./services";
 import { whyChooseUs } from "./why-choose-us";
 import { projects } from "./projects";
-import { brands } from "./brands";
 
-export const schemaTypes = [localizedString, localizedText, hero, about, services, whyChooseUs, projects, brands, siteSettings];
+export const schemaTypes = [localizedString, localizedText, hero, about, services, whyChooseUs, projects, siteSettings];

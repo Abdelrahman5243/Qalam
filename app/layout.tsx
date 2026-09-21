@@ -22,6 +22,12 @@ export const metadata: Metadata = {
   description: "حلول المصاعد والتركيب والصيانة للمشاريع السكنية والتجارية.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+} as const;
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ar" dir="rtl" className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}>
