@@ -11,6 +11,8 @@ import { WhySection } from "@/features/why/components/why-section";
 import { getWhyChooseUs } from "@/features/why/services/why-service";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
 import { getProjects } from "@/features/projects/services/projects-service";
+import { BrandsSection } from "@/features/brands/components/brands-section";
+import { getBrands } from "@/features/brands/services/brands-service";
 import { SiteFooter } from "@/features/site/components/site-footer";
 import { getHero } from "@/features/hero/services/hero-service";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
@@ -35,15 +37,17 @@ export default async function LocaleHome({ params }: { params: Promise<{ locale:
   }
 
   const about = await getAbout(locale, hero.image);
-  const [services, why, projects] = await Promise.all([
+  const [services, why, projects, brands] = await Promise.all([
     getServices(locale, hero.image),
     getWhyChooseUs(locale),
     getProjects(locale, hero.image),
+    getBrands(locale),
   ]);
 
   return (
     <>
       <HeroSection hero={hero} locale={locale} settings={settings} />
+      {brands ? <BrandsSection brands={brands} locale={locale} /> : null}
       <AboutSection about={about} locale={locale} />
       <ServicesSection services={services} locale={locale} />
       <WhySection why={why} locale={locale} />
