@@ -34,6 +34,7 @@ export function SiteHeader({ locale, settings, active = "home" }: { locale: Loca
   return (
     <motion.header
       className="hero-header"
+      dir={locale === "ar" ? "rtl" : "ltr"}
       initial={reduceMotion ? false : { opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}

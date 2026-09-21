@@ -179,7 +179,7 @@ body {
   padding: 0 clamp(1.25rem, 5vw, 4.5rem);
   background: var(--surface-header);
   color: var(--brand-ink);
-  direction: ltr;
+  direction: inherit;
 }
 
 .hero-logo {
@@ -249,15 +249,7 @@ body {
   background: rgba(29, 36, 31, 0.22);
 }
 
-.hero-shell[dir="rtl"] .hero-logo {
-  order: 2;
-}
-
-.hero-shell[dir="rtl"] .hero-locale {
-  order: 1;
-}
-
-.hero-shell[dir="rtl"] .hero-nav {
+.hero-header[dir="rtl"] .hero-nav {
   direction: rtl;
 }
 
