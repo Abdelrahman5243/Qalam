@@ -19,6 +19,7 @@ export const siteSettings = defineType({
     defineField({ name: "email", title: "Email", type: "email" }),
     defineField({ name: "address", title: "Address", type: "localizedString" }),
     defineField({ name: "mapUrl", title: "Google Maps URL", type: "url" }),
+    defineField({ name: "footerDescription", title: "Footer description", type: "localizedText" }),
     defineField({
       name: "seo",
       title: "SEO",

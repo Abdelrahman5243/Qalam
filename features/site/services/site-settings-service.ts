@@ -13,6 +13,8 @@ const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   email,
   "address": coalesce(address[$locale], address.ar, address),
   mapUrl,
+  socialLinks,
+  "footerDescription": coalesce(footerDescription[$locale], footerDescription.ar, footerDescription),
   "seoTitle": coalesce(seo.title[$locale], seo.title.ar, seo.title),
   "seoDescription": coalesce(seo.description[$locale], seo.description.ar, seo.description),
   "seoImage": seo.ogImage
@@ -27,6 +29,8 @@ type SanitySettings = {
   email?: string | null;
   address?: string | null;
   mapUrl?: string | null;
+  socialLinks?: Array<{ platform?: string | null; url?: string | null }> | null;
+  footerDescription?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImage?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
@@ -61,6 +65,8 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings | nu
       email: data.email || null,
       address: data.address || null,
       mapUrl: data.mapUrl || null,
+      socialLinks: (data.socialLinks || []).filter((link): link is { platform: string; url: string } => Boolean(link.platform && link.url)).map((link) => ({ platform: link.platform!, url: link.url! })),
+      footerDescription: data.footerDescription || null,
       seo: {
         title: data.seoTitle || null,
         description: data.seoDescription || null,

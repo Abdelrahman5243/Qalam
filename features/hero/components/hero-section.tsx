@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Languages } from "lucide-react";
+import { ArrowLeft, ArrowRight, Globe2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
 import type { SiteSettings } from "@/features/site/types";
-import { HeroContactCta } from "./hero-contact-cta";
 import type { Hero } from "../types";
 
 type HeroSectionProps = {
@@ -45,27 +44,31 @@ export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.a href="#home" className="hero-logo" aria-label={`${settings?.companyName || "Next Generation Elevators"} home`} whileHover={{ y: -2 }}>
-          <Image src={settings?.logo.url || "/logo.png"} alt={settings?.logo.alt || "Next Generation Elevators"} width={104} height={64} priority unoptimized={!settings?.logo.url} />
-        </motion.a>
+        <div className="hero-header-inner">
+          <motion.a href="#home" className="hero-logo" aria-label={`${settings?.companyName || "Next Generation Elevators"} home`} whileHover={{ y: -2 }}>
+            <Image src={settings?.logo.url || "/logo.png"} alt={settings?.logo.alt || "Next Generation Elevators"} width={104} height={64} priority unoptimized={!settings?.logo.url} />
+          </motion.a>
 
-        <nav className="hero-nav" aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}>
-          {navItems.map((item) => (
-            <motion.a key={item.href} href={item.href} whileHover={{ y: -2 }}>
-              {item.label}
-            </motion.a>
-          ))}
-        </nav>
+          <nav className="hero-nav" aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}>
+            {navItems.map((item) => (
+                <motion.a key={item.href} href={item.href} data-current={item.href === "#home" ? "true" : undefined} whileHover={{ y: -2 }}>
+                {item.label}
+              </motion.a>
+            ))}
+          </nav>
 
-        <motion.a
-          className="hero-locale"
-          href={`/${otherLocale}`}
-          aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
-          whileHover={{ y: -2 }}
-        >
-          <Languages className="hero-globe" aria-hidden="true" />
-          <span>{locale === "ar" ? "EN" : "AR"}</span>
-        </motion.a>
+          <motion.a
+            className="hero-locale"
+            href={`/${otherLocale}`}
+            aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
+            whileHover={{ y: -2 }}
+          >
+            <Globe2 className="hero-globe" aria-hidden="true" strokeWidth={1.8} />
+            <span className="hero-locale-current">{locale.toUpperCase()}</span>
+            <span className="hero-locale-divider" aria-hidden="true" />
+            <span className="hero-locale-target">{otherLocale.toUpperCase()}</span>
+          </motion.a>
+        </div>
       </motion.header>
 
       <section className="hero-stage" aria-labelledby="hero-title">
@@ -102,7 +105,6 @@ export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
         </motion.div>
       </section>
 
-      <HeroContactCta locale={locale} whatsappUrl={settings?.whatsappUrl} phone={settings?.phone} email={settings?.email} />
     </main>
   );
 }

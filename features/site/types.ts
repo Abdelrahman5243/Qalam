@@ -12,6 +12,8 @@ export type SiteSettings = {
   email: string | null;
   address: string | null;
   mapUrl: string | null;
+  socialLinks: Array<{ platform: string; url: string }>;
+  footerDescription: string | null;
   seo: {
     title: string | null;
     description: string | null;

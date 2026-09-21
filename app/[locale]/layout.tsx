@@ -32,7 +32,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const locale: Locale = isLocale(value) ? value : defaultLocale;
 
   return (
-    <div lang={locale} dir={getDirection(locale)} className="min-h-full">
+    <div lang={locale} dir={getDirection(locale)} className={`min-h-full ${locale === "ar" ? "locale-ar" : "locale-en"}`}>
       {children}
     </div>
   );
