@@ -12,8 +12,6 @@ const navigation = {
   ar: ["الرئيسية", "من نحن", "الخدمات", "المشاريع", "تواصل معنا"],
 } as const;
 
-const navigationLinks = ["#home", "#about", "#services", "#projects", "#contact"];
-
 function FacebookIcon(props: SVGProps<SVGSVGElement>) {
   return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}><path d="M13.5 21v-8h2.75l.4-3h-3.15V8.08c0-.87.24-1.46 1.5-1.46h1.8V3.94c-.32-.04-1.42-.14-2.7-.14-2.67 0-4.5 1.63-4.5 4.63V10H6.6v3h3v8h3.9Z" /></svg>;
 }
@@ -31,6 +29,7 @@ const socialIcons = { facebook: FacebookIcon, instagram: InstagramIcon, tiktok: 
 export function SiteFooter({ locale, settings }: { locale: Locale; settings: SiteSettings | null }) {
   const isArabic = locale === "ar";
   const labels = navigation[locale];
+  const navigationLinks = [`/${locale}`, `/${locale}#about`, `/${locale}#services`, `/${locale}#projects`, `/${locale}/contact`];
   const fallbackSocials = [
     { platform: "facebook", url: "#" },
     { platform: "instagram", url: "#" },
