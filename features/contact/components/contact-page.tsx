@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { ArrowRight, Check, Mail, MessageCircle, Phone, UserRound } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n";
+import { PageIntro } from "@/features/site/components/page-intro";
 import type { SiteSettings } from "@/features/site/types";
 
 export function ContactPage({ locale, settings }: { locale: Locale; settings: SiteSettings | null }) {
@@ -71,13 +71,7 @@ export function ContactPage({ locale, settings }: { locale: Locale; settings: Si
 
   return (
     <main className="contact-page" dir={isArabic ? "rtl" : "ltr"}>
-      <section className="contact-intro" aria-labelledby="contact-title">
-        <div className="contact-page-inner">
-          <p className="contact-eyebrow">{copy.eyebrow}</p>
-          <h1 id="contact-title">{copy.title}</h1>
-          <p className="contact-intro-text">{copy.intro}</p>
-        </div>
-      </section>
+      <PageIntro eyebrow={copy.eyebrow} title={copy.title} description={copy.intro} />
 
         <section className="contact-content" aria-labelledby="contact-form-title">
         <div className="contact-page-inner contact-content-inner">
@@ -86,14 +80,14 @@ export function ContactPage({ locale, settings }: { locale: Locale; settings: Si
             <div className="contact-detail-list">
               <div className="contact-detail"><span className="contact-detail-icon"><UserRound size={17} /></span><span><small>{copy.manager}</small><strong>{settings?.companyName || (isArabic ? "شركة المصاعد" : "Next Generation Elevators")}</strong></span></div>
               <a className="contact-detail" href={settings?.phone ? `tel:${settings.phone}` : "#contact-form"}><span className="contact-detail-icon"><Phone size={17} /></span><span><small>{copy.phone}</small><strong>{settings?.phone || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
-              <a className="contact-detail" href={settings?.whatsappUrl || "#contact-form"}><span className="contact-detail-icon"><MessageCircle size={17} /></span><span><small>{copy.whatsapp}</small><strong>{settings?.phone || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
-              <a className="contact-detail" href={settings?.email ? `mailto:${settings.email}` : "#contact-form"}><span className="contact-detail-icon"><Mail size={17} /></span><span><small>{copy.email}</small><strong>{settings?.email || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <a className="contact-detail" href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}><span className="contact-detail-icon"><MessageCircle size={17} /></span><span><small>{copy.whatsapp}</small><strong>{settings?.phone || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <a className="contact-detail" href={settings?.email ? `mailto:${settings.email}` : "#contact-form"} target={settings?.email ? "_blank" : undefined} rel={settings?.email ? "noreferrer" : undefined}><span className="contact-detail-icon"><Mail size={17} /></span><span><small>{copy.email}</small><strong>{settings?.email || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
             </div>
 
             <div className="quick-contact">
               <div className="quick-contact-heading"><MessageCircle size={19} /><strong>{copy.quickTitle}</strong></div>
               <p>{copy.quickText}</p>
-              <a href={settings?.whatsappUrl || "#contact-form"}>{copy.quickLink}<ArrowRight size={17} /></a>
+              <a href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}>{copy.quickLink}<ArrowRight size={17} /></a>
             </div>
           </aside>
 
@@ -129,14 +123,8 @@ export function ContactPage({ locale, settings }: { locale: Locale; settings: Si
                 src={settings?.mapUrl || "https://www.openstreetmap.org/export/embed.html?bbox=46.638%2C24.684%2C46.704%2C24.735&layer=mapnik&marker=24.7136%2C46.6753"}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
               />
-              <div className="contact-map-marker" aria-hidden="true">
-                <span className="contact-map-marker-pin"><span /></span>
-                <div className="contact-map-marker-card">
-                  <Image src={settings?.logo.url || "/logo.png"} alt="" width={28} height={28} unoptimized={!settings?.logo.url} />
-                  <strong>{settings?.companyName || (isArabic ? "شركة المصاعد" : "Next Generation Elevators")}</strong>
-                </div>
-              </div>
               {settings?.mapUrl ? <a className="contact-map-link" href={settings.mapUrl} target="_blank" rel="noreferrer">{isArabic ? "فتح في الخرائط" : "Open in Maps"}</a> : null}
             </div>
           </div>

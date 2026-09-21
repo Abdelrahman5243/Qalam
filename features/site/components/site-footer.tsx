@@ -29,7 +29,7 @@ const socialIcons = { facebook: FacebookIcon, instagram: InstagramIcon, tiktok: 
 export function SiteFooter({ locale, settings }: { locale: Locale; settings: SiteSettings | null }) {
   const isArabic = locale === "ar";
   const labels = navigation[locale];
-  const navigationLinks = [`/${locale}`, `/${locale}#about`, `/${locale}#services`, `/${locale}#projects`, `/${locale}/contact`];
+  const navigationLinks = [`/${locale}`, `/${locale}/about`, `/${locale}/services`, `/${locale}/projects`, `/${locale}/contact`];
   const fallbackSocials = [
     { platform: "facebook", url: "#" },
     { platform: "instagram", url: "#" },
@@ -57,8 +57,8 @@ export function SiteFooter({ locale, settings }: { locale: Locale; settings: Sit
           <div className="site-footer-column">
             <p className="site-footer-label">{contactLabel}</p>
             <a className={!settings?.phone ? "is-placeholder" : undefined} href={settings?.phone ? `tel:${settings.phone}` : "#contact"}><Phone aria-hidden="true" size={15} />{settings?.phone || (isArabic ? "رقم الهاتف يضاف قريبًا" : "Phone number coming soon")}</a>
-            <a className={!settings?.email ? "is-placeholder" : undefined} href={settings?.email ? `mailto:${settings.email}` : "#contact"}><Mail aria-hidden="true" size={15} />{settings?.email || (isArabic ? "البريد الإلكتروني يضاف قريبًا" : "Email coming soon")}</a>
-            <a className={!settings?.whatsappUrl ? "is-placeholder" : undefined} href={settings?.whatsappUrl || "#contact"}><MessageCircle aria-hidden="true" size={15} />{isArabic ? "واتساب يضاف قريبًا" : "WhatsApp coming soon"}</a>
+            <a className={!settings?.email ? "is-placeholder" : undefined} href={settings?.email ? `mailto:${settings.email}` : "#contact"} target={settings?.email ? "_blank" : undefined} rel={settings?.email ? "noreferrer" : undefined}><Mail aria-hidden="true" size={15} />{settings?.email || (isArabic ? "البريد الإلكتروني يضاف قريبًا" : "Email coming soon")}</a>
+            <a className={!settings?.whatsappUrl ? "is-placeholder" : undefined} href={settings?.whatsappUrl || "#contact"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}><MessageCircle aria-hidden="true" size={15} />{isArabic ? "واتساب يضاف قريبًا" : "WhatsApp coming soon"}</a>
           </div>
 
           <div className="site-footer-column">

@@ -59,7 +59,7 @@ export async function getProjects(locale: Locale, fallbackImage: ProjectsSection
 
   try {
     const data = await sanityClient.fetch<SanityProjects | null>(projectsQuery, { locale }, { next: { revalidate: 60 } });
-    const items = data?.items?.length ? data.items.slice(0, 3) : [];
+    const items = data?.items?.length ? data.items : [];
 
     return {
       eyebrow: data?.eyebrow || defaults.eyebrow,

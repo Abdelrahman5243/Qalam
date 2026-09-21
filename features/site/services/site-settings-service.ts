@@ -20,6 +20,37 @@ const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   "seoImage": seo.ogImage
 }`;
 
+function normalizeWhatsAppUrl(value?: string | null) {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    const phone = url.searchParams.get("phone");
+
+    if (phone && url.hostname.includes("whatsapp.com")) {
+      return `https://wa.me/${phone.replace(/\D/g, "")}`;
+    }
+
+    if (url.hostname === "wa.me") {
+      return `https://wa.me/${url.pathname.replace(/\D/g, "")}`;
+    }
+  } catch {
+    return value;
+  }
+
+  return value;
+}
+
+function extractMapEmbedUrl(value?: string | null) {
+  if (!value) return null;
+
+  const iframeSrc = value.match(/<iframe[^>]+src=(['"])(.*?)\1/i)?.[2];
+  return (iframeSrc || value.trim())
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
 type SanitySettings = {
   logo: { asset: { _ref: string; _type: "reference" }; alt?: string | null };
   darkLogo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
@@ -42,7 +73,7 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings | nu
   }
 
   try {
-    const data = await sanityClient.fetch<SanitySettings | null>(siteSettingsQuery, { locale }, { next: { revalidate: 60 } });
+    const data = await sanityClient.fetch<SanitySettings | null>(siteSettingsQuery, { locale }, { cache: "no-store" });
 
     if (!data?.logo) {
       return null;
@@ -61,10 +92,10 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings | nu
         : null,
       companyName: data.companyName || "Next Generation Elevators",
       phone: data.phone || null,
-      whatsappUrl: data.whatsapp || null,
+      whatsappUrl: normalizeWhatsAppUrl(data.whatsapp),
       email: data.email || null,
       address: data.address || null,
-      mapUrl: data.mapUrl || null,
+      mapUrl: extractMapEmbedUrl(data.mapUrl),
       socialLinks: (data.socialLinks || []).filter((link): link is { platform: string; url: string } => Boolean(link.platform && link.url)).map((link) => ({ platform: link.platform!, url: link.url! })),
       footerDescription: data.footerDescription || null,
       seo: {

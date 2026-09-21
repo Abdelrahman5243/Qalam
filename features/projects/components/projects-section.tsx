@@ -20,7 +20,7 @@ export function ProjectsSection({ projects, locale }: { projects: ProjectsSectio
             <p className="projects-eyebrow">{projects.eyebrow}</p>
             <h2 id="projects-title">{projects.title}</h2>
           </div>
-          <a className="projects-all-link" href="#projects-list">
+          <a className="projects-all-link" href={`/${locale}/projects`}>
             {projects.linkText}
             <DirectionArrow aria-hidden="true" size={16} />
           </a>

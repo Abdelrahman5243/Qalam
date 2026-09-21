@@ -10,6 +10,7 @@ export function HeroContactCta({ locale, whatsappUrl, phone, email }: { locale: 
 
   return (
     <motion.section
+      id="contact"
       className="contact-cta"
       aria-labelledby="contact-cta-title"
       initial={reduceMotion ? false : { opacity: 0, y: 24 }}
@@ -24,11 +25,11 @@ export function HeroContactCta({ locale, whatsappUrl, phone, email }: { locale: 
         </div>
 
         <div className="contact-cta-actions">
-          <motion.a className="contact-cta-whatsapp" href={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#contact"} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+          <motion.a className="contact-cta-whatsapp" href={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#contact"} target={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL ? "_blank" : undefined} rel={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL ? "noreferrer" : undefined} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
             <MessageCircle aria-hidden="true" size={20} strokeWidth={1.8} />
             {isArabic ? "واتساب" : "WhatsApp"}
           </motion.a>
-          <motion.a className="contact-cta-contact" href={email ? `mailto:${email}` : phone ? `tel:${phone}` : "#contact"} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+          <motion.a className="contact-cta-contact" href={email ? `mailto:${email}` : phone ? `tel:${phone}` : "#contact"} target={email ? "_blank" : undefined} rel={email ? "noreferrer" : undefined} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
             {isArabic ? "تواصل معنا" : "Contact Us"}
           </motion.a>
         </div>

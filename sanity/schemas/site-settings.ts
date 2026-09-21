@@ -18,7 +18,13 @@ export const siteSettings = defineType({
     defineField({ name: "whatsapp", title: "WhatsApp URL", type: "url" }),
     defineField({ name: "email", title: "Email", type: "email" }),
     defineField({ name: "address", title: "Address", type: "localizedString" }),
-    defineField({ name: "mapUrl", title: "Google Maps URL", type: "url" }),
+    defineField({
+      name: "mapUrl",
+      title: "Google Maps Embed Code",
+      description: "من Google Maps اختر Embed a map ثم اضغط COPY HTML والصق الكود كاملًا هنا.",
+      type: "text",
+      rows: 4,
+    }),
     defineField({ name: "footerDescription", title: "Footer description", type: "localizedText" }),
     defineField({
       name: "seo",

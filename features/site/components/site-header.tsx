@@ -9,21 +9,21 @@ import type { SiteSettings } from "../types";
 const navigation = {
   en: [
     { label: "Home", href: "/en" },
-    { label: "About Us", href: "/en#about" },
-    { label: "Services", href: "/en#services" },
-    { label: "Projects", href: "/en#projects" },
+    { label: "About Us", href: "/en/about" },
+    { label: "Services", href: "/en/services" },
+    { label: "Projects", href: "/en/projects" },
     { label: "Contact Us", href: "/en/contact" },
   ],
   ar: [
     { label: "الرئيسية", href: "/ar" },
-    { label: "من نحن", href: "/ar#about" },
-    { label: "الخدمات", href: "/ar#services" },
-    { label: "المشاريع", href: "/ar#projects" },
+    { label: "من نحن", href: "/ar/about" },
+    { label: "الخدمات", href: "/ar/services" },
+    { label: "المشاريع", href: "/ar/projects" },
     { label: "تواصل معنا", href: "/ar/contact" },
   ],
 } as const;
 
-export function SiteHeader({ locale, settings, active = "home" }: { locale: Locale; settings: SiteSettings | null; active?: "home" | "contact" }) {
+export function SiteHeader({ locale, settings, active = "home" }: { locale: Locale; settings: SiteSettings | null; active?: "home" | "about" | "services" | "projects" | "contact" }) {
   const reduceMotion = useReducedMotion();
   const otherLocale = locale === "ar" ? "en" : "ar";
   const items = navigation[locale];
@@ -42,7 +42,9 @@ export function SiteHeader({ locale, settings, active = "home" }: { locale: Loca
 
         <nav className="hero-nav" aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}>
           {items.map((item) => {
-            const isCurrent = active === "contact" ? item.href.endsWith("/contact") : item.href === `/${locale}`;
+            const isCurrent = item.href === `/${locale}`
+              ? active === "home"
+              : item.href.endsWith(`/${active}`);
             return <motion.a key={item.href} href={item.href} data-current={isCurrent ? "true" : undefined} whileHover={{ y: -2 }}>{item.label}</motion.a>;
           })}
         </nav>

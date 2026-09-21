@@ -24,7 +24,7 @@ export function AboutSection({ about, locale }: { about: About; locale: Locale }
           <p className="about-eyebrow">{about.eyebrow}</p>
           <h2 id="about-title">{about.title}</h2>
           <p className="about-description">{about.description}</p>
-          <a className="about-link" href="#about-details">
+          <a className="about-link" href={`/${locale}/about`}>
             {about.ctaText}
             {isArabic ? <ArrowLeft aria-hidden="true" size={18} /> : <ArrowRight aria-hidden="true" size={18} />}
           </a>
