@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -20,10 +21,10 @@ export function ServicesSection({ services, locale }: { services: ServicesSectio
             <p className="services-eyebrow">{services.eyebrow}</p>
             <h2 id="services-title">{services.title}</h2>
           </div>
-          <a className="services-all-link" href={`/${locale}/services`}>
+          <Link className="services-all-link" href={`/${locale}/services`}>
             {services.linkText}
             <DirectionArrow aria-hidden="true" size={16} />
-          </a>
+          </Link>
         </div>
 
         <div id="services-list" className="services-grid">

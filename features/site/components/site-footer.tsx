@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import type { SVGProps } from "react";
 
@@ -50,7 +51,7 @@ export function SiteFooter({ locale, settings }: { locale: Locale; settings: Sit
           <div className="site-footer-column">
             <p className="site-footer-label">{isArabic ? "التنقل" : "Navigation"}</p>
             <nav aria-label={isArabic ? "روابط التذييل" : "Footer navigation"}>
-              {labels.map((label, index) => <a key={label} href={navigationLinks[index]}>{label}</a>)}
+              {labels.map((label, index) => <Link key={label} href={navigationLinks[index]}>{label}</Link>)}
             </nav>
           </div>
 

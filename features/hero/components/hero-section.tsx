@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -14,6 +15,8 @@ type HeroSectionProps = {
   locale: Locale;
   settings: SiteSettings | null;
 };
+
+const MotionLink = motion(Link);
 
 export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
   const reduceMotion = useReducedMotion();
@@ -45,13 +48,13 @@ export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
           <p className="hero-description">{hero.description}</p>
 
           <div className="hero-actions">
-            <motion.a className="hero-primary-action" href="#contact" whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+            <MotionLink className="hero-primary-action" href="#contact" whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
               {hero.ctaText || "Contact Us"}
-            </motion.a>
-            <motion.a className="hero-secondary-action" href="#services" whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+            </MotionLink>
+            <MotionLink className="hero-secondary-action" href="#services" whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
               {hero.secondaryCtaText}
               {locale === "ar" ? <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} /> : <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />}
-            </motion.a>
+            </MotionLink>
           </div>
         </motion.div>
       </section>

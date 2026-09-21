@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -26,7 +27,7 @@ export function ProjectsPage({ projects, locale }: { projects: ProjectsSection; 
                 <p>{project.category}</p>
                 <h2>{project.title}</h2>
                 <span>{project.location}</span>
-                <a href={`/${locale}/contact`}>{isArabic ? "ناقش مشروعك معنا" : "Discuss your project"}<DirectionArrow size={17} /></a>
+                <Link href={`/${locale}/contact`}>{isArabic ? "ناقش مشروعك معنا" : "Discuss your project"}<DirectionArrow size={17} /></Link>
               </div>
             </motion.article>
           ))}

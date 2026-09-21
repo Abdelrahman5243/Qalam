@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -24,10 +25,10 @@ export function AboutSection({ about, locale }: { about: About; locale: Locale }
           <p className="about-eyebrow">{about.eyebrow}</p>
           <h2 id="about-title">{about.title}</h2>
           <p className="about-description">{about.description}</p>
-          <a className="about-link" href={`/${locale}/about`}>
+          <Link className="about-link" href={`/${locale}/about`}>
             {about.ctaText}
             {isArabic ? <ArrowLeft aria-hidden="true" size={18} /> : <ArrowRight aria-hidden="true" size={18} />}
-          </a>
+          </Link>
         </motion.div>
 
         <motion.div

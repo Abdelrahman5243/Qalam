@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -26,7 +27,7 @@ export function ServicesPage({ services, locale }: { services: ServicesSection; 
                 <p className="service-detail-index">{String(index + 1).padStart(2, "0")}</p>
                 <h2>{service.title}</h2>
                 <p>{service.description}</p>
-                <a href={`/${locale}/contact`}>{isArabic ? "اطلب عرض سعر" : "Request a quote"}<DirectionArrow size={17} /></a>
+                <Link href={`/${locale}/contact`}>{isArabic ? "اطلب عرض سعر" : "Request a quote"}<DirectionArrow size={17} /></Link>
               </div>
             </motion.article>
           ))}
