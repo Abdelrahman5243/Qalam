@@ -5,7 +5,19 @@ export const localizedText = defineType({
   title: "Localized text",
   type: "object",
   fields: [
-    defineField({ name: "ar", title: "Arabic", type: "text", rows: 4 }),
-    defineField({ name: "en", title: "English", type: "text", rows: 4 }),
+    defineField({
+      name: "ar",
+      title: "Arabic",
+      type: "text",
+      rows: 4,
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "en",
+      title: "English",
+      type: "text",
+      rows: 4,
+      validation: (rule) => rule.required(),
+    }),
   ],
 });

@@ -3937,6 +3937,614 @@ body {
   }
 }
 
+/* About vision: centered editorial statement, mobile-first. */
+.vision-section {
+  width: 100%;
+  border-top: 1px solid var(--border);
+  background: #fff;
+}
+
+.vision-inner {
+  width: min(100%, calc(var(--container-max) + (var(--container-gutter) * 2)));
+  margin-inline: auto;
+  padding: clamp(4.5rem, 9vw, 7.5rem) var(--container-gutter);
+  text-align: center;
+}
+
+.vision-eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--brand-green);
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.vision-section[dir="rtl"] .vision-eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.vision-inner h2 {
+  max-width: 22ch;
+  margin: 0 auto;
+  color: var(--brand-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.15rem, 8vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.vision-section[dir="rtl"] .vision-inner h2 {
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.vision-description {
+  max-width: 64ch;
+  margin: 1.5rem auto 0;
+  color: #626a63;
+  font-size: var(--text-body-small);
+  line-height: 1.75;
+}
+
+/* About content sections: mobile-first, full-bleed surfaces with a shared grid. */
+.inner-page {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.mission-section,
+.quality-section,
+.values-section,
+.about-clients-section {
+  width: 100%;
+  overflow: hidden;
+}
+
+.mission-inner,
+.quality-inner,
+.values-inner,
+.about-clients-inner {
+  width: min(100%, calc(var(--container-max) + (var(--container-gutter) * 2)));
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: var(--container-gutter);
+}
+
+.mission-section {
+  background: #fff;
+}
+
+.mission-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  padding-block: var(--section-y);
+}
+
+.mission-copy,
+.mission-media,
+.quality-heading,
+.quality-item,
+.value-item,
+.about-clients-heading,
+.about-client {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mission-copy {
+  align-self: center;
+}
+
+.mission-eyebrow,
+.quality-eyebrow,
+.values-eyebrow,
+.about-clients-eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--brand-green);
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.mission-section[dir="rtl"] .mission-eyebrow,
+.quality-section[dir="rtl"] .quality-eyebrow,
+.values-section[dir="rtl"] .values-eyebrow,
+.about-clients-section[dir="rtl"] .about-clients-eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.mission-copy h2,
+.quality-heading h2,
+.values-heading h2,
+.about-clients-heading h2 {
+  margin: 0;
+  color: var(--brand-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 9vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.mission-section[dir="rtl"] h2,
+.quality-section[dir="rtl"] h2,
+.values-section[dir="rtl"] h2,
+.about-clients-section[dir="rtl"] h2 {
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.mission-paragraphs {
+  max-width: 62ch;
+  margin-top: 1.75rem;
+}
+
+.mission-paragraphs p,
+.quality-heading > p:last-child,
+.quality-item p,
+.value-item p,
+.about-clients-heading > p:last-child {
+  margin: 0;
+  color: #626a63;
+  font-size: var(--text-body-small);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.mission-paragraphs p + p {
+  margin-top: 1.25rem;
+}
+
+.mission-media {
+  position: relative;
+  min-height: min(100vw, 440px);
+  overflow: hidden;
+  background: #dfe5df;
+}
+
+.mission-media img {
+  object-fit: cover;
+}
+
+/* Premium mission treatment: an editorial split with a quiet architectural frame. */
+.mission-section {
+  position: relative;
+  background: #fff;
+}
+
+.mission-inner {
+  position: relative;
+}
+
+.mission-copy {
+  position: relative;
+  padding-inline-start: 1.25rem;
+}
+
+.mission-copy::before {
+  position: absolute;
+  inset-block: 0.35rem;
+  inset-inline-start: 0;
+  width: 2px;
+  background: var(--brand-green);
+  content: "";
+}
+
+.mission-media {
+  border: 1px solid rgba(29, 64, 52, 0.14);
+  box-shadow: 1rem 1rem 0 #edf3ee;
+}
+
+.mission-media::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(29, 64, 52, 0.08), transparent 42%);
+  content: "";
+  pointer-events: none;
+}
+
+/* Alternating surfaces keep the About story visually segmented. */
+.vision-section {
+  border-top-color: rgba(29, 64, 52, 0.1);
+  background: #edf3ee;
+}
+
+.values-section {
+  background: #fff;
+}
+
+.about-clients-section {
+  position: relative;
+  isolation: isolate;
+  background: #edf3ee;
+  border-top: 1px solid rgba(29, 64, 52, 0.1);
+}
+
+.about-clients-section::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(237, 243, 238, 0.98) 0%, rgba(237, 243, 238, 0.86) 52%, rgba(237, 243, 238, 0.45) 100%),
+    radial-gradient(circle at 86% 24%, rgba(79, 148, 108, 0.12), transparent 26rem);
+  content: "";
+}
+
+.about-clients-pattern {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: -1;
+  width: min(48%, 660px);
+  overflow: hidden;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.about-clients-pattern span {
+  position: absolute;
+  display: block;
+  width: clamp(7rem, 12vw, 11rem);
+  height: clamp(5rem, 9vw, 8rem);
+  background: rgba(79, 148, 108, 0.13);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.about-clients-pattern span:nth-child(1) {
+  top: 8%;
+  right: 8%;
+}
+
+.about-clients-pattern span:nth-child(2) {
+  top: 36%;
+  right: 34%;
+  background: rgba(192, 169, 140, 0.16);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.about-clients-pattern span:nth-child(3) {
+  right: 18%;
+  bottom: 8%;
+  width: clamp(5rem, 8vw, 8rem);
+  height: clamp(8rem, 15vw, 12rem);
+  background: rgba(29, 64, 52, 0.08);
+  clip-path: polygon(36% 0, 64% 0, 64% 100%, 36% 100%);
+}
+
+.about-clients-pattern span:nth-child(4) {
+  right: 28%;
+  bottom: 10%;
+  width: clamp(9rem, 16vw, 14rem);
+  height: clamp(9rem, 16vw, 14rem);
+  border: 1px solid rgba(79, 148, 108, 0.2);
+  border-radius: 50%;
+  background: transparent;
+  clip-path: none;
+}
+
+.about-clients-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Keep decorative page patterns behind, and the brand mark clearly above them. */
+.inner-page-intro {
+  isolation: isolate;
+}
+
+.inner-page-pattern {
+  z-index: -1;
+  width: min(36%, 520px);
+  opacity: 0.42;
+}
+
+.inner-page-mark {
+  z-index: 1;
+  opacity: 0.16;
+}
+
+/* Clear halo reserved for the logo overlay so decorative shapes never cross it. */
+.inner-page-intro::after {
+  display: none;
+}
+
+.inner-page-intro > .inner-page-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* A richer but restrained architectural palette for every inner-page pattern. */
+.inner-page-pattern span:nth-child(1) {
+  top: 3%;
+  right: 2%;
+  background: rgba(79, 148, 108, 0.2);
+}
+
+.inner-page-pattern span:nth-child(2) {
+  top: 14%;
+  right: 38%;
+  background: rgba(192, 169, 140, 0.24);
+}
+
+.inner-page-pattern span:nth-child(3) {
+  background: rgba(105, 143, 132, 0.2);
+}
+
+.inner-page-pattern span:nth-child(3) {
+  right: 3%;
+  bottom: 5%;
+  width: clamp(5rem, 7vw, 7.5rem);
+  height: clamp(5rem, 7vw, 7.5rem);
+  border: 1px solid rgba(79, 148, 108, 0.2);
+  border-radius: 50%;
+  background: transparent;
+  clip-path: none;
+}
+
+.inner-page-pattern span:nth-child(4) {
+  right: 38%;
+  bottom: 12%;
+  width: clamp(4rem, 5vw, 6rem);
+  height: clamp(9rem, 13vw, 12rem);
+  background: rgba(29, 64, 52, 0.09);
+  clip-path: polygon(24% 0, 76% 0, 100% 12%, 100% 88%, 76% 100%, 24% 100%, 0 88%, 0 12%);
+}
+
+.inner-page-pattern span:nth-child(5) {
+  right: 30%;
+  bottom: 8%;
+  width: clamp(3.5rem, 5vw, 5.5rem);
+  height: clamp(3.5rem, 5vw, 5.5rem);
+  background: rgba(192, 169, 140, 0.2);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+/* Keep the center of the decorative field empty around the logo overlay. */
+.inner-page-pattern {
+  right: 0;
+  width: 100%;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.inner-page-pattern span:nth-child(1) {
+  top: -4rem;
+  right: 0;
+}
+
+.inner-page-pattern span:nth-child(2) {
+  top: -1rem;
+  right: auto;
+  left: 14%;
+}
+
+.inner-page-pattern span:nth-child(3) {
+  top: auto;
+  right: 0;
+  bottom: -3rem;
+}
+
+.inner-page-pattern span:nth-child(4) {
+  top: auto;
+  right: 42%;
+  bottom: -1rem;
+}
+
+.inner-page-pattern span:nth-child(5) {
+  top: auto;
+  right: auto;
+  bottom: 2rem;
+  left: 22%;
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .inner-page-pattern {
+    right: 0;
+    width: 100%;
+    opacity: 0.3;
+  }
+
+  .inner-page-mark {
+    opacity: 0.13;
+  }
+
+  .about-clients-pattern {
+    width: 62%;
+    opacity: 0.42;
+  }
+
+  .about-clients-section::after {
+    background: linear-gradient(90deg, rgba(237, 243, 238, 0.98), rgba(237, 243, 238, 0.78));
+  }
+}
+
+@media (min-width: 901px) {
+  .mission-copy {
+    padding-inline-start: 2rem;
+  }
+}
+
+.quality-section {
+  background: var(--surface-dark);
+  color: var(--text-on-dark);
+}
+
+.quality-inner,
+.values-inner,
+.about-clients-inner {
+  padding-block: var(--section-y);
+}
+
+.quality-heading h2 {
+  color: var(--text-on-dark);
+}
+
+.quality-heading > p:last-child {
+  max-width: 70ch;
+  margin-top: 1.35rem;
+  color: var(--text-on-dark-muted);
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem 2.5rem;
+  margin-top: 3.25rem;
+}
+
+.quality-item h3,
+.value-item h3 {
+  margin: 0;
+  color: var(--brand-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.quality-item h3 {
+  color: var(--text-on-dark);
+}
+
+.quality-item p {
+  max-width: 34ch;
+  margin-top: 0.6rem;
+  color: var(--text-on-dark-muted);
+}
+
+.values-section {
+  background: #fff;
+}
+
+.values-heading,
+.about-clients-heading {
+  margin-bottom: 2.5rem;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.25rem 1.5rem;
+}
+
+.value-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.value-icon {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  background: #edf3ee;
+  color: var(--brand-green);
+}
+
+.value-item p {
+  max-width: 30ch;
+}
+
+.about-clients-heading > p:last-child {
+  max-width: 58ch;
+  margin-top: 1rem;
+}
+
+.about-clients-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.about-client {
+  display: grid;
+  min-height: 5rem;
+  place-items: center;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  color: var(--brand-ink);
+  font-size: var(--text-body-small);
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition:
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+
+.about-client:hover {
+  border-color: color-mix(in oklch, var(--brand-green) 45%, var(--border));
+  background: #f5f8f5;
+  color: var(--surface-dark);
+}
+
+@media (min-width: 640px) {
+  .values-grid,
+  .about-clients-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 700px) {
+  .mission-inner {
+    gap: clamp(3rem, 7vw, 7rem);
+  }
+
+  .mission-copy h2,
+  .quality-heading h2,
+  .values-heading h2,
+  .about-clients-heading h2 {
+    font-size: clamp(2.75rem, 4.2vw, 4rem);
+  }
+
+  .quality-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 901px) {
+  .mission-inner {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+  }
+
+  .mission-media {
+    min-height: clamp(30rem, 43vw, 40rem);
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .about-clients-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 700px) {
+  .vision-inner h2 {
+    font-size: clamp(2.75rem, 4.2vw, 4rem);
+  }
+
+  .vision-description {
+    margin-top: 1.75rem;
+  }
+}
+
 /* Hero/header alignment: the first viewport uses the same content grid as every section below. */
 .hero-header {
   position: fixed;

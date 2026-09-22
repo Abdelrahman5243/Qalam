@@ -11,9 +11,11 @@ import type { About } from "../types";
 export function AboutSection({
   about,
   locale,
+  showCta = true,
 }: {
   about: About;
   locale: Locale;
+  showCta?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const isArabic = locale === "ar";
@@ -38,14 +40,16 @@ export function AboutSection({
           <p className="about-eyebrow">{about.eyebrow}</p>
           <h2 id="about-title">{about.title}</h2>
           <p className="about-description">{about.description}</p>
-          <Link className="about-link" href={`/${locale}/about`}>
-            {about.ctaText}
-            {isArabic ? (
-              <ArrowLeft aria-hidden="true" size={18} />
-            ) : (
-              <ArrowRight aria-hidden="true" size={18} />
-            )}
-          </Link>
+          {showCta ? (
+            <Link className="about-link" href={`/${locale}/about`}>
+              {about.ctaText}
+              {isArabic ? (
+                <ArrowLeft aria-hidden="true" size={18} />
+              ) : (
+                <ArrowRight aria-hidden="true" size={18} />
+              )}
+            </Link>
+          ) : null}
         </motion.div>
 
         <motion.div

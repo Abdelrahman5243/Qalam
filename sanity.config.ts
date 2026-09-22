@@ -23,9 +23,52 @@ export default defineConfig({
                   .schemaType("siteSettings")
                   .documentId("siteSettings"),
               ),
+            S.listItem()
+              .id("aboutSections")
+              .title("About sections")
+              .child(
+                S.list()
+                  .title("About sections")
+                  .items([
+                    S.documentTypeListItem("about").title("About us"),
+                    S.listItem()
+                      .id("vision")
+                      .title("Our vision")
+                      .child(
+                        S.document()
+                          .schemaType("vision")
+                          .documentId("vision"),
+                      ),
+                    S.listItem()
+                      .id("mission")
+                      .title("Our mission")
+                      .child(S.document().schemaType("mission").documentId("mission")),
+                    S.listItem()
+                      .id("qualitySafety")
+                      .title("Quality & safety")
+                      .child(S.document().schemaType("qualitySafety").documentId("qualitySafety")),
+                    S.listItem()
+                      .id("values")
+                      .title("Our values")
+                      .child(S.document().schemaType("values").documentId("values")),
+                    S.listItem()
+                      .id("clients")
+                      .title("Our clients")
+                      .child(S.document().schemaType("clients").documentId("clients")),
+                  ]),
+              ),
             ...S.documentTypeListItems().filter(
               (item) =>
-                !["siteSettings", "brands"].includes(
+                ![
+                  "siteSettings",
+                  "brands",
+                  "about",
+                  "vision",
+                  "mission",
+                  "qualitySafety",
+                  "values",
+                  "clients",
+                ].includes(
                   item.getId() || "",
                 ),
             ),

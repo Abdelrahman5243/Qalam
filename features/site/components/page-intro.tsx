@@ -16,7 +16,7 @@ export function PageIntro({
   return (
     <section className="inner-page-intro">
       <div className="inner-page-pattern" aria-hidden="true">
-        {Array.from({ length: 3 }, (_, index) => (
+        {Array.from({ length: 5 }, (_, index) => (
           <span key={index} />
         ))}
       </div>

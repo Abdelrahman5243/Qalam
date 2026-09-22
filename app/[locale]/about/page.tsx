@@ -1,7 +1,14 @@
 import { notFound } from "next/navigation";
 
 import { AboutSection } from "@/features/about/components/about-section";
+import { VisionSection } from "@/features/about/components/vision-section";
+import { MissionSection } from "@/features/about/components/mission-section";
+import { QualitySafetySection } from "@/features/about/components/quality-safety-section";
+import { ValuesSection } from "@/features/about/components/values-section";
+import { ClientsSection } from "@/features/about/components/clients-section";
 import { getAbout } from "@/features/about/services/about-service";
+import { getVision } from "@/features/about/services/vision-service";
+import { getAboutSections } from "@/features/about/services/about-sections-service";
 import { SiteFooter } from "@/features/site/components/site-footer";
 import { SiteHeader } from "@/features/site/components/site-header";
 import { PageIntro } from "@/features/site/components/page-intro";
@@ -23,7 +30,11 @@ export default async function AboutRoute({
     getSiteSettings(locale),
   ]);
   const fallbackImage = hero?.image || getFallbackBrandImage(locale);
-  const about = await getAbout(locale, fallbackImage);
+  const [about, vision, aboutSections] = await Promise.all([
+    getAbout(locale, fallbackImage),
+    getVision(locale),
+    getAboutSections(locale),
+  ]);
 
   const isArabic = locale === "ar";
 
@@ -45,7 +56,12 @@ export default async function AboutRoute({
               : "We work alongside our clients to deliver safe, efficient elevator solutions built to last."
           }
         />
-        <AboutSection about={about} locale={locale} />
+        <AboutSection about={about} locale={locale} showCta={false} />
+        <MissionSection mission={aboutSections.mission} locale={locale} />
+        <VisionSection vision={vision} locale={locale} />
+        <QualitySafetySection content={aboutSections.qualitySafety} locale={locale} />
+        <ValuesSection values={aboutSections.values} locale={locale} />
+        <ClientsSection clients={aboutSections.clients} locale={locale} />
       </main>
       <SiteFooter locale={locale} settings={settings} />
     </>
