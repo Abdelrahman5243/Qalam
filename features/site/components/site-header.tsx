@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import {
   ChevronLeft,
@@ -19,6 +18,7 @@ import { createPortal } from "react-dom";
 
 import type { Locale } from "@/lib/i18n";
 import type { SiteSettings } from "../types";
+import { Logo } from "./logo";
 import styles from "./site-header.module.css";
 
 type HeaderProps = {
@@ -47,17 +47,10 @@ const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabi
 
 function BrandMark({ locale, settings }: Pick<HeaderProps, "locale" | "settings">) {
   return (
-    <Link className={styles.brand} href={`/${locale}`} aria-label={`${settings?.companyName || "Next Generation Elevators"} home`}>
-      <Image
-        className={styles.brandImage}
-        src={settings?.logo.url || "/logo.png"}
-        alt={settings?.logo.alt || "Next Generation Elevators"}
-        width={104}
-        height={64}
-        priority
-        unoptimized={!settings?.logo.url}
-      />
-    </Link>
+    <>
+      <Logo variant="light" layout="horizontal" locale={locale} settings={settings} className={`${styles.brandImage} ${styles.desktopBrandImage}`} linkClassName={`${styles.brand} ${styles.desktopBrand}`} priority />
+      <Logo variant="light" layout="mark" locale={locale} settings={settings} className={`${styles.brandImage} ${styles.mobileBrandImage}`} linkClassName={`${styles.brand} ${styles.mobileBrand}`} priority />
+    </>
   );
 }
 

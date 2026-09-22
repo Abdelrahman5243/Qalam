@@ -2502,6 +2502,17 @@ body {
 .inner-page-pattern span:nth-child(2) { top: 48%; right: 30%; }
 .inner-page-pattern span:nth-child(3) { top: 22%; right: 55%; }
 
+.inner-page-mark {
+  position: absolute;
+  top: 50%;
+  right: clamp(1.5rem, 8vw, 9rem);
+  width: clamp(120px, 14vw, 210px);
+  height: auto;
+  opacity: 0.1;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
 @media (max-width: 700px) {
   .inner-page-pattern {
     width: 52%;
@@ -2868,6 +2879,12 @@ body {
 }
 
 @media (max-width: 700px) {
+  .inner-page-mark {
+    right: 1rem;
+    width: 110px;
+    opacity: 0.08;
+  }
+
   .brands-track {
     animation: none;
     transform: none;
@@ -3662,10 +3679,10 @@ body {
 
 .site-footer-brand img {
   display: block;
-  width: 86px;
-  height: 56px;
+  width: 150px;
+  height: auto;
   object-fit: contain;
-  background: #fff;
+  background: transparent;
 }
 
 .site-footer-brand p {

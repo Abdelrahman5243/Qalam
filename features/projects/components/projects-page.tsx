@@ -6,17 +6,18 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
+import type { SiteSettings } from "@/features/site/types";
 import type { ProjectsSection } from "../types";
 import { PageIntro } from "@/features/site/components/page-intro";
 
-export function ProjectsPage({ projects, locale }: { projects: ProjectsSection; locale: Locale }) {
+export function ProjectsPage({ projects, locale, settings }: { projects: ProjectsSection; locale: Locale; settings: SiteSettings | null }) {
   const reduceMotion = useReducedMotion();
   const isArabic = locale === "ar";
   const DirectionArrow = isArabic ? ArrowLeft : ArrowRight;
 
   return (
     <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
-      <PageIntro eyebrow={projects.eyebrow} title={projects.title} description={isArabic ? "نحوّل الخبرة الهندسية إلى حلول مصاعد تعمل بكفاءة داخل مساحات حقيقية." : "We turn engineering expertise into elevator solutions that perform in real spaces."} />
+      <PageIntro settings={settings} eyebrow={projects.eyebrow} title={projects.title} description={isArabic ? "نحوّل الخبرة الهندسية إلى حلول مصاعد تعمل بكفاءة داخل مساحات حقيقية." : "We turn engineering expertise into elevator solutions that perform in real spaces."} />
 
       <section className="inner-page-section" aria-label={projects.title}>
         <div className="inner-page-container project-detail-grid">

@@ -6,17 +6,18 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
+import type { SiteSettings } from "@/features/site/types";
 import type { ServicesSection } from "../types";
 import { PageIntro } from "@/features/site/components/page-intro";
 
-export function ServicesPage({ services, locale }: { services: ServicesSection; locale: Locale }) {
+export function ServicesPage({ services, locale, settings }: { services: ServicesSection; locale: Locale; settings: SiteSettings | null }) {
   const reduceMotion = useReducedMotion();
   const isArabic = locale === "ar";
   const DirectionArrow = isArabic ? ArrowLeft : ArrowRight;
 
   return (
     <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
-      <PageIntro eyebrow={services.eyebrow} title={services.title} description={isArabic ? "حلول متكاملة مصممة لتلبية احتياجات المباني السكنية والتجارية والطبية." : "Integrated solutions designed for residential, commercial, and healthcare buildings."} />
+      <PageIntro settings={settings} eyebrow={services.eyebrow} title={services.title} description={isArabic ? "حلول متكاملة مصممة لتلبية احتياجات المباني السكنية والتجارية والطبية." : "Integrated solutions designed for residential, commercial, and healthcare buildings."} />
 
       <section className="inner-page-section" aria-label={services.title}>
         <div className="inner-page-container service-detail-grid">

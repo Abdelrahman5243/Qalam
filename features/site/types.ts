@@ -5,7 +5,8 @@ export type SiteImage = {
 
 export type SiteSettings = {
   logo: SiteImage;
-  darkLogo: SiteImage | null;
+  mobileLogo: SiteImage | null;
+  footerLogo: SiteImage | null;
   companyName: string;
   phone: string | null;
   whatsappUrl: string | null;

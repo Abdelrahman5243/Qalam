@@ -6,7 +6,8 @@ import type { SiteSettings } from "../types";
 
 const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   logo,
-  darkLogo,
+  mobileLogo,
+  footerLogo,
   "companyName": coalesce(companyName[$locale], companyName.ar, companyName),
   phone,
   whatsapp,
@@ -53,7 +54,8 @@ function extractMapEmbedUrl(value?: string | null) {
 
 type SanitySettings = {
   logo: { asset: { _ref: string; _type: "reference" }; alt?: string | null };
-  darkLogo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  mobileLogo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  footerLogo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
   companyName?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
@@ -84,10 +86,16 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings | nu
         url: urlFor(data.logo).width(240).auto("format").url(),
         alt: data.logo.alt || data.companyName || "Company logo",
       },
-      darkLogo: data.darkLogo
+      mobileLogo: data.mobileLogo
         ? {
-            url: urlFor(data.darkLogo).width(240).auto("format").url(),
-            alt: data.darkLogo.alt || data.companyName || "Company logo",
+            url: urlFor(data.mobileLogo).width(256).height(256).fit("crop").auto("format").url(),
+            alt: data.mobileLogo.alt || data.companyName || "Company logo",
+          }
+        : null,
+      footerLogo: data.footerLogo
+        ? {
+            url: urlFor(data.footerLogo).width(800).auto("format").url(),
+            alt: data.footerLogo.alt || data.companyName || "Company logo",
           }
         : null,
       companyName: data.companyName || "Next Generation Elevators",

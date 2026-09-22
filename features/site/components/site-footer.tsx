@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import type { SVGProps } from "react";
 
 import type { Locale } from "@/lib/i18n";
 import type { SiteSettings } from "../types";
+import { Logo } from "./logo";
 
 const navigation = {
   en: ["Home", "About Us", "Services", "Projects", "Contact Us"],
@@ -44,7 +44,7 @@ export function SiteFooter({ locale, settings }: { locale: Locale; settings: Sit
       <div className="site-footer-inner">
         <div className="site-footer-main">
           <div className="site-footer-brand">
-            <Image src={settings?.logo.url || "/logo.png"} alt={settings?.logo.alt || "Company logo"} width={120} height={72} unoptimized={!settings?.logo.url} />
+            <Logo variant="light" layout="stacked" locale={locale} settings={settings} className="site-footer-logo" />
             <p>{settings?.footerDescription || (isArabic ? "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة." : "Integrated elevator and escalator solutions combining quality, safety, efficiency, and modern technology.")}</p>
           </div>
 

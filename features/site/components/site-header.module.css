@@ -42,10 +42,38 @@
 
 .brandImage {
   display: block;
-  width: 68px;
-  height: 46px;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   object-position: center;
+}
+
+.desktopBrandImage {
+  width: 158px;
+  height: auto;
+  aspect-ratio: 1200 / 269;
+}
+
+.mobileBrand,
+.mobileBrandImage {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .desktopBrand,
+  .desktopBrandImage {
+    display: none;
+  }
+
+  .mobileBrand {
+    display: inline-flex;
+  }
+
+  .mobileBrandImage {
+    display: block;
+    width: 42px;
+    height: 42px;
+  }
 }
 
 .desktopNav,
@@ -277,8 +305,12 @@
   }
 
   .brandImage {
-    width: 82px;
-    height: 54px;
+    width: 190px;
+    height: auto;
+  }
+
+  .desktopBrandImage {
+    width: 190px;
   }
 
   .desktopNav {
