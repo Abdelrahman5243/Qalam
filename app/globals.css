@@ -3276,6 +3276,18 @@ body {
   background: #fbfdfb;
 }
 
+.contact-form input[aria-invalid="true"],
+.contact-form select[aria-invalid="true"],
+.contact-form textarea[aria-invalid="true"] {
+  border-color: #b42318;
+}
+
+.contact-field-error {
+  color: #b42318;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
 .contact-form-full {
   grid-column: 1 / -1;
 }
@@ -3319,6 +3331,32 @@ body {
   color: var(--brand-green);
   font-size: var(--text-body-small);
   font-weight: 600;
+}
+
+.contact-error {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: -0.75rem 0 1.5rem;
+  color: #b3261e;
+  font-size: var(--text-body-small);
+  font-weight: 600;
+}
+
+.contact-spin {
+  animation: contact-spin 0.8s linear infinite;
+}
+
+@keyframes contact-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contact-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
 }
 
 @media (max-width: 900px) {

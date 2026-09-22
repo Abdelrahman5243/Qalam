@@ -1,28 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ArrowRight,
-  Check,
-  Mail,
-  MessageCircle,
-  Phone,
-  UserRound,
-} from "lucide-react";
+import { ArrowRight, Check, Loader2, Mail, MessageCircle, Phone, UserRound } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n";
 import { PageIntro } from "@/features/site/components/page-intro";
 import type { SiteSettings } from "@/features/site/types";
 
-export function ContactPage({
-  locale,
-  settings,
-}: {
-  locale: Locale;
-  settings: SiteSettings | null;
-}) {
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
+type FieldName = "name" | "company" | "email" | "phone" | "service" | "otherService" | "message";
+type FieldErrors = Partial<Record<FieldName, string>>;
+
+type FormspreeResponse = {
+  errors?: Array<{ field?: string; message?: string }>;
+};
+
+export function ContactPage({ locale, settings }: { locale: Locale; settings: SiteSettings | null }) {
   const isArabic = locale === "ar";
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<SubmitStatus>("idle");
+  const [notice, setNotice] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [selectedService, setSelectedService] = useState("");
+  const busy = status === "submitting";
 
   const copy = isArabic
     ? {
@@ -35,8 +34,7 @@ export function ContactPage({
         whatsapp: "واتساب",
         email: "البريد الإلكتروني",
         quickTitle: "تواصل سريع",
-        quickText:
-          "تحدث معنا مباشرة عبر واتساب للاستفسارات ومناقشة تفاصيل مشروعك.",
+        quickText: "تحدث معنا مباشرة عبر واتساب للاستفسارات ومناقشة تفاصيل مشروعك.",
         quickLink: "ابدأ محادثة على واتساب",
         formTitle: "أرسل لنا رسالة",
         fullName: "الاسم بالكامل",
@@ -52,21 +50,27 @@ export function ContactPage({
         servicePlaceholder: "اختر نوع الخدمة",
         messagePlaceholder: "حدثنا عن مشروعك...",
         submit: "إرسال الرسالة",
+        submitting: "جارٍ الإرسال...",
         sent: "تم استلام رسالتك، وسنتواصل معك قريبًا.",
+        error: "حدث خطأ أثناء الإرسال، حاول مرة أخرى.",
+        timeout: "استغرق الإرسال وقتًا طويلًا. تحقق من الاتصال وحاول مرة أخرى.",
+        rateLimited: "تم تجاوز عدد المحاولات. حاول مرة أخرى بعد قليل.",
+        unavailable: "الخدمة غير متاحة مؤقتًا. حاول مرة أخرى بعد قليل.",
+        validation: "راجع البيانات المحددة وحاول مرة أخرى.",
+        other: "أخرى",
+        otherPlaceholder: "اكتب نوع الخدمة التي تحتاجها",
       }
     : {
         eyebrow: "Contact Us",
         title: "Have an Elevator Project in Mind?",
-        intro:
-          "Reach out to our team and we'll help you find the right elevator solution for your space.",
+        intro: "Reach out to our team and we'll help you find the right elevator solution for your space.",
         getInTouch: "Get in touch",
         manager: "Executive Manager",
         phone: "Phone",
         whatsapp: "WhatsApp",
         email: "Email",
         quickTitle: "Quick Contact",
-        quickText:
-          "Chat with us directly via WhatsApp for quick inquiries and project discussions.",
+        quickText: "Chat with us directly via WhatsApp for quick inquiries and project discussions.",
         quickLink: "Start on WhatsApp",
         formTitle: "Send Us a Message",
         fullName: "Full Name",
@@ -82,229 +86,159 @@ export function ContactPage({
         servicePlaceholder: "Select service type",
         messagePlaceholder: "Tell us about your project...",
         submit: "Send Message",
+        submitting: "Sending...",
         sent: "Your message has been received. We'll be in touch soon.",
+        error: "Something went wrong. Please try again.",
+        timeout: "The request took too long. Check your connection and try again.",
+        rateLimited: "Too many attempts. Please try again in a little while.",
+        unavailable: "The service is temporarily unavailable. Please try again later.",
+        validation: "Please review the highlighted fields and try again.",
+        other: "Other",
+        otherPlaceholder: "Tell us what service you need",
       };
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy) return;
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get("name") ?? ""),
+      company: String(formData.get("company") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      phone: String(formData.get("phone") ?? ""),
+      service: String(formData.get("service") ?? ""),
+      otherService: String(formData.get("otherService") ?? ""),
+      message: String(formData.get("message") ?? ""),
+      website: String(formData.get("website") ?? ""),
+    };
+
+    setStatus("submitting");
+    setNotice(null);
+    setFieldErrors({});
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+
+    try {
+      if (!settings?.formspreeFormId) {
+        throw new Error("Formspree form ID is not configured");
+      }
+
+      const response = await fetch(`https://formspree.io/f/${settings.formspreeFormId}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new URLSearchParams(payload),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const responseBody = (await response.json().catch(() => null)) as FormspreeResponse | null;
+        const nextFieldErrors: FieldErrors = {};
+
+        for (const error of responseBody?.errors ?? []) {
+          if (error.field && error.message && error.field in payload) {
+            nextFieldErrors[error.field as FieldName] = error.message;
+          }
+        }
+
+        setFieldErrors(nextFieldErrors);
+        setNotice(
+          response.status === 400 || response.status === 422
+            ? copy.validation
+            : response.status === 429
+              ? copy.rateLimited
+              : response.status >= 500
+                ? copy.unavailable
+                : copy.error,
+        );
+        setStatus("error");
+        return;
+      }
+
+      setStatus("success");
+      form.reset();
+      setSelectedService("");
+    } catch (error) {
+      setStatus("error");
+      setNotice(error instanceof DOMException && error.name === "AbortError" ? copy.timeout : copy.error);
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  }
 
   return (
     <main className="contact-page" dir={isArabic ? "rtl" : "ltr"}>
-      <PageIntro
-        settings={settings}
-        eyebrow={copy.eyebrow}
-        title={copy.title}
-        description={copy.intro}
-      />
+      <PageIntro eyebrow={copy.eyebrow} title={copy.title} description={copy.intro} />
 
-      <section className="contact-content" aria-labelledby="contact-form-title">
+        <section className="contact-content" aria-labelledby="contact-form-title">
         <div className="contact-page-inner contact-content-inner">
           <aside className="contact-details">
             <p className="contact-eyebrow">{copy.getInTouch}</p>
             <div className="contact-detail-list">
-              <div className="contact-detail">
-                <span className="contact-detail-icon">
-                  <UserRound size={17} />
-                </span>
-                <span>
-                  <small>{copy.manager}</small>
-                  <strong>
-                    {settings?.companyName ||
-                      (isArabic ? "شركة المصاعد" : "Next Generation Elevators")}
-                  </strong>
-                </span>
-              </div>
-              <a
-                className="contact-detail"
-                href={
-                  settings?.phone ? `tel:${settings.phone}` : "#contact-form"
-                }
-              >
-                <span className="contact-detail-icon">
-                  <Phone size={17} />
-                </span>
-                <span>
-                  <small>{copy.phone}</small>
-                  <strong>
-                    {settings?.phone ||
-                      (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}
-                  </strong>
-                </span>
-              </a>
-              <a
-                className="contact-detail"
-                href={settings?.whatsappUrl || "#contact-form"}
-                target={settings?.whatsappUrl ? "_blank" : undefined}
-                rel={settings?.whatsappUrl ? "noreferrer" : undefined}
-              >
-                <span className="contact-detail-icon">
-                  <MessageCircle size={17} />
-                </span>
-                <span>
-                  <small>{copy.whatsapp}</small>
-                  <strong>
-                    {settings?.phone ||
-                      (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}
-                  </strong>
-                </span>
-              </a>
-              <a
-                className="contact-detail"
-                href={
-                  settings?.email ? `mailto:${settings.email}` : "#contact-form"
-                }
-                target={settings?.email ? "_blank" : undefined}
-                rel={settings?.email ? "noreferrer" : undefined}
-              >
-                <span className="contact-detail-icon">
-                  <Mail size={17} />
-                </span>
-                <span>
-                  <small>{copy.email}</small>
-                  <strong>
-                    {settings?.email ||
-                      (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}
-                  </strong>
-                </span>
-              </a>
+              <div className="contact-detail"><span className="contact-detail-icon"><UserRound size={17} /></span><span><small>{copy.manager}</small><strong>{settings?.companyName || (isArabic ? "شركة المصاعد" : "Next Generation Elevators")}</strong></span></div>
+              <a className="contact-detail" href={settings?.phone ? `tel:${settings.phone}` : "#contact-form"}><span className="contact-detail-icon"><Phone size={17} /></span><span><small>{copy.phone}</small><strong>{settings?.phone || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <a className="contact-detail" href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}><span className="contact-detail-icon"><MessageCircle size={17} /></span><span><small>{copy.whatsapp}</small><strong>{settings?.whatsappUrl ? (isArabic ? "ابدأ محادثة" : "Start a chat") : (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <a className="contact-detail" href={settings?.email ? `mailto:${settings.email}` : "#contact-form"}><span className="contact-detail-icon"><Mail size={17} /></span><span><small>{copy.email}</small><strong>{settings?.email || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
             </div>
 
             <div className="quick-contact">
-              <div className="quick-contact-heading">
-                <MessageCircle size={19} />
-                <strong>{copy.quickTitle}</strong>
-              </div>
+              <div className="quick-contact-heading"><MessageCircle size={19} /><strong>{copy.quickTitle}</strong></div>
               <p>{copy.quickText}</p>
-              <a
-                href={settings?.whatsappUrl || "#contact-form"}
-                target={settings?.whatsappUrl ? "_blank" : undefined}
-                rel={settings?.whatsappUrl ? "noreferrer" : undefined}
-              >
-                {copy.quickLink}
-                <ArrowRight size={17} />
-              </a>
+              <a href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}>{copy.quickLink}<ArrowRight size={17} /></a>
             </div>
           </aside>
 
-          <form
-            id="contact-form"
-            className="contact-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setSent(true);
-            }}
-          >
+          <form id="contact-form" className="contact-form" aria-busy={busy} onSubmit={handleSubmit}>
             <h2 id="contact-form-title">{copy.formTitle}</h2>
-            {sent ? (
-              <p className="contact-success">
-                <Check size={18} />
-                {copy.sent}
-              </p>
-            ) : null}
+            {status === "success" ? <p className="contact-success" role="status"><Check size={18} />{copy.sent}</p> : null}
+            {status === "error" && notice ? <p className="contact-error" role="alert">{notice}</p> : null}
+            <input
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", top: "-9999px", height: 0, width: 0, opacity: 0 }}
+            />
             <div className="contact-form-grid">
-              <label>
-                <span>{copy.fullName}</span>
-                <input
-                  name="name"
-                  required
-                  placeholder={copy.namePlaceholder}
-                />
-              </label>
-              <label>
-                <span>{copy.company}</span>
-                <input name="company" placeholder={copy.companyPlaceholder} />
-              </label>
-              <label>
-                <span>{copy.emailLabel}</span>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  placeholder={copy.emailPlaceholder}
-                />
-              </label>
-              <label>
-                <span>{copy.phoneLabel}</span>
-                <input
-                  name="phone"
-                  type="tel"
-                  placeholder={copy.phonePlaceholder}
-                />
-              </label>
-              <label className="contact-form-full">
-                <span>{copy.service}</span>
-                <select name="service" defaultValue="">
-                  <option value="" disabled>
-                    {copy.servicePlaceholder}
-                  </option>
-                  <option>
-                    {isArabic ? "توريد وتركيب" : "Supply & Installation"}
-                  </option>
-                  <option>
-                    {isArabic ? "الصيانة والإصلاح" : "Maintenance & Repair"}
-                  </option>
-                  <option>
-                    {isArabic ? "خدمات ما بعد البيع" : "After-Sales Services"}
-                  </option>
-                </select>
-              </label>
-              <label className="contact-form-full">
-                <span>{copy.message}</span>
-                <textarea
-                  name="message"
-                  required
-                  placeholder={copy.messagePlaceholder}
-                />
-              </label>
+              <label htmlFor="contact-name"><span>{copy.fullName}</span><input id="contact-name" name="name" required maxLength={100} autoComplete="name" placeholder={copy.namePlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? "contact-name-error" : undefined} />{fieldErrors.name ? <span id="contact-name-error" className="contact-field-error" role="alert">{fieldErrors.name}</span> : null}</label>
+              <label htmlFor="contact-company"><span>{copy.company}</span><input id="contact-company" name="company" maxLength={100} autoComplete="organization" placeholder={copy.companyPlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.company)} aria-describedby={fieldErrors.company ? "contact-company-error" : undefined} />{fieldErrors.company ? <span id="contact-company-error" className="contact-field-error" role="alert">{fieldErrors.company}</span> : null}</label>
+              <label htmlFor="contact-email"><span>{copy.emailLabel}</span><input id="contact-email" name="email" type="email" required maxLength={200} autoComplete="email" placeholder={copy.emailPlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? "contact-email-error" : undefined} />{fieldErrors.email ? <span id="contact-email-error" className="contact-field-error" role="alert">{fieldErrors.email}</span> : null}</label>
+              <label htmlFor="contact-phone"><span>{copy.phoneLabel}</span><input id="contact-phone" name="phone" type="tel" maxLength={30} autoComplete="tel" placeholder={copy.phonePlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.phone)} aria-describedby={fieldErrors.phone ? "contact-phone-error" : undefined} />{fieldErrors.phone ? <span id="contact-phone-error" className="contact-field-error" role="alert">{fieldErrors.phone}</span> : null}</label>
+              <label className="contact-form-full" htmlFor="contact-service"><span>{copy.service}</span><select id="contact-service" name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)} disabled={busy} aria-invalid={Boolean(fieldErrors.service)} aria-describedby={fieldErrors.service ? "contact-service-error" : undefined}><option value="">{copy.servicePlaceholder}</option><option value="supply_installation">{isArabic ? "توريد وتركيب" : "Supply & Installation"}</option><option value="maintenance">{isArabic ? "الصيانة والإصلاح" : "Maintenance & Repair"}</option><option value="after_sales">{isArabic ? "خدمات ما بعد البيع" : "After-Sales Services"}</option><option value="other">{copy.other}</option></select>{fieldErrors.service ? <span id="contact-service-error" className="contact-field-error" role="alert">{fieldErrors.service}</span> : null}</label>
+              {selectedService === "other" ? <label className="contact-form-full" htmlFor="contact-other-service"><span>{copy.other}</span><input id="contact-other-service" name="otherService" required maxLength={150} placeholder={copy.otherPlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.otherService)} aria-describedby={fieldErrors.otherService ? "contact-other-service-error" : undefined} />{fieldErrors.otherService ? <span id="contact-other-service-error" className="contact-field-error" role="alert">{fieldErrors.otherService}</span> : null}</label> : null}
+              <label className="contact-form-full" htmlFor="contact-message"><span>{copy.message}</span><textarea id="contact-message" name="message" required minLength={10} maxLength={5000} placeholder={copy.messagePlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.message)} aria-describedby={fieldErrors.message ? "contact-message-error" : undefined} />{fieldErrors.message ? <span id="contact-message-error" className="contact-field-error" role="alert">{fieldErrors.message}</span> : null}</label>
             </div>
-            <button type="submit">
-              {copy.submit}
-              <ArrowRight size={17} />
+            <button type="submit" disabled={busy}>
+              {busy ? copy.submitting : copy.submit}
+              {busy ? <Loader2 size={17} className="contact-spin" /> : <ArrowRight size={17} />}
             </button>
           </form>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <section
-        className="contact-location"
-        aria-labelledby="contact-location-title"
-      >
-        <div className="contact-page-inner">
-          <div className="contact-location-heading">
-            <div>
-              <p className="contact-eyebrow">
-                {isArabic ? "موقعنا" : "Our location"}
-              </p>
-              <h2 id="contact-location-title">
-                {isArabic ? "نحن هنا لمساعدتك" : "Find us where you need us"}
-              </h2>
+        <section className="contact-location" aria-labelledby="contact-location-title">
+          <div className="contact-page-inner">
+            <div className="contact-location-heading">
+              <div>
+                <p className="contact-eyebrow">{isArabic ? "موقعنا" : "Our location"}</p>
+                <h2 id="contact-location-title">{isArabic ? "نحن هنا لمساعدتك" : "Find us where you need us"}</h2>
+              </div>
+              {settings?.address ? <p>{settings.address}</p> : null}
             </div>
-            {settings?.address ? <p>{settings.address}</p> : null}
-          </div>
 
-          <div className="contact-map-frame">
-            <iframe
-              title={
-                isArabic ? "موقع الشركة على الخريطة" : "Company location map"
-              }
-              src={
-                settings?.mapUrl ||
-                "https://www.openstreetmap.org/export/embed.html?bbox=46.638%2C24.684%2C46.704%2C24.735&layer=mapnik&marker=24.7136%2C46.6753"
-              }
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
-            {settings?.mapUrl ? (
-              <a
-                className="contact-map-link"
-                href={settings.mapUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {isArabic ? "فتح في الخرائط" : "Open in Maps"}
-              </a>
-            ) : null}
+            <div className="contact-map-frame">
+              <iframe
+                title={isArabic ? "موقع الشركة على الخريطة" : "Company location map"}
+                src={settings?.mapUrl || "https://www.openstreetmap.org/export/embed.html?bbox=46.638%2C24.684%2C46.704%2C24.735&layer=mapnik&marker=24.7136%2C46.6753"}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              {settings?.mapUrl ? <a className="contact-map-link" href={settings.mapUrl} target="_blank" rel="noreferrer">{isArabic ? "فتح في الخرائط" : "Open in Maps"}</a> : null}
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
   );
 }

@@ -86,6 +86,15 @@ export const siteSettings = defineType({
       group: "contact",
     }),
     defineField({
+      name: "formspreeFormId",
+      title: "Formspree form ID / معرّف نموذج Formspree",
+      description:
+        "المعرّف الموجود في رابط Formspree مثل xppwdgoy. هذا المعرّف public وليس secret.",
+      type: "string",
+      validation: (rule) => rule.regex(/^[a-zA-Z0-9]+$/),
+      group: "contact",
+    }),
+    defineField({
       name: "footerDescription",
       title: "Footer description / وصف الفوتر",
       description: "النص التعريفي الذي يظهر بجانب الشعار في أسفل كل صفحة.",

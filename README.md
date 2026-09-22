@@ -18,7 +18,15 @@ NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
 
 These values are read by `lib/sanity/config.ts` and `sanity.config.ts`.
 
-## 3. Run the project
+## 3. Create the Formspree form
+
+1. Create a form at [formspree.io](https://formspree.io/).
+2. Copy its form ID from the endpoint `https://formspree.io/f/YOUR_FORM_ID`.
+3. Open Sanity Studio → **Site settings** → **Contact** and save the Formspree form ID there.
+
+Formspree handles the submission endpoint, email notifications, dashboard storage, and spam controls. The contact form keeps the existing client-side validation and success/error UX.
+
+## 4. Run the project
 
 ```bash
 npm install
@@ -27,9 +35,9 @@ npm run dev
 
 Open [http://localhost:3000/studio](http://localhost:3000/studio), create one **Hero** document, upload an image, and publish it. Then open [http://localhost:3000](http://localhost:3000) to see the published content.
 
-## 4. Studio and checks
+## 5. Studio and checks
 
-The Studio is embedded in the Next.js app, so there is no separate Studio server for this proof of concept. Edit the schema in `sanity/schemas/hero.ts` and the Studio config in `sanity.config.ts`.
+The Studio is embedded in the Next.js app, so there is no separate Studio server for this proof of concept. Edit the schemas in `sanity/schemas/` and the Studio config in `sanity.config.ts`.
 
 ```bash
 npm run lint
@@ -52,8 +60,8 @@ features/hero/
 lib/sanity/
   config.ts                        # Sanity client configuration
   image.ts                         # Sanity image URL helper
-sanity/
-  schemas/                         # Sanity Studio document schemas
+  write-client.ts                  # Server-only client with write token
+sanity/schemas/                    # Sanity Studio document schemas
 sanity.config.ts                   # Studio configuration
 ```
 

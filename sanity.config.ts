@@ -29,7 +29,9 @@ export default defineConfig({
               .child(S.document().schemaType("brands").documentId("brands")),
             ...S.documentTypeListItems().filter(
               (item) =>
-                !["siteSettings", "brands"].includes(item.getId() || ""),
+                !["siteSettings", "brands"].includes(
+                  item.getId() || "",
+                ),
             ),
           ]),
     }),
