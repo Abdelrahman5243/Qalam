@@ -11,7 +11,8 @@ const servicesQuery = `*[_type == "services"][0]{
   items[]{
     "title": coalesce(title[$locale], title.ar, title),
     "description": coalesce(description[$locale], description.ar, description),
-    image
+    image,
+    featured
   }
 }`;
 
@@ -26,63 +27,24 @@ type SanityServices = {
       asset: { _ref: string; _type: "reference" };
       alt?: string | null;
     } | null;
+    featured?: boolean | null;
   }> | null;
 };
 
+type ServicesView = "featured" | "all";
+
+function selectServices(items: ServicesSection["items"], view: ServicesView) {
+  return view === "featured"
+    ? items.filter((item) => item.featured).slice(0, 3)
+    : items;
+}
+
 export async function getServices(
   locale: Locale,
-  fallbackImage: ServicesSection["items"][number]["image"],
+  view: ServicesView = "all",
 ): Promise<ServicesSection> {
-  const defaults =
-    locale === "ar"
-      ? {
-          eyebrow: "خدماتنا",
-          title: "حلول مصاعد لكل مساحة",
-          linkText: "عرض كل الخدمات",
-          items: [
-            [
-              "التوريد والتركيب",
-              "توريد وتركيب احترافي كامل مع الاختبار والتوثيق وفق معايير السلامة.",
-            ],
-            [
-              "الصيانة والإصلاح",
-              "صيانة دورية وإصلاحات طارئة وفحوصات شاملة للحفاظ على أفضل أداء.",
-            ],
-            [
-              "خدمات ما بعد البيع",
-              "دعم الضمان والمساعدة الفنية وقطع الغيار والاستجابة السريعة عند الحاجة.",
-            ],
-          ],
-        }
-      : {
-          eyebrow: "Our services",
-          title: "Elevator Solutions for Every Space",
-          linkText: "View All Services",
-          items: [
-            [
-              "Supply & Installation",
-              "Complete elevator sourcing and professional installation with full testing and compliance documentation.",
-            ],
-            [
-              "Maintenance & Repair",
-              "Preventive maintenance, emergency repair, and comprehensive inspections to ensure optimal performance.",
-            ],
-            [
-              "After-Sales Services",
-              "Warranty support, technical assistance, spare parts, and emergency response for complete peace of mind.",
-            ],
-          ],
-        };
-
   if (!sanityClient.config().projectId) {
-    return {
-      ...defaults,
-      items: defaults.items.map(([title, description]) => ({
-        title,
-        description,
-        image: fallbackImage,
-      })),
-    };
+    return { eyebrow: "", title: "", linkText: "", items: [] };
   }
 
   try {
@@ -91,43 +53,29 @@ export async function getServices(
       { locale },
       { next: { revalidate: 60 } },
     );
-    const items = data?.items?.length ? data.items : [];
+
+    const items = (data?.items ?? []).flatMap((item) => {
+      if (!item.title || !item.description || !item.image) return [];
+
+      return [{
+        title: item.title,
+        description: item.description,
+        image: {
+          url: urlFor(item.image).width(900).height(1100).fit("crop").auto("format").url(),
+          alt: item.image.alt || item.title,
+        },
+        featured: item.featured === true,
+      }];
+    });
 
     return {
-      eyebrow: data?.eyebrow || defaults.eyebrow,
-      title: data?.title || defaults.title,
-      linkText: data?.linkText || defaults.linkText,
-      items: (items.length ? items : defaults.items).map((item, index) => {
-        const fallback = defaults.items[index % defaults.items.length];
-        return {
-          title: Array.isArray(item) ? item[0] : item.title || fallback[0],
-          description: Array.isArray(item)
-            ? item[1]
-            : item.description || fallback[1],
-          image:
-            !Array.isArray(item) && item.image
-              ? {
-                  url: urlFor(item.image)
-                    .width(900)
-                    .height(1100)
-                    .fit("crop")
-                    .auto("format")
-                    .url(),
-                  alt: item.image.alt || item.title || fallback[0],
-                }
-              : fallbackImage,
-        };
-      }),
+      eyebrow: data?.eyebrow || "",
+      title: data?.title || "",
+      linkText: data?.linkText || "",
+      items: selectServices(items, view),
     };
   } catch (error) {
     console.error("Unable to load services content from Sanity", error);
-    return {
-      ...defaults,
-      items: defaults.items.map(([title, description]) => ({
-        title,
-        description,
-        image: fallbackImage,
-      })),
-    };
+    return { eyebrow: "", title: "", linkText: "", items: [] };
   }
 }

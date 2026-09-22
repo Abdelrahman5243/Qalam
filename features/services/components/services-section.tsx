@@ -16,6 +16,7 @@ export function ServicesSection({
   locale: Locale;
 }) {
   const reduceMotion = useReducedMotion();
+  if (services.items.length === 0) return null;
   const isArabic = locale === "ar";
   const DirectionArrow = isArabic ? ArrowLeft : ArrowRight;
 

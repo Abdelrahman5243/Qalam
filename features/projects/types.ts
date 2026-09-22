@@ -5,6 +5,7 @@ export type ProjectItem = {
   title: string;
   location: string;
   image: SiteImage;
+  featured: boolean;
 };
 
 export type ProjectsSection = {

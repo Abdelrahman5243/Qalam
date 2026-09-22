@@ -27,8 +27,8 @@ export function ProjectsPage({
     <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
       <PageIntro
         settings={settings}
-        eyebrow={projects.eyebrow}
-        title={projects.title}
+        eyebrow={projects.eyebrow || (isArabic ? "مشاريعنا" : "Our projects")}
+        title={projects.title || (isArabic ? "مشاريعنا" : "Our Projects")}
         description={
           isArabic
             ? "نحوّل الخبرة الهندسية إلى حلول مصاعد تعمل بكفاءة داخل مساحات حقيقية."

@@ -43,9 +43,9 @@ export default async function LocaleHome({
 
   const about = await getAbout(locale, hero.image);
   const [services, why, projects] = await Promise.all([
-    getServices(locale, hero.image),
+    getServices(locale, "featured"),
     getWhyChooseUs(locale),
-    getProjects(locale, hero.image),
+    getProjects(locale, "featured"),
   ]);
 
   return (

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 
 import config from "../../../sanity.config";
+import styles from "./studio.module.css";
 
 const NextStudio = dynamic(
   () => import("next-sanity/studio").then((module) => module.NextStudio),
@@ -10,5 +11,9 @@ const NextStudio = dynamic(
 );
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  return (
+    <div className={styles.shell}>
+      <NextStudio config={config} />
+    </div>
+  );
 }

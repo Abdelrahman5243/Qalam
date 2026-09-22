@@ -1,0 +1,32 @@
+.shell {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  flex: 1 1 auto;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* The marketing stylesheet is global, so neutralize only its broad rules inside Studio. */
+.shell :global(main),
+.shell :global(section),
+.shell :global(footer) {
+  max-width: none;
+  overflow-x: visible;
+}
+
+.shell :global(img),
+.shell :global(svg),
+.shell :global(video),
+.shell :global(iframe) {
+  max-width: none;
+}
+
+.shell :global(h1),
+.shell :global(h2),
+.shell :global(h3),
+.shell :global(p),
+.shell :global(a),
+.shell :global(span) {
+  overflow-wrap: normal;
+}

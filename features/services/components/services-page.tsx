@@ -27,8 +27,8 @@ export function ServicesPage({
     <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
       <PageIntro
         settings={settings}
-        eyebrow={services.eyebrow}
-        title={services.title}
+        eyebrow={services.eyebrow || (isArabic ? "خدماتنا" : "Our services")}
+        title={services.title || (isArabic ? "خدماتنا" : "Our Services")}
         description={
           isArabic
             ? "حلول متكاملة مصممة لتلبية احتياجات المباني السكنية والتجارية والطبية."

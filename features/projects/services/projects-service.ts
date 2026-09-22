@@ -12,7 +12,8 @@ const projectsQuery = `*[_type == "projects"][0]{
     "category": coalesce(category[$locale], category.ar, category),
     "title": coalesce(title[$locale], title.ar, title),
     "location": coalesce(location[$locale], location.ar, location),
-    image
+    image,
+    featured
   }
 }`;
 
@@ -28,65 +29,24 @@ type SanityProjects = {
       asset: { _ref: string; _type: "reference" };
       alt?: string | null;
     } | null;
+    featured?: boolean | null;
   }> | null;
 };
 
+type ProjectsView = "featured" | "all";
+
+function selectProjects(items: ProjectsSection["items"], view: ProjectsView) {
+  return view === "featured"
+    ? items.filter((item) => item.featured).slice(0, 3)
+    : items;
+}
+
 export async function getProjects(
   locale: Locale,
-  fallbackImage: ProjectsSection["items"][number]["image"],
+  view: ProjectsView = "all",
 ): Promise<ProjectsSection> {
-  const defaults =
-    locale === "ar"
-      ? {
-          eyebrow: "مشاريعنا",
-          title: "مصاعد داخل مساحات حقيقية",
-          linkText: "عرض المشاريع",
-          items: [
-            ["مصعد منزلي", "فيلا النخيل", "الرياض، المملكة العربية السعودية"],
-            [
-              "مصعد ركاب",
-              "برج المنار التجاري",
-              "جدة، المملكة العربية السعودية",
-            ],
-            [
-              "مصعد مستشفى",
-              "مركز الهلال الطبي",
-              "الدمام، المملكة العربية السعودية",
-            ],
-          ],
-        }
-      : {
-          eyebrow: "Our projects",
-          title: "Built Into Real Spaces",
-          linkText: "View Projects",
-          items: [
-            [
-              "Home Elevator",
-              "Al Nakheel Residential Villa",
-              "Riyadh, Saudi Arabia",
-            ],
-            [
-              "Passenger Elevator",
-              "Manar Commercial Tower",
-              "Jeddah, Saudi Arabia",
-            ],
-            [
-              "Hospital Elevator",
-              "Al Hilal Medical Center",
-              "Dammam, Saudi Arabia",
-            ],
-          ],
-        };
-
-  const fallbackItems = defaults.items.map(([category, title, location]) => ({
-    category,
-    title,
-    location,
-    image: fallbackImage,
-  }));
-
   if (!sanityClient.config().projectId) {
-    return { ...defaults, items: fallbackItems };
+    return { eyebrow: "", title: "", linkText: "", items: [] };
   }
 
   try {
@@ -95,39 +55,30 @@ export async function getProjects(
       { locale },
       { next: { revalidate: 60 } },
     );
-    const items = data?.items?.length ? data.items : [];
+
+    const items = (data?.items ?? []).flatMap((item) => {
+      if (!item.category || !item.title || !item.location || !item.image) return [];
+
+      return [{
+        category: item.category,
+        title: item.title,
+        location: item.location,
+        image: {
+          url: urlFor(item.image).width(1200).height(1100).fit("crop").auto("format").url(),
+          alt: item.image.alt || item.title,
+        },
+        featured: item.featured === true,
+      }];
+    });
 
     return {
-      eyebrow: data?.eyebrow || defaults.eyebrow,
-      title: data?.title || defaults.title,
-      linkText: data?.linkText || defaults.linkText,
-      items: (items.length ? items : defaults.items).map((item, index) => {
-        const fallback = defaults.items[index % defaults.items.length];
-        return {
-          category: Array.isArray(item)
-            ? item[0]
-            : item.category || fallback[0],
-          title: Array.isArray(item) ? item[1] : item.title || fallback[1],
-          location: Array.isArray(item)
-            ? item[2]
-            : item.location || fallback[2],
-          image:
-            !Array.isArray(item) && item.image
-              ? {
-                  url: urlFor(item.image)
-                    .width(1200)
-                    .height(1100)
-                    .fit("crop")
-                    .auto("format")
-                    .url(),
-                  alt: item.image.alt || item.title || fallback[1],
-                }
-              : fallbackImage,
-        };
-      }),
+      eyebrow: data?.eyebrow || "",
+      title: data?.title || "",
+      linkText: data?.linkText || "",
+      items: selectProjects(items, view),
     };
   } catch (error) {
     console.error("Unable to load projects content from Sanity", error);
-    return { ...defaults, items: fallbackItems };
+    return { eyebrow: "", title: "", linkText: "", items: [] };
   }
 }
