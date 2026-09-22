@@ -9,13 +9,11 @@ export const whyChooseUs = defineType({
       name: "eyebrow",
       title: "Eyebrow",
       type: "localizedString",
-      initialValue: { ar: "لماذا نحن", en: "Why choose us" },
     }),
     defineField({
       name: "title",
       title: "Title",
       type: "localizedString",
-      initialValue: { ar: "لماذا تختارنا؟", en: "Why Choose Us" },
     }),
     defineField({
       name: "items",
@@ -30,16 +28,19 @@ export const whyChooseUs = defineType({
               title: "Icon",
               type: "string",
               options: { list: ["shield", "award", "zap", "clock"] },
+              validation: (rule) => rule.required(),
             }),
             defineField({
               name: "title",
               title: "Title",
               type: "localizedString",
+              validation: (rule) => rule.required(),
             }),
             defineField({
               name: "description",
               title: "Description",
               type: "localizedText",
+              validation: (rule) => rule.required(),
             }),
           ],
         },

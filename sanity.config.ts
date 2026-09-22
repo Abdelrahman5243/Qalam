@@ -23,10 +23,6 @@ export default defineConfig({
                   .schemaType("siteSettings")
                   .documentId("siteSettings"),
               ),
-            S.listItem()
-              .id("brands")
-              .title("Brands & partners")
-              .child(S.document().schemaType("brands").documentId("brands")),
             ...S.documentTypeListItems().filter(
               (item) =>
                 !["siteSettings", "brands"].includes(

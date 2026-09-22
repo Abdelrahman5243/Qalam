@@ -4214,6 +4214,36 @@ body {
   }
 }
 
+/* Final CTA/footer handoff: compact conversion band, then a distinct footer surface. */
+.contact-cta {
+  min-height: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: #245443;
+}
+
+.contact-cta-inner {
+  min-height: 0;
+  padding-block: clamp(4rem, 7vw, 5.75rem);
+}
+
+.site-footer {
+  background: #193d31;
+}
+
+.site-footer-inner {
+  padding-block: clamp(3rem, 5vw, 4.25rem) 2rem;
+}
+
+.site-footer-bottom {
+  margin-top: clamp(3rem, 5vw, 4.25rem);
+}
+
+@media (max-width: 900px) {
+  .contact-cta-inner {
+    padding-block: 4rem;
+  }
+}
+
 @media (min-width: 640px) and (max-width: 850px) {
   .hero-header,
   .hero-header-inner {

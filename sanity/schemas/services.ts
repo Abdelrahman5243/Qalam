@@ -28,7 +28,9 @@ export const services = defineType({
       validation: (rule) =>
         rule.custom((items) => {
           if (!Array.isArray(items)) return true;
-          const featuredCount = items.filter((item) => item?.featured === true).length;
+          const featuredCount = items.filter(
+            (item) => (item as { featured?: boolean } | null)?.featured === true,
+          ).length;
           return featuredCount === 3
             ? true
             : "Select exactly 3 featured services for the homepage.";

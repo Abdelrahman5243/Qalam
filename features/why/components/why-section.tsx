@@ -21,6 +21,7 @@ export function WhySection({
   locale: Locale;
 }) {
   const reduceMotion = useReducedMotion();
+  if (why.items.length === 0) return null;
 
   return (
     <section
