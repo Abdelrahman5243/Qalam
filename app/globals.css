@@ -2862,7 +2862,7 @@ body {
   height: 58px;
   object-fit: contain;
   filter: grayscale(1) saturate(0.4);
-  opacity: 0.68;
+  opacity: 0.62;
   transition:
     filter var(--motion-fast) ease,
     opacity var(--motion-fast) ease;
@@ -4176,8 +4176,17 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg, rgba(237, 243, 238, 0.98) 0%, rgba(237, 243, 238, 0.86) 52%, rgba(237, 243, 238, 0.45) 100%),
-    radial-gradient(circle at 86% 24%, rgba(79, 148, 108, 0.12), transparent 26rem);
+    linear-gradient(
+      90deg,
+      rgba(237, 243, 238, 0.98) 0%,
+      rgba(237, 243, 238, 0.86) 52%,
+      rgba(237, 243, 238, 0.45) 100%
+    ),
+    radial-gradient(
+      circle at 86% 24%,
+      rgba(79, 148, 108, 0.12),
+      transparent 26rem
+    );
   content: "";
 }
 
@@ -4297,7 +4306,16 @@ body {
   width: clamp(4rem, 5vw, 6rem);
   height: clamp(9rem, 13vw, 12rem);
   background: rgba(29, 64, 52, 0.09);
-  clip-path: polygon(24% 0, 76% 0, 100% 12%, 100% 88%, 76% 100%, 24% 100%, 0 88%, 0 12%);
+  clip-path: polygon(
+    24% 0,
+    76% 0,
+    100% 12%,
+    100% 88%,
+    76% 100%,
+    24% 100%,
+    0 88%,
+    0 12%
+  );
 }
 
 .inner-page-pattern span:nth-child(5) {
@@ -4348,10 +4366,77 @@ body {
   display: block;
 }
 
+/* Three visible triangles sit above the copy: two greens and one soft red. */
+.inner-page-pattern {
+  top: 0;
+  right: auto;
+  left: 0;
+  z-index: 0;
+  width: 55%;
+}
+
+.inner-page-pattern span:nth-child(1) {
+  top: 2%;
+  right: auto;
+  left: 12%;
+  width: clamp(4.5rem, 7vw, 7rem);
+  height: clamp(3.5rem, 5vw, 5rem);
+  background: rgba(79, 148, 108, 0.2);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.inner-page-pattern span:nth-child(2) {
+  top: 8%;
+  right: auto;
+  left: 28%;
+  width: clamp(6rem, 10vw, 10rem);
+  height: clamp(4.5rem, 7vw, 7rem);
+  background: rgba(105, 143, 132, 0.18);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.inner-page-pattern span:nth-child(3) {
+  top: 0;
+  right: auto;
+  left: 47%;
+  display: block;
+  width: clamp(5rem, 8vw, 8rem);
+  height: clamp(4rem, 6vw, 6rem);
+  border: 0;
+  border-radius: 0;
+  background: rgba(201, 125, 112, 0.2);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.inner-page-pattern span:nth-child(n + 4) {
+  display: none;
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern {
+  right: 0;
+  left: auto;
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern span:nth-child(1) {
+  right: 12%;
+  left: auto;
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern span:nth-child(2) {
+  right: 28%;
+  left: auto;
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern span:nth-child(3) {
+  right: 47%;
+  left: auto;
+}
+
 @media (max-width: 700px) {
   .inner-page-pattern {
-    right: 0;
-    width: 100%;
+    right: auto;
+    left: 0;
+    width: 82%;
     opacity: 0.3;
   }
 
@@ -4365,7 +4450,11 @@ body {
   }
 
   .about-clients-section::after {
-    background: linear-gradient(90deg, rgba(237, 243, 238, 0.98), rgba(237, 243, 238, 0.78));
+    background: linear-gradient(
+      90deg,
+      rgba(237, 243, 238, 0.98),
+      rgba(237, 243, 238, 0.78)
+    );
   }
 }
 
@@ -5008,6 +5097,147 @@ footer,
 .contact-page {
   width: 100%;
   max-width: 100%;
+}
+
+/* About intro: a soft isometric facade pattern behind the brand mark. */
+.inner-page-intro .inner-page-pattern {
+  top: 0;
+  right: clamp(1.5rem, 6vw, 7rem);
+  left: auto;
+  z-index: 0;
+  width: clamp(25rem, 35vw, 40rem);
+  height: 12rem;
+  opacity: 1;
+}
+
+.inner-page-intro .inner-page-pattern span {
+  display: block;
+  border: 0;
+  border-radius: 0;
+  transform-origin: center;
+}
+
+.inner-page-intro .inner-page-pattern span:nth-child(1) {
+  top: -1.25rem;
+  right: auto;
+  left: 3%;
+  width: clamp(8rem, 10vw, 11rem);
+  height: clamp(8rem, 10vw, 10.5rem);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(116, 177, 139, 0.2),
+      rgba(116, 177, 139, 0.08)
+    ),
+    rgba(116, 177, 139, 0.1);
+  clip-path: polygon(0 0, 72% 0, 100% 18%, 100% 100%, 30% 82%, 0 100%);
+}
+
+.inner-page-intro .inner-page-pattern span:nth-child(2) {
+  top: 1.25rem;
+  right: auto;
+  left: 44%;
+  width: clamp(6.5rem, 8.5vw, 9rem);
+  height: clamp(6.5rem, 8.5vw, 9rem);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(221, 142, 129, 0.34),
+      rgba(221, 142, 129, 0.15)
+    ),
+    rgba(221, 142, 129, 0.13);
+  clip-path: polygon(50% 0, 100% 30%, 82% 100%, 18% 100%, 0 30%);
+}
+
+.inner-page-intro .inner-page-pattern span:nth-child(3) {
+  top: -2rem;
+  right: auto;
+  left: 76%;
+  width: clamp(6.5rem, 8vw, 8.5rem);
+  height: clamp(10rem, 12vw, 12.5rem);
+  background:
+    linear-gradient(
+      155deg,
+      rgba(133, 190, 151, 0.2),
+      rgba(133, 190, 151, 0.08)
+    ),
+    rgba(133, 190, 151, 0.11);
+  clip-path: polygon(
+    24% 0,
+    76% 0,
+    100% 13%,
+    100% 87%,
+    76% 100%,
+    24% 100%,
+    0 87%,
+    0 13%
+  );
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern {
+  right: 0;
+  left: auto;
+}
+
+.inner-page[dir="rtl"] .inner-page-intro .inner-page-pattern {
+  right: auto;
+  left: clamp(1.5rem, 6vw, 7rem);
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern span:nth-child(1) {
+  right: auto;
+  left: 0;
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern span:nth-child(2) {
+  right: auto;
+  left: 48%;
+}
+
+.inner-page[dir="rtl"] .inner-page-pattern span:nth-child(3) {
+  right: auto;
+  left: 76%;
+}
+
+@media (max-width: 700px) {
+  .inner-page-intro .inner-page-pattern {
+    right: 0;
+    left: auto;
+    width: min(86%, 24rem);
+    height: 9rem;
+    opacity: 0.78;
+  }
+
+  .inner-page[dir="rtl"] .inner-page-intro .inner-page-pattern {
+    right: auto;
+    left: 0;
+  }
+}
+
+/* Seamless geometric texture: fine enough to read as atmosphere, not illustration. */
+.inner-page-intro .inner-page-pattern {
+  top: 0;
+  right: 0;
+  left: auto;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240' viewBox='0 0 360 240' fill='none'%3E%3Cpath d='M34 31 72 9l38 22v44L72 97 34 75V31Z M72 9v44m38-22L72 53 34 31' stroke='%234f946c' stroke-opacity='.32' stroke-width='1.2'/%3E%3Cpath d='M205 32 239 12l34 20v40l-34 20-34-20V32Z M239 12v40m34-20-34 20-34-20' stroke='%23dd8e81' stroke-opacity='.38' stroke-width='1.2'/%3E%3Cpath d='M122 164 151 147l29 17v34l-29 17-29-17v-34Z M151 147v34m29-17-29 17-29-17' stroke='%234f946c' stroke-opacity='.24' stroke-width='1.1'/%3E%3C/svg%3E");
+  background-size: 360px 240px;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.inner-page-intro .inner-page-pattern span {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .inner-page-intro .inner-page-pattern {
+    width: 100%;
+    opacity: 0.4;
+  }
 }
 
 /* Clean reference-style header on larger screens. */
