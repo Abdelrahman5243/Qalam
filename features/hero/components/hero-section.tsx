@@ -22,7 +22,11 @@ export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
   const reduceMotion = useReducedMotion();
 
   return (
-    <main id="home" className="hero-shell" dir={locale === "ar" ? "rtl" : "ltr"}>
+    <main
+      id="home"
+      className="hero-shell"
+      dir={locale === "ar" ? "rtl" : "ltr"}
+    >
       <SiteHeader locale={locale} settings={settings} />
 
       <section className="hero-stage" aria-labelledby="hero-title">
@@ -43,22 +47,42 @@ export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
-          <motion.p className="hero-eyebrow" initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25, duration: 0.4 }}>{hero.eyebrow}</motion.p>
+          <motion.p
+            className="hero-eyebrow"
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25, duration: 0.4 }}
+          >
+            {hero.eyebrow}
+          </motion.p>
           <h1 id="hero-title">{hero.title}</h1>
           <p className="hero-description">{hero.description}</p>
 
           <div className="hero-actions">
-            <MotionLink className="hero-primary-action" href="#contact" whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+            <MotionLink
+              className="hero-primary-action"
+              href="#contact"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
+            >
               {hero.ctaText || "Contact Us"}
             </MotionLink>
-            <MotionLink className="hero-secondary-action" href="#services" whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+            <MotionLink
+              className="hero-secondary-action"
+              href="#services"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
+            >
               {hero.secondaryCtaText}
-              {locale === "ar" ? <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} /> : <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />}
+              {locale === "ar" ? (
+                <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} />
+              ) : (
+                <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />
+              )}
             </MotionLink>
           </div>
         </motion.div>
       </section>
-
     </main>
   );
 }

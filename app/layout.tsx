@@ -27,7 +27,9 @@ export const metadata: Metadata = {
       { url: siteAssets.favicon16, sizes: "16x16", type: "image/png" },
       { url: siteAssets.favicon32, sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: siteAssets.appleTouchIcon, sizes: "180x180", type: "image/png" }],
+    apple: [
+      { url: siteAssets.appleTouchIcon, sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
@@ -39,7 +41,11 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ar" dir="rtl" className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}>
+    <html
+      lang="ar"
+      dir="rtl"
+      className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}
+    >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

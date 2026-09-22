@@ -48,4 +48,3 @@ If Turbopack fails because of the local environment, verify the production build
 ```bash
 npx next build --webpack
 ```
-

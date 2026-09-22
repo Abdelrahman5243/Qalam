@@ -6,7 +6,11 @@ import { SiteHeader } from "@/features/site/components/site-header";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
 import { isLocale, type Locale } from "@/lib/i18n";
 
-export default async function ContactRoute({ params }: { params: Promise<{ locale: string }> }) {
+export default async function ContactRoute({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale: value } = await params;
 
   if (!isLocale(value)) {

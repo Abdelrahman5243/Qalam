@@ -7,7 +7,11 @@ export const projects = defineType({
   fields: [
     defineField({ name: "eyebrow", title: "Eyebrow", type: "localizedString" }),
     defineField({ name: "title", title: "Title", type: "localizedString" }),
-    defineField({ name: "linkText", title: "Projects link text", type: "localizedString" }),
+    defineField({
+      name: "linkText",
+      title: "Projects link text",
+      type: "localizedString",
+    }),
     defineField({
       name: "items",
       title: "Projects",
@@ -16,12 +20,35 @@ export const projects = defineType({
         {
           type: "object",
           fields: [
-            defineField({ name: "category", title: "Category", type: "localizedString" }),
-            defineField({ name: "title", title: "Project name", type: "localizedString" }),
-            defineField({ name: "location", title: "Location", type: "localizedString" }),
-            defineField({ name: "image", title: "Image", type: "image", options: { hotspot: true } }),
+            defineField({
+              name: "category",
+              title: "Category",
+              type: "localizedString",
+            }),
+            defineField({
+              name: "title",
+              title: "Project name",
+              type: "localizedString",
+            }),
+            defineField({
+              name: "location",
+              title: "Location",
+              type: "localizedString",
+            }),
+            defineField({
+              name: "image",
+              title: "Image",
+              type: "image",
+              options: { hotspot: true },
+            }),
           ],
-          preview: { select: { title: "title.ar", media: "image", subtitle: "category.ar" } },
+          preview: {
+            select: {
+              title: "title.ar",
+              media: "image",
+              subtitle: "category.ar",
+            },
+          },
         },
       ],
     }),

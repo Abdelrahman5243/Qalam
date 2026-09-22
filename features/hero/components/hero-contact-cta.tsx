@@ -4,7 +4,17 @@ import { MessageCircle } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Locale } from "@/lib/i18n";
 
-export function HeroContactCta({ locale, whatsappUrl, phone, email }: { locale: Locale; whatsappUrl?: string | null; phone?: string | null; email?: string | null }) {
+export function HeroContactCta({
+  locale,
+  whatsappUrl,
+  phone,
+  email,
+}: {
+  locale: Locale;
+  whatsappUrl?: string | null;
+  phone?: string | null;
+  email?: string | null;
+}) {
   const reduceMotion = useReducedMotion();
   const isArabic = locale === "ar";
 
@@ -20,16 +30,50 @@ export function HeroContactCta({ locale, whatsappUrl, phone, email }: { locale: 
     >
       <div className="contact-cta-inner">
         <div className="contact-cta-copy">
-          <h2 id="contact-cta-title">{isArabic ? "هل لديك مشروع مصاعد؟" : "Have an Elevator Project in Mind?"}</h2>
-          <p>{isArabic ? "دعنا نناقش الحل المناسب لمبناك." : "Let's discuss the right solution for your building."}</p>
+          <h2 id="contact-cta-title">
+            {isArabic
+              ? "هل لديك مشروع مصاعد؟"
+              : "Have an Elevator Project in Mind?"}
+          </h2>
+          <p>
+            {isArabic
+              ? "دعنا نناقش الحل المناسب لمبناك."
+              : "Let's discuss the right solution for your building."}
+          </p>
         </div>
 
         <div className="contact-cta-actions">
-          <motion.a className="contact-cta-whatsapp" href={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#contact"} target={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL ? "_blank" : undefined} rel={whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL ? "noreferrer" : undefined} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+          <motion.a
+            className="contact-cta-whatsapp"
+            href={
+              whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#contact"
+            }
+            target={
+              whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL
+                ? "_blank"
+                : undefined
+            }
+            rel={
+              whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL
+                ? "noreferrer"
+                : undefined
+            }
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <MessageCircle aria-hidden="true" size={20} strokeWidth={1.8} />
             {isArabic ? "واتساب" : "WhatsApp"}
           </motion.a>
-          <motion.a className="contact-cta-contact" href={email ? `mailto:${email}` : phone ? `tel:${phone}` : "#contact"} target={email ? "_blank" : undefined} rel={email ? "noreferrer" : undefined} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
+          <motion.a
+            className="contact-cta-contact"
+            href={
+              email ? `mailto:${email}` : phone ? `tel:${phone}` : "#contact"
+            }
+            target={email ? "_blank" : undefined}
+            rel={email ? "noreferrer" : undefined}
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.98 }}
+          >
             {isArabic ? "تواصل معنا" : "Contact Us"}
           </motion.a>
         </div>

@@ -54,8 +54,14 @@ function extractMapEmbedUrl(value?: string | null) {
 
 type SanitySettings = {
   logo: { asset: { _ref: string; _type: "reference" }; alt?: string | null };
-  mobileLogo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
-  footerLogo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  mobileLogo?: {
+    asset: { _ref: string; _type: "reference" };
+    alt?: string | null;
+  } | null;
+  footerLogo?: {
+    asset: { _ref: string; _type: "reference" };
+    alt?: string | null;
+  } | null;
   companyName?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
@@ -66,16 +72,25 @@ type SanitySettings = {
   footerDescription?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
-  seoImage?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  seoImage?: {
+    asset: { _ref: string; _type: "reference" };
+    alt?: string | null;
+  } | null;
 };
 
-export async function getSiteSettings(locale: Locale): Promise<SiteSettings | null> {
+export async function getSiteSettings(
+  locale: Locale,
+): Promise<SiteSettings | null> {
   if (!sanityClient.config().projectId) {
     return null;
   }
 
   try {
-    const data = await sanityClient.fetch<SanitySettings | null>(siteSettingsQuery, { locale }, { cache: "no-store" });
+    const data = await sanityClient.fetch<SanitySettings | null>(
+      siteSettingsQuery,
+      { locale },
+      { cache: "no-store" },
+    );
 
     if (!data?.logo) {
       return null;
@@ -88,7 +103,12 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings | nu
       },
       mobileLogo: data.mobileLogo
         ? {
-            url: urlFor(data.mobileLogo).width(256).height(256).fit("crop").auto("format").url(),
+            url: urlFor(data.mobileLogo)
+              .width(256)
+              .height(256)
+              .fit("crop")
+              .auto("format")
+              .url(),
             alt: data.mobileLogo.alt || data.companyName || "Company logo",
           }
         : null,
@@ -104,7 +124,11 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings | nu
       email: data.email || null,
       address: data.address || null,
       mapUrl: extractMapEmbedUrl(data.mapUrl),
-      socialLinks: (data.socialLinks || []).filter((link): link is { platform: string; url: string } => Boolean(link.platform && link.url)).map((link) => ({ platform: link.platform!, url: link.url! })),
+      socialLinks: (data.socialLinks || [])
+        .filter((link): link is { platform: string; url: string } =>
+          Boolean(link.platform && link.url),
+        )
+        .map((link) => ({ platform: link.platform!, url: link.url! })),
       footerDescription: data.footerDescription || null,
       seo: {
         title: data.seoTitle || null,

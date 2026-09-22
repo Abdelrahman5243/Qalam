@@ -6,7 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Next Generation Elevators",
     short_name: "NGE",
-    description: "Elevator installation, maintenance, and modern mobility solutions.",
+    description:
+      "Elevator installation, maintenance, and modern mobility solutions.",
     start_url: "/ar",
     display: "standalone",
     background_color: "#f7f8f3",

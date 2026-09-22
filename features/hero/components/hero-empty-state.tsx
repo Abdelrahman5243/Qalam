@@ -6,7 +6,8 @@ export function HeroEmptyState() {
       <div className="flex max-w-md flex-col items-center gap-6 text-center">
         <Logo variant="color" layout="stacked" decorative priority />
         <p className="text-lg leading-8">
-          Add a hero image and content in Sanity Studio, then refresh this page to see the website hero.
+          Add a hero image and content in Sanity Studio, then refresh this page
+          to see the website hero.
         </p>
       </div>
     </main>

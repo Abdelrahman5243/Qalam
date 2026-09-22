@@ -18,12 +18,19 @@ export default defineConfig({
             S.listItem()
               .id("siteSettings")
               .title("Site settings")
-              .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
+              .child(
+                S.document()
+                  .schemaType("siteSettings")
+                  .documentId("siteSettings"),
+              ),
             S.listItem()
               .id("brands")
               .title("Brands & partners")
               .child(S.document().schemaType("brands").documentId("brands")),
-            ...S.documentTypeListItems().filter((item) => !["siteSettings", "brands"].includes(item.getId() || "")),
+            ...S.documentTypeListItems().filter(
+              (item) =>
+                !["siteSettings", "brands"].includes(item.getId() || ""),
+            ),
           ]),
     }),
   ],

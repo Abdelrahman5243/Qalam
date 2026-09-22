@@ -19,24 +19,41 @@ const heroDefaults = {
   ar: {
     eyebrow: "مصاعد الجيل القادم",
     title: "حلول مصاعد متقدمة مصممة لتلبية احتياجاتك",
-    description: "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
+    description:
+      "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
     ctaText: "تواصل معنا",
     secondaryCtaText: "استكشف خدماتنا",
   },
   en: {
     eyebrow: "Next generation elevators",
     title: "Advanced Elevator Solutions Built Around Your Needs",
-    description: "Integrated elevator and escalator solutions combining quality, safety, efficiency, and modern technology.",
+    description:
+      "Integrated elevator and escalator solutions combining quality, safety, efficiency, and modern technology.",
     ctaText: "Contact Us",
     secondaryCtaText: "Explore our services",
   },
 } as const;
 
-function resolveCopy(value: string | null | undefined, fallback: string, locale: Locale) {
-  const placeholderValues = new Set(["عربي", "english", "desc", "description", "save", "title"]);
+function resolveCopy(
+  value: string | null | undefined,
+  fallback: string,
+  locale: Locale,
+) {
+  const placeholderValues = new Set([
+    "عربي",
+    "english",
+    "desc",
+    "description",
+    "save",
+    "title",
+  ]);
   const normalizedValue = value?.trim().toLowerCase();
 
-  return normalizedValue && !placeholderValues.has(normalizedValue) ? value!.trim() : heroDefaults[locale][fallback as keyof typeof heroDefaults[typeof locale]];
+  return normalizedValue && !placeholderValues.has(normalizedValue)
+    ? value!.trim()
+    : heroDefaults[locale][
+        fallback as keyof (typeof heroDefaults)[typeof locale]
+      ];
 }
 
 export async function getHero(locale: Locale): Promise<Hero | null> {
@@ -45,11 +62,18 @@ export async function getHero(locale: Locale): Promise<Hero | null> {
   }
 
   try {
-    const data = await sanityClient.fetch<unknown>(heroQuery, { locale }, { next: { revalidate: 60 } });
+    const data = await sanityClient.fetch<unknown>(
+      heroQuery,
+      { locale },
+      { next: { revalidate: 60 } },
+    );
     const parsedHero = sanityHeroSchema.safeParse(data);
 
     if (!parsedHero.success) {
-      console.error("Invalid hero content received from Sanity", parsedHero.error.flatten());
+      console.error(
+        "Invalid hero content received from Sanity",
+        parsedHero.error.flatten(),
+      );
       return null;
     }
 
@@ -57,11 +81,24 @@ export async function getHero(locale: Locale): Promise<Hero | null> {
       _id: parsedHero.data._id,
       eyebrow: resolveCopy(parsedHero.data.eyebrow, "eyebrow", locale),
       title: resolveCopy(parsedHero.data.title, "title", locale),
-      description: resolveCopy(parsedHero.data.description, "description", locale),
+      description: resolveCopy(
+        parsedHero.data.description,
+        "description",
+        locale,
+      ),
       ctaText: resolveCopy(parsedHero.data.ctaText, "ctaText", locale),
-      secondaryCtaText: resolveCopy(parsedHero.data.secondaryCtaText, "secondaryCtaText", locale),
+      secondaryCtaText: resolveCopy(
+        parsedHero.data.secondaryCtaText,
+        "secondaryCtaText",
+        locale,
+      ),
       image: {
-        url: urlFor(parsedHero.data.image).width(1600).height(1800).fit("crop").auto("format").url(),
+        url: urlFor(parsedHero.data.image)
+          .width(1600)
+          .height(1800)
+          .fit("crop")
+          .auto("format")
+          .url(),
         alt: parsedHero.data.image.alt || parsedHero.data.title,
       },
     };

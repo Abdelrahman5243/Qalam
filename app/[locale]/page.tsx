@@ -20,7 +20,11 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export default async function LocaleHome({ params }: { params: Promise<{ locale: string }> }) {
+export default async function LocaleHome({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale: value } = await params;
 
   if (!isLocale(value)) {
@@ -28,7 +32,10 @@ export default async function LocaleHome({ params }: { params: Promise<{ locale:
   }
 
   const locale: Locale = value;
-  const [hero, settings] = await Promise.all([getHero(locale), getSiteSettings(locale)]);
+  const [hero, settings] = await Promise.all([
+    getHero(locale),
+    getSiteSettings(locale),
+  ]);
 
   if (!hero) {
     return <HeroEmptyState />;
@@ -48,7 +55,12 @@ export default async function LocaleHome({ params }: { params: Promise<{ locale:
       <ServicesSection services={services} locale={locale} />
       <WhySection why={why} locale={locale} />
       <ProjectsSection projects={projects} locale={locale} />
-      <HeroContactCta locale={locale} whatsappUrl={settings?.whatsappUrl} phone={settings?.phone} email={settings?.email} />
+      <HeroContactCta
+        locale={locale}
+        whatsappUrl={settings?.whatsappUrl}
+        phone={settings?.phone}
+        email={settings?.email}
+      />
       <SiteFooter locale={locale} settings={settings} />
     </>
   );

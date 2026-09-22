@@ -18,6 +18,7 @@ export const siteAssets = {
 export function getFallbackBrandImage(locale: Locale) {
   return {
     url: siteAssets.logoTransparent,
-    alt: locale === "ar" ? "شعار شركة المصاعد" : "Next Generation Elevators logo",
+    alt:
+      locale === "ar" ? "شعار شركة المصاعد" : "Next Generation Elevators logo",
   };
 }

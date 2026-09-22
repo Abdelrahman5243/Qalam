@@ -8,17 +8,17 @@ The interface is a calm, premium elevator brand: architectural imagery, strong w
 
 ## Tokens
 
-| Token | Value | Usage |
-| --- | --- | --- |
-| `--surface-page` | `#f7f8f3` | Light page surfaces |
-| `--surface-header` | `#fafbf7` | Header and navigation |
-| `--surface-dark` | `#1d4034` | Contact CTA and dark brand sections |
-| `--brand-green` | `#4f946c` | Primary actions and active states |
-| `--brand-green-hover` | `#62a37c` | Hover state for actions |
-| `--brand-ink` | `#1d241f` | Light-surface text |
-| `--text-on-dark` | `#ffffff` | Text on photography and dark surfaces |
-| `--text-on-dark-muted` | `rgba(255,255,255,.8)` | Supporting text on dark surfaces |
-| `--motion-fast` | `180ms` | Hover and focus transitions |
+| Token                  | Value                  | Usage                                 |
+| ---------------------- | ---------------------- | ------------------------------------- |
+| `--surface-page`       | `#f7f8f3`              | Light page surfaces                   |
+| `--surface-header`     | `#fafbf7`              | Header and navigation                 |
+| `--surface-dark`       | `#1d4034`              | Contact CTA and dark brand sections   |
+| `--brand-green`        | `#4f946c`              | Primary actions and active states     |
+| `--brand-green-hover`  | `#62a37c`              | Hover state for actions               |
+| `--brand-ink`          | `#1d241f`              | Light-surface text                    |
+| `--text-on-dark`       | `#ffffff`              | Text on photography and dark surfaces |
+| `--text-on-dark-muted` | `rgba(255,255,255,.8)` | Supporting text on dark surfaces      |
+| `--motion-fast`        | `180ms`                | Hover and focus transitions           |
 
 ## Typography
 

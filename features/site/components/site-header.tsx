@@ -12,7 +12,14 @@ import {
   UsersRound,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import type { RefObject } from "react";
 import { createPortal } from "react-dom";
 
@@ -43,22 +50,55 @@ const navigation = {
   ],
 } as const;
 
-const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const focusableSelector =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
 
-function BrandMark({ locale, settings }: Pick<HeaderProps, "locale" | "settings">) {
+function BrandMark({
+  locale,
+  settings,
+}: Pick<HeaderProps, "locale" | "settings">) {
   return (
     <>
-      <Logo variant="light" layout="horizontal" locale={locale} settings={settings} className={`${styles.brandImage} ${styles.desktopBrandImage}`} linkClassName={`${styles.brand} ${styles.desktopBrand}`} priority />
-      <Logo variant="light" layout="mark" locale={locale} settings={settings} className={`${styles.brandImage} ${styles.mobileBrandImage}`} linkClassName={`${styles.brand} ${styles.mobileBrand}`} priority />
+      <Logo
+        variant="light"
+        layout="horizontal"
+        locale={locale}
+        settings={settings}
+        className={`${styles.brandImage} ${styles.desktopBrandImage}`}
+        linkClassName={`${styles.brand} ${styles.desktopBrand}`}
+        priority
+      />
+      <Logo
+        variant="light"
+        layout="mark"
+        locale={locale}
+        settings={settings}
+        className={`${styles.brandImage} ${styles.mobileBrandImage}`}
+        linkClassName={`${styles.brand} ${styles.mobileBrand}`}
+        priority
+      />
     </>
   );
 }
 
-function LanguageSwitch({ locale }: Pick<HeaderProps, "locale">) {
+function LanguageSwitch({
+  locale,
+  pathname,
+}: Pick<HeaderProps, "locale"> & { pathname?: string }) {
   const otherLocale = locale === "ar" ? "en" : "ar";
+  const targetPath =
+    pathname?.replace(/^\/(ar|en)(?=\/|$)/, `/${otherLocale}`) ||
+    `/${otherLocale}`;
 
   return (
-    <Link className={styles.language} href={`/${otherLocale}`} aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}>
+    <Link
+      className={styles.language}
+      href={targetPath}
+      aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
+    >
       <Globe2 aria-hidden="true" size={18} strokeWidth={1.8} />
       <span>{otherLocale.toUpperCase()}</span>
     </Link>
@@ -73,43 +113,95 @@ type MobileMenuProps = HeaderProps & {
   onClose: () => void;
 };
 
-function MobileMenu({ locale, settings, menuId, open, pathname, panelRef, onClose }: MobileMenuProps) {
+function MobileMenu({
+  locale,
+  settings,
+  menuId,
+  open,
+  pathname,
+  panelRef,
+  onClose,
+}: MobileMenuProps) {
   const items = navigation[locale];
   const contactLabel = locale === "ar" ? "تواصل معنا" : "Contact Us";
   const DirectionChevron = locale === "ar" ? ChevronLeft : ChevronRight;
 
-  if (typeof document === "undefined") return null;
+  const mounted = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot,
+  );
+
+  if (!mounted) return null;
 
   return createPortal(
     <div className={styles.menuLayer} data-open={open} aria-hidden={!open}>
-      <button className={styles.backdrop} type="button" tabIndex={open ? 0 : -1} aria-label={locale === "ar" ? "إغلاق القائمة" : "Close menu"} onClick={onClose} />
-      <aside ref={panelRef} id={menuId} className={styles.mobilePanel} dir={locale === "ar" ? "rtl" : "ltr"} aria-label={locale === "ar" ? "القائمة الرئيسية" : "Main menu"} aria-modal="true" role="dialog" inert={!open}>
+      <button
+        className={styles.backdrop}
+        type="button"
+        tabIndex={open ? 0 : -1}
+        aria-label={locale === "ar" ? "إغلاق القائمة" : "Close menu"}
+        onClick={onClose}
+      />
+      <aside
+        ref={panelRef}
+        id={menuId}
+        className={styles.mobilePanel}
+        dir={locale === "ar" ? "rtl" : "ltr"}
+        aria-label={locale === "ar" ? "القائمة الرئيسية" : "Main menu"}
+        aria-modal="true"
+        role="dialog"
+        inert={!open}
+      >
         <div className={styles.mobileTopbar}>
           <BrandMark locale={locale} settings={settings} />
           <div className={styles.mobileTools}>
-            <LanguageSwitch locale={locale} />
-            <button className={styles.closeButton} type="button" onClick={onClose} aria-label={locale === "ar" ? "إغلاق القائمة" : "Close menu"}>
+            <LanguageSwitch locale={locale} pathname={pathname} />
+            <button
+              className={styles.closeButton}
+              type="button"
+              onClick={onClose}
+              aria-label={locale === "ar" ? "إغلاق القائمة" : "Close menu"}
+            >
               <span aria-hidden="true" />
               <span aria-hidden="true" />
             </button>
           </div>
         </div>
 
-        <nav className={styles.mobileNav} aria-label={locale === "ar" ? "روابط الموقع" : "Site links"}>
+        <nav
+          className={styles.mobileNav}
+          aria-label={locale === "ar" ? "روابط الموقع" : "Site links"}
+        >
           {items.map((item) => {
             const Icon = item.icon;
             const isCurrent = pathname === item.href;
             return (
-              <Link key={item.href} className={styles.mobileLink} data-current={isCurrent ? "true" : undefined} href={item.href} onClick={onClose}>
+              <Link
+                key={item.href}
+                className={styles.mobileLink}
+                data-current={isCurrent ? "true" : undefined}
+                href={item.href}
+                onClick={onClose}
+              >
                 <Icon aria-hidden="true" size={21} strokeWidth={1.8} />
                 <span>{item.label}</span>
-                <DirectionChevron aria-hidden="true" size={19} strokeWidth={1.8} />
+                <DirectionChevron
+                  aria-hidden="true"
+                  size={19}
+                  strokeWidth={1.8}
+                />
               </Link>
             );
           })}
         </nav>
 
-        <Link className={styles.mobileContact} data-current={pathname === `/${locale}/contact` ? "true" : undefined} href={`/${locale}/contact`} onClick={onClose}>
+        <Link
+          className={styles.mobileContact}
+          data-current={pathname === `/${locale}/contact` ? "true" : undefined}
+          href={`/${locale}/contact`}
+          onClick={onClose}
+        >
           <Mail aria-hidden="true" size={19} strokeWidth={1.8} />
           {contactLabel}
         </Link>
@@ -138,7 +230,9 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const animationFrame = requestAnimationFrame(() => menuRef.current?.querySelector<HTMLElement>(focusableSelector)?.focus());
+    const animationFrame = requestAnimationFrame(() =>
+      menuRef.current?.querySelector<HTMLElement>(focusableSelector)?.focus(),
+    );
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -148,7 +242,9 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
       }
 
       if (event.key !== "Tab" || !menuRef.current) return;
-      const controls = Array.from(menuRef.current.querySelectorAll<HTMLElement>(focusableSelector));
+      const controls = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>(focusableSelector),
+      );
       if (!controls.length) return;
 
       const first = controls[0];
@@ -175,25 +271,56 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
       <div className={styles.inner}>
         <BrandMark locale={locale} settings={settings} />
 
-        <nav className={styles.desktopNav} aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}>
+        <nav
+          className={styles.desktopNav}
+          aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}
+        >
           {items.map((item) => (
-            <Link key={item.href} className={styles.desktopLink} data-current={pathname === item.href ? "true" : undefined} href={item.href}>
+            <Link
+              key={item.href}
+              className={styles.desktopLink}
+              data-current={pathname === item.href ? "true" : undefined}
+              href={item.href}
+            >
               {item.label}
             </Link>
           ))}
         </nav>
 
         <div className={styles.desktopActions}>
-          <LanguageSwitch locale={locale} />
+          <LanguageSwitch locale={locale} pathname={pathname} />
           <span className={styles.divider} aria-hidden="true" />
-          <Link className={styles.desktopContact} href={`/${locale}/contact`} data-current={pathname === `/${locale}/contact` ? "true" : undefined}>
+          <Link
+            className={styles.desktopContact}
+            href={`/${locale}/contact`}
+            data-current={
+              pathname === `/${locale}/contact` ? "true" : undefined
+            }
+          >
             {contactLabel}
           </Link>
         </div>
 
         <div className={styles.mobileActions}>
           <LanguageSwitch locale={locale} />
-          <button ref={toggleRef} className={styles.menuButton} type="button" data-open={menuOpen} aria-expanded={menuOpen} aria-controls={menuId} aria-label={menuOpen ? (locale === "ar" ? "إغلاق القائمة" : "Close menu") : (locale === "ar" ? "فتح القائمة" : "Open menu")} onClick={() => setMenuOpen((value) => !value)}>
+          <button
+            ref={toggleRef}
+            className={styles.menuButton}
+            type="button"
+            data-open={menuOpen}
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
+            aria-label={
+              menuOpen
+                ? locale === "ar"
+                  ? "إغلاق القائمة"
+                  : "Close menu"
+                : locale === "ar"
+                  ? "فتح القائمة"
+                  : "Open menu"
+            }
+            onClick={() => setMenuOpen((value) => !value)}
+          >
             <span aria-hidden="true" />
             <span aria-hidden="true" />
             <span aria-hidden="true" />
@@ -201,7 +328,15 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
         </div>
       </div>
 
-      <MobileMenu locale={locale} settings={settings} menuId={menuId} open={menuOpen} pathname={pathname} panelRef={menuRef} onClose={closeMenu} />
+      <MobileMenu
+        locale={locale}
+        settings={settings}
+        menuId={menuId}
+        open={menuOpen}
+        pathname={pathname}
+        panelRef={menuRef}
+        onClose={closeMenu}
+      />
     </header>
   );
 }

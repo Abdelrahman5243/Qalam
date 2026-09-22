@@ -20,11 +20,23 @@ type LogoProps = {
 };
 
 const fallbackSources = {
-  light: { horizontal: siteAssets.logoHorizontalLight, stacked: siteAssets.logoStackedLight },
+  light: {
+    horizontal: siteAssets.logoHorizontalLight,
+    stacked: siteAssets.logoStackedLight,
+  },
   color: { horizontal: siteAssets.iconColor, stacked: siteAssets.iconColor },
 } as const;
 
-export function Logo({ variant, layout, locale, settings, className, linkClassName, priority = false, decorative = false }: LogoProps) {
+export function Logo({
+  variant,
+  layout,
+  locale,
+  settings,
+  className,
+  linkClassName,
+  priority = false,
+  decorative = false,
+}: LogoProps) {
   const dynamicSources = {
     light: {
       horizontal: settings?.logo?.url,
@@ -37,12 +49,36 @@ export function Logo({ variant, layout, locale, settings, className, linkClassNa
       mark: undefined,
     },
   } as const;
-  const fallbackMark = variant === "light" ? siteAssets.iconLight : siteAssets.iconColor;
-  const src = dynamicSources[variant][layout] || (layout === "mark" ? fallbackMark : fallbackSources[variant][layout]);
-  const alt = decorative ? "" : settings?.companyName || "Next Generation Elevators";
-  const image = <Image className={className} src={src} alt={alt} width={layout === "stacked" ? 180 : layout === "mark" ? 48 : 240} height={layout === "stacked" ? 140 : layout === "mark" ? 48 : 90} priority={priority} unoptimized={src.startsWith("http")} aria-hidden={decorative} />;
+  const fallbackMark =
+    variant === "light" ? siteAssets.iconLight : siteAssets.iconColor;
+  const src =
+    dynamicSources[variant][layout] ||
+    (layout === "mark" ? fallbackMark : fallbackSources[variant][layout]);
+  const alt = decorative
+    ? ""
+    : settings?.companyName || "Next Generation Elevators";
+  const image = (
+    <Image
+      className={className}
+      src={src}
+      alt={alt}
+      width={layout === "stacked" ? 180 : layout === "mark" ? 48 : 240}
+      height={layout === "stacked" ? 140 : layout === "mark" ? 48 : 90}
+      priority={priority}
+      unoptimized={src.startsWith("http")}
+      aria-hidden={decorative}
+    />
+  );
 
   if (!locale) return image;
 
-  return <Link className={linkClassName} href={`/${locale}`} aria-label={`${settings?.companyName || "Next Generation Elevators"} home`}>{image}</Link>;
+  return (
+    <Link
+      className={linkClassName}
+      href={`/${locale}`}
+      aria-label={`${settings?.companyName || "Next Generation Elevators"} home`}
+    >
+      {image}
+    </Link>
+  );
 }

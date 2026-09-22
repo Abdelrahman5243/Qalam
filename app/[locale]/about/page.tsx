@@ -10,11 +10,18 @@ import { getSiteSettings } from "@/features/site/services/site-settings-service"
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getFallbackBrandImage } from "@/lib/site-assets";
 
-export default async function AboutRoute({ params }: { params: Promise<{ locale: string }> }) {
+export default async function AboutRoute({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale: value } = await params;
   if (!isLocale(value)) notFound();
   const locale: Locale = value;
-  const [hero, settings] = await Promise.all([getHero(locale), getSiteSettings(locale)]);
+  const [hero, settings] = await Promise.all([
+    getHero(locale),
+    getSiteSettings(locale),
+  ]);
   const fallbackImage = hero?.image || getFallbackBrandImage(locale);
   const about = await getAbout(locale, fallbackImage);
 
@@ -24,7 +31,20 @@ export default async function AboutRoute({ params }: { params: Promise<{ locale:
     <>
       <SiteHeader locale={locale} settings={settings} active="about" />
       <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
-        <PageIntro settings={settings} eyebrow={isArabic ? "من نحن" : "About us"} title={isArabic ? "خبرة تُبنى عليها الثقة" : "Experience built around trust"} description={isArabic ? "نتكامل مع عملائنا لتقديم حلول مصاعد آمنة وفعالة ومصممة لتدوم." : "We work alongside our clients to deliver safe, efficient elevator solutions built to last."} />
+        <PageIntro
+          settings={settings}
+          eyebrow={isArabic ? "من نحن" : "About us"}
+          title={
+            isArabic
+              ? "خبرة تُبنى عليها الثقة"
+              : "Experience built around trust"
+          }
+          description={
+            isArabic
+              ? "نتكامل مع عملائنا لتقديم حلول مصاعد آمنة وفعالة ومصممة لتدوم."
+              : "We work alongside our clients to deliver safe, efficient elevator solutions built to last."
+          }
+        />
         <AboutSection about={about} locale={locale} />
       </main>
       <SiteFooter locale={locale} settings={settings} />

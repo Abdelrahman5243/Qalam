@@ -23,42 +23,85 @@ type SanityBrands = {
   description?: string | null;
   items?: Array<{
     name?: string | null;
-    logo?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+    logo?: {
+      asset: { _ref: string; _type: "reference" };
+      alt?: string | null;
+    } | null;
     url?: string | null;
   }> | null;
 };
 
 export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
-  const defaults = locale === "ar"
-    ? {
-        eyebrow: "شركاؤنا",
-        title: "شراكات موثوقة",
-        description: "نتعاون مع علامات وشركاء موثوقين لتقديم حلول متكاملة.",
-      }
-    : {
-        eyebrow: "Our partners",
-        title: "Trusted partnerships",
-        description: "We work with trusted brands and partners to deliver complete solutions.",
-      };
-  const demoNames = locale === "ar"
-    ? ["شريك تجريبي 01", "شريك تجريبي 02", "شريك تجريبي 03", "شريك تجريبي 04", "شريك تجريبي 05", "شريك تجريبي 06"]
-    : ["Demo Partner 01", "Demo Partner 02", "Demo Partner 03", "Demo Partner 04", "Demo Partner 05", "Demo Partner 06"];
+  const defaults =
+    locale === "ar"
+      ? {
+          eyebrow: "شركاؤنا",
+          title: "شراكات موثوقة",
+          description: "نتعاون مع علامات وشركاء موثوقين لتقديم حلول متكاملة.",
+        }
+      : {
+          eyebrow: "Our partners",
+          title: "Trusted partnerships",
+          description:
+            "We work with trusted brands and partners to deliver complete solutions.",
+        };
+  const demoNames =
+    locale === "ar"
+      ? [
+          "شريك تجريبي 01",
+          "شريك تجريبي 02",
+          "شريك تجريبي 03",
+          "شريك تجريبي 04",
+          "شريك تجريبي 05",
+          "شريك تجريبي 06",
+        ]
+      : [
+          "Demo Partner 01",
+          "Demo Partner 02",
+          "Demo Partner 03",
+          "Demo Partner 04",
+          "Demo Partner 05",
+          "Demo Partner 06",
+        ];
   const demoLogos = ["orbit", "vertex", "nova", "ascent", "axis", "liftline"];
-  const demoItems = demoNames.map((name, index) => ({ name, url: null, logo: { url: `/brands/${demoLogos[index]}.svg`, alt: name } }));
+  const demoItems = demoNames.map((name, index) => ({
+    name,
+    url: null,
+    logo: { url: `/brands/${demoLogos[index]}.svg`, alt: name },
+  }));
 
   if (!sanityClient.config().projectId) {
-    return process.env.NODE_ENV !== "production" ? { enabled: true, ...defaults, items: demoItems } : null;
+    return process.env.NODE_ENV !== "production"
+      ? { enabled: true, ...defaults, items: demoItems }
+      : null;
   }
 
   try {
-    const data = await sanityClient.fetch<SanityBrands | null>(brandsQuery, { locale }, { next: { revalidate: 60 } });
+    const data = await sanityClient.fetch<SanityBrands | null>(
+      brandsQuery,
+      { locale },
+      { next: { revalidate: 60 } },
+    );
     const items = (data?.items || [])
-      .filter((item): item is { name: string; logo: NonNullable<typeof item.logo>; url?: string | null } => Boolean(item.name && item.logo))
+      .filter(
+        (
+          item,
+        ): item is {
+          name: string;
+          logo: NonNullable<typeof item.logo>;
+          url?: string | null;
+        } => Boolean(item.name && item.logo),
+      )
       .map((item) => ({
         name: item.name,
         url: item.url || null,
         logo: {
-          url: urlFor(item.logo).width(320).height(160).fit("crop").auto("format").url(),
+          url: urlFor(item.logo)
+            .width(320)
+            .height(160)
+            .fit("crop")
+            .auto("format")
+            .url(),
           alt: item.logo.alt || item.name,
         },
       }));
@@ -80,6 +123,8 @@ export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
     };
   } catch (error) {
     console.error("Unable to load brands content from Sanity", error);
-    return process.env.NODE_ENV !== "production" ? { enabled: true, ...defaults, items: demoItems } : null;
+    return process.env.NODE_ENV !== "production"
+      ? { enabled: true, ...defaults, items: demoItems }
+      : null;
   }
 }

@@ -8,13 +8,24 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { Locale } from "@/lib/i18n";
 import type { ServicesSection } from "../types";
 
-export function ServicesSection({ services, locale }: { services: ServicesSection; locale: Locale }) {
+export function ServicesSection({
+  services,
+  locale,
+}: {
+  services: ServicesSection;
+  locale: Locale;
+}) {
   const reduceMotion = useReducedMotion();
   const isArabic = locale === "ar";
   const DirectionArrow = isArabic ? ArrowLeft : ArrowRight;
 
   return (
-    <section id="services" className="services-section" dir={isArabic ? "rtl" : "ltr"} aria-labelledby="services-title">
+    <section
+      id="services"
+      className="services-section"
+      dir={isArabic ? "rtl" : "ltr"}
+      aria-labelledby="services-title"
+    >
       <div className="services-inner">
         <div className="services-heading">
           <div>
@@ -35,17 +46,26 @@ export function ServicesSection({ services, locale }: { services: ServicesSectio
               initial={reduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: 0.45,
+                delay: index * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
               <div className="service-image">
-                <Image src={service.image.url} alt={service.image.alt} fill unoptimized sizes="(max-width: 720px) 100vw, 33vw" />
+                <Image
+                  src={service.image.url}
+                  alt={service.image.alt}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 720px) 100vw, 33vw"
+                />
               </div>
               <div className="service-card-copy">
                 <div>
                   <h3>{service.title}</h3>
                   <p>{service.description}</p>
                 </div>
-                <DirectionArrow className="service-arrow" aria-hidden="true" size={18} />
               </div>
             </motion.article>
           ))}

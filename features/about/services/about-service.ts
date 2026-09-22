@@ -17,30 +17,43 @@ type SanityAbout = {
   title?: string | null;
   description?: string | null;
   ctaText?: string | null;
-  image?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  image?: {
+    asset: { _ref: string; _type: "reference" };
+    alt?: string | null;
+  } | null;
 };
 
-export async function getAbout(locale: Locale, fallbackImage: About["image"]): Promise<About> {
-  const defaults = locale === "ar"
-    ? {
-        eyebrow: "من نحن",
-        title: "خبرة منذ 2010",
-        description: "منذ عام 2010، نقدم حلولًا متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة للسوق المحلي والإقليمي.",
-        ctaText: "اكتشف المزيد",
-      }
-    : {
-        eyebrow: "About us",
-        title: "Experience Since 2010",
-        description: "Established in 2010, we deliver integrated elevator and escalator solutions combining quality, safety, efficiency, and modern technology for the local and regional market.",
-        ctaText: "Discover More",
-      };
+export async function getAbout(
+  locale: Locale,
+  fallbackImage: About["image"],
+): Promise<About> {
+  const defaults =
+    locale === "ar"
+      ? {
+          eyebrow: "من نحن",
+          title: "خبرة منذ 2010",
+          description:
+            "منذ عام 2010، نقدم حلولًا متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة للسوق المحلي والإقليمي.",
+          ctaText: "اكتشف المزيد",
+        }
+      : {
+          eyebrow: "About us",
+          title: "Experience Since 2010",
+          description:
+            "Established in 2010, we deliver integrated elevator and escalator solutions combining quality, safety, efficiency, and modern technology for the local and regional market.",
+          ctaText: "Discover More",
+        };
 
   if (!sanityClient.config().projectId) {
     return { ...defaults, image: fallbackImage };
   }
 
   try {
-    const data = await sanityClient.fetch<SanityAbout | null>(aboutQuery, { locale }, { next: { revalidate: 60 } });
+    const data = await sanityClient.fetch<SanityAbout | null>(
+      aboutQuery,
+      { locale },
+      { next: { revalidate: 60 } },
+    );
     return {
       eyebrow: data?.eyebrow || defaults.eyebrow,
       title: data?.title || defaults.title,
@@ -48,7 +61,12 @@ export async function getAbout(locale: Locale, fallbackImage: About["image"]): P
       ctaText: data?.ctaText || defaults.ctaText,
       image: data?.image
         ? {
-            url: urlFor(data.image).width(1400).height(900).fit("crop").auto("format").url(),
+            url: urlFor(data.image)
+              .width(1400)
+              .height(900)
+              .fit("crop")
+              .auto("format")
+              .url(),
             alt: data.image.alt || data.title || defaults.title,
           }
         : fallbackImage,

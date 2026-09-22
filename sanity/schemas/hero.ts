@@ -9,13 +9,19 @@ export const hero = defineType({
       name: "eyebrow",
       title: "Eyebrow",
       type: "localizedString",
-      initialValue: { ar: "مصاعد الجيل القادم", en: "Next generation elevators" },
+      initialValue: {
+        ar: "مصاعد الجيل القادم",
+        en: "Next generation elevators",
+      },
     }),
     defineField({
       name: "title",
       title: "Title",
       type: "localizedString",
-      initialValue: { ar: "حلول مصاعد متقدمة مصممة لتلبية احتياجاتك", en: "Advanced Elevator Solutions Built Around Your Needs" },
+      initialValue: {
+        ar: "حلول مصاعد متقدمة مصممة لتلبية احتياجاتك",
+        en: "Advanced Elevator Solutions Built Around Your Needs",
+      },
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -28,7 +34,13 @@ export const hero = defineType({
       },
       validation: (rule) => rule.required(),
     }),
-    defineField({ name: "image", title: "Image", type: "image", options: { hotspot: true }, validation: (rule) => rule.required() }),
+    defineField({
+      name: "image",
+      title: "Image",
+      type: "image",
+      options: { hotspot: true },
+      validation: (rule) => rule.required(),
+    }),
     defineField({
       name: "ctaText",
       title: "CTA text",
