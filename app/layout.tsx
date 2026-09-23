@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Cairo, Manrope } from "next/font/google";
 import "./globals.css";
 import { siteAssets } from "@/lib/site-assets";
+import { metadataBase } from "@/lib/seo";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -19,8 +20,12 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "شركة المصاعد",
-  description: "حلول المصاعد والتركيب والصيانة للمشاريع السكنية والتجارية.",
+  metadataBase,
+  title: {
+    default: "الجيل القادم للمصاعد | Next Generation Elevators",
+    template: "%s | Next Generation Elevators",
+  },
+  description: "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
   icons: {
     icon: [
       { url: siteAssets.faviconIco },

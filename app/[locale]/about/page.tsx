@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { AboutSection } from "@/features/about/components/about-section";
@@ -16,6 +17,14 @@ import { getHero } from "@/features/hero/services/hero-service";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getFallbackBrandImage } from "@/lib/site-assets";
+import { createPageMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale: value } = await params;
+  const locale = isLocale(value) ? value : "ar";
+  const settings = await getSiteSettings(locale);
+  return createPageMetadata({ locale, path: `/${locale}/about`, title: locale === "ar" ? "من نحن | خبرة تُبنى عليها الثقة" : "About Us | Experience Built Around Trust", description: locale === "ar" ? "تعرّف إلى خبرتنا وقيمنا ونهجنا في تقديم حلول مصاعد آمنة وفعالة." : "Learn about our experience, values, and approach to safe and efficient elevator solutions.", settings });
+}
 
 export default async function AboutRoute({
   params,

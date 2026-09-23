@@ -91,7 +91,7 @@ export async function getSiteSettings(
     const data = await sanityClient.fetch<SanitySettings | null>(
       siteSettingsQuery,
       { locale },
-      { cache: "no-store" },
+      { next: { revalidate: 60 } },
     );
 
     if (!data?.logo) {

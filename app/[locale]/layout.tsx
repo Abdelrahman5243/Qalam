@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { defaultLocale, getDirection, isLocale, type Locale } from "@/lib/i18n";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
 import { siteAssets } from "@/lib/site-assets";
+import { absoluteUrl, createPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -22,35 +23,22 @@ export async function generateMetadata({
       : "Elevator installation, maintenance, and modern mobility solutions for your building.";
 
   return {
-    title: settings?.seo.title || settings?.companyName || fallbackTitle,
-    description: settings?.seo.description || fallbackDescription,
+    ...createPageMetadata({
+      locale,
+      path: `/${locale}`,
+      title: settings?.seo.title || settings?.companyName || fallbackTitle,
+      description: settings?.seo.description || fallbackDescription,
+      settings,
+    }),
     icons: {
       icon: [
+        { url: siteAssets.faviconIco },
         { url: siteAssets.favicon16, sizes: "16x16", type: "image/png" },
         { url: siteAssets.favicon32, sizes: "32x32", type: "image/png" },
       ],
       apple: [
         { url: siteAssets.appleTouchIcon, sizes: "180x180", type: "image/png" },
       ],
-    },
-    alternates: { canonical: `/${locale}` },
-    openGraph: {
-      title: settings?.seo.title || settings?.companyName || fallbackTitle,
-      description: settings?.seo.description || fallbackDescription,
-      images: [
-        {
-          url: settings?.seo.ogImage?.url || siteAssets.logoWhiteBackground,
-          alt:
-            settings?.seo.ogImage?.alt ||
-            `${settings?.companyName || fallbackTitle} logo`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: settings?.seo.title || settings?.companyName || fallbackTitle,
-      description: settings?.seo.description || fallbackDescription,
-      images: [settings?.seo.ogImage?.url || siteAssets.logoWhiteBackground],
     },
   };
 }
@@ -72,11 +60,11 @@ export default async function LocaleLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: companyName,
-    url: `/${locale}`,
-    logo: settings?.logo.url || siteAssets.logoTransparent,
+    url: absoluteUrl(`/${locale}`),
+    logo: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
     telephone: settings?.phone || undefined,
     email: settings?.email || undefined,
-    sameAs: settings?.socialLinks.map((link) => link.url) || [],
+    sameAs: settings?.socialLinks.map((link) => link.url) || undefined,
   };
 
   return (
