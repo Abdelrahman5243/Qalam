@@ -41,7 +41,7 @@ export function StatusPage({ kind, onRetry }: StatusPageProps) {
   return (
     <main className={"status-page " + (isEnglish ? "locale-en" : "locale-ar")} dir={isEnglish ? "ltr" : "rtl"} lang={locale}>
       <div className="status-page-grid" aria-hidden="true" />
-      <SiteHeader locale={locale} settings={null} />
+        <SiteHeader locale={locale} settings={null} />
 
       <div className="status-page-content">
         <section className="status-page-copy" aria-labelledby="status-title">

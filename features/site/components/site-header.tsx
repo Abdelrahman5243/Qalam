@@ -11,7 +11,7 @@ import {
   Settings2,
   UsersRound,
 } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -99,10 +99,9 @@ function getLocalizedPath(pathname: string | undefined, locale: Locale) {
 function LanguageSwitch({
   locale,
   pathname,
-  search,
-}: Pick<HeaderProps, "locale"> & { pathname?: string; search?: string }) {
+}: Pick<HeaderProps, "locale"> & { pathname?: string }) {
   const otherLocale = locale === "ar" ? "en" : "ar";
-  const targetPath = getLocalizedPath(pathname, otherLocale) + (search ? "?" + search : "");
+  const targetPath = getLocalizedPath(pathname, otherLocale);
 
   return (
     <Link
@@ -120,7 +119,6 @@ type MobileMenuProps = HeaderProps & {
   menuId: string;
   open: boolean;
   pathname: string;
-  search: string;
   panelRef: RefObject<HTMLElement | null>;
   onClose: () => void;
 };
@@ -131,7 +129,6 @@ function MobileMenu({
   menuId,
   open,
   pathname,
-  search,
   panelRef,
   onClose,
 }: MobileMenuProps) {
@@ -169,7 +166,7 @@ function MobileMenu({
         <div className={styles.mobileTopbar}>
           <BrandMark locale={locale} settings={settings} />
           <div className={styles.mobileTools}>
-            <LanguageSwitch locale={locale} pathname={pathname} search={search} />
+            <LanguageSwitch locale={locale} pathname={pathname} />
             <button
               className={styles.closeButton}
               type="button"
@@ -226,7 +223,6 @@ function MobileMenu({
 
 export function SiteHeader({ locale, settings }: HeaderProps) {
   const pathname = usePathname() || "/";
-  const search = useSearchParams().toString();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
   const menuRef = useRef<HTMLElement>(null);
@@ -302,7 +298,7 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
         </nav>
 
         <div className={styles.desktopActions}>
-          <LanguageSwitch locale={locale} pathname={pathname} search={search} />
+          <LanguageSwitch locale={locale} pathname={pathname} />
           <span className={styles.divider} aria-hidden="true" />
           <Link
             className={styles.desktopContact}
@@ -316,7 +312,7 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
         </div>
 
         <div className={styles.mobileActions}>
-          <LanguageSwitch locale={locale} pathname={pathname} search={search} />
+          <LanguageSwitch locale={locale} pathname={pathname} />
           <button
             ref={toggleRef}
             className={styles.menuButton}
@@ -348,7 +344,6 @@ export function SiteHeader({ locale, settings }: HeaderProps) {
         menuId={menuId}
         open={menuOpen}
         pathname={pathname}
-        search={search}
         panelRef={menuRef}
         onClose={closeMenu}
       />
