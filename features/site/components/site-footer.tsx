@@ -76,6 +76,8 @@ export function SiteFooter({
   const socials = settings?.socialLinks.length
     ? settings.socialLinks
     : fallbackSocials;
+  const whatsappUrl =
+    settings?.whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || null;
   const contactLabel = isArabic ? "تواصل معنا" : "Contact";
 
   return (
@@ -136,13 +138,19 @@ export function SiteFooter({
                   : "Email coming soon")}
             </a>
             <a
-              className={!settings?.whatsappUrl ? "is-placeholder" : undefined}
-              href={settings?.whatsappUrl || "#contact"}
-              target={settings?.whatsappUrl ? "_blank" : undefined}
-              rel={settings?.whatsappUrl ? "noreferrer" : undefined}
+              className={!whatsappUrl ? "is-placeholder" : undefined}
+              href={whatsappUrl || "#contact"}
+              target={whatsappUrl ? "_blank" : undefined}
+              rel={whatsappUrl ? "noreferrer" : undefined}
             >
               <MessageCircle aria-hidden="true" size={15} />
-              {isArabic ? "واتساب يضاف قريبًا" : "WhatsApp coming soon"}
+              {whatsappUrl
+                ? isArabic
+                  ? "واتساب"
+                  : "WhatsApp"
+                : isArabic
+                  ? "واتساب يضاف قريبًا"
+                  : "WhatsApp coming soon"}
             </a>
           </div>
 
