@@ -1,4 +1,5 @@
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 import type { Locale } from "@/lib/i18n";
 
 import { sanityHeroSchema } from "../schemas/hero-schema";
@@ -62,11 +63,7 @@ export async function getHero(locale: Locale): Promise<Hero | null> {
   }
 
   try {
-    const data = await sanityClient.fetch<unknown>(
-      heroQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<unknown>(heroQuery, { locale });
     const parsedHero = sanityHeroSchema.safeParse(data);
 
     if (!parsedHero.success) {

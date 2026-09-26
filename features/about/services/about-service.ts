@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
 
 import type { About } from "../types";
@@ -49,11 +50,7 @@ export async function getAbout(
   }
 
   try {
-    const data = await sanityClient.fetch<SanityAbout | null>(
-      aboutQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanityAbout | null>(aboutQuery, { locale });
     return {
       eyebrow: data?.eyebrow || defaults.eyebrow,
       title: data?.title || defaults.title,

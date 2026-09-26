@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 
 import type { WhySection, WhyValue } from "../types";
 
@@ -33,11 +34,7 @@ export async function getWhyChooseUs(locale: Locale): Promise<WhySection> {
   if (!sanityClient.config().projectId) return emptyWhy;
 
   try {
-    const data = await sanityClient.fetch<SanityWhy | null>(
-      whyQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanityWhy | null>(whyQuery, { locale });
 
     const items = (data?.items ?? []).flatMap((item) => {
       if (!item.icon || !item.title || !item.description) return [];

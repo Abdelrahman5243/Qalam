@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
 
 import type { ProjectsSection } from "../types";
@@ -50,11 +51,7 @@ export async function getProjects(
   }
 
   try {
-    const data = await sanityClient.fetch<SanityProjects | null>(
-      projectsQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanityProjects | null>(projectsQuery, { locale });
 
     const items = (data?.items ?? []).flatMap((item) => {
       if (!item.category || !item.title || !item.location || !item.image) return [];

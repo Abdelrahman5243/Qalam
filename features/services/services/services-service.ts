@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
 
 import type { ServicesSection } from "../types";
@@ -48,11 +49,7 @@ export async function getServices(
   }
 
   try {
-    const data = await sanityClient.fetch<SanityServices | null>(
-      servicesQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanityServices | null>(servicesQuery, { locale });
 
     const items = (data?.items ?? []).flatMap((item) => {
       if (!item.title || !item.description || !item.image) return [];

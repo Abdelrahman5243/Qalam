@@ -14,9 +14,17 @@ Create `.env.local` in the project root:
 NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
+NEXT_PUBLIC_SANITY_STUDIO_URL=http://localhost:3000/studio
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SANITY_API_READ_TOKEN=viewer-only-token
+SANITY_API_READ_TOKEN=server-only-token
 ```
 
-These values are read by `lib/sanity/config.ts` and `sanity.config.ts`.
+These values are read by `lib/sanity/config.ts` and `sanity.config.ts`. `SANITY_API_READ_TOKEN` stays server-only. `NEXT_PUBLIC_SANITY_API_READ_TOKEN` must be a separate Viewer-only token used for live preview in the browser.
+
+## Visual editing
+
+The embedded Studio includes Presentation Tool. It opens the app in Draft Mode, and the shared `sanityFetchData(query, params)` wrapper automatically switches to draft content. Add `<SanityLive />` and `<VisualEditing />` only through `app/layout.tsx`; new pages should use the wrapper instead of calling a Sanity client directly.
 
 ## 3. Create the Formspree form
 

@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
 
 import type { BrandsSection } from "../types";
@@ -77,11 +78,7 @@ export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
   }
 
   try {
-    const data = await sanityClient.fetch<SanityBrands | null>(
-      brandsQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanityBrands | null>(brandsQuery, { locale });
     const items = (data?.items || [])
       .filter(
         (

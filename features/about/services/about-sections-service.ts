@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
 
 import type {
@@ -90,11 +91,7 @@ export async function getAboutSections(locale: Locale): Promise<{
   if (!sanityClient.config().projectId) return empty;
 
   try {
-    const data = await sanityClient.fetch<SanitySections | null>(
-      aboutSectionsQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanitySections | null>(aboutSectionsQuery, { locale });
     if (!data) return empty;
 
     const mission = data.mission;

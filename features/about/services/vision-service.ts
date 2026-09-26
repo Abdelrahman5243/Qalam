@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
+import { sanityFetchData } from "@/lib/sanity/live";
 
 import type { Vision } from "../types";
 
@@ -15,11 +16,7 @@ export async function getVision(locale: Locale): Promise<Vision | null> {
   if (!sanityClient.config().projectId) return null;
 
   try {
-    const data = await sanityClient.fetch<SanityVision | null>(
-      visionQuery,
-      { locale },
-      { next: { revalidate: 60 } },
-    );
+    const data = await sanityFetchData<SanityVision | null>(visionQuery, { locale });
 
     if (!data?.eyebrow || !data.title || !data.description) return null;
 

@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { draftMode } from "next/headers";
 import { Cairo, Manrope } from "next/font/google";
 import "./globals.css";
 import { siteAssets } from "@/lib/site-assets";
 import { metadataBase } from "@/lib/seo";
+import { SanityLive } from "@/lib/sanity/live";
+import { SanityVisualEditing } from "@/lib/sanity/visual-editing";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -44,14 +47,19 @@ export const viewport = {
   viewportFit: "cover",
 } as const;
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const { isEnabled: isDraftMode } = await draftMode();
   return (
     <html
       lang="ar"
       dir="rtl"
       className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+          {children}
+          <SanityLive />
+          {isDraftMode && <SanityVisualEditing />}
+        </body>
     </html>
   );
 }

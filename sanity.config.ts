@@ -1,4 +1,5 @@
 import { defineConfig } from "sanity";
+import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 
 import { schemaTypes } from "./sanity/schemas";
@@ -10,6 +11,102 @@ export default defineConfig({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "",
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
   plugins: [
+    presentationTool({
+      previewUrl: {
+        initial: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+        previewMode: {
+          enable: "/api/draft-mode/enable",
+          disable: "/api/draft-mode/disable",
+        },
+      },
+      resolve: {
+        locations: {
+          hero: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "Home", href: "/ar" },
+                { title: "Home (English)", href: "/en" },
+              ],
+            }),
+          },
+          about: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "About", href: "/ar/about" },
+                { title: "About (English)", href: "/en/about" },
+              ],
+            }),
+          },
+          services: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "Services", href: "/ar/services" },
+                { title: "Services (English)", href: "/en/services" },
+              ],
+            }),
+          },
+          projects: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "Projects", href: "/ar/projects" },
+                { title: "Projects (English)", href: "/en/projects" },
+              ],
+            }),
+          },
+          brands: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "Home", href: "/ar" },
+                { title: "Home (English)", href: "/en" },
+              ],
+            }),
+          },
+          whyChooseUs: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "Home", href: "/ar" },
+                { title: "Home (English)", href: "/en" },
+              ],
+            }),
+          },
+          siteSettings: {
+            select: {},
+            resolve: () => ({
+              locations: [
+                { title: "Home", href: "/ar" },
+                { title: "Home (English)", href: "/en" },
+              ],
+            }),
+          },
+          vision: {
+            select: {},
+            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+          },
+          mission: {
+            select: {},
+            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+          },
+          qualitySafety: {
+            select: {},
+            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+          },
+          values: {
+            select: {},
+            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+          },
+          clients: {
+            select: {},
+            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+          },
+        },
+      },
+    }),
     structureTool({
       structure: (S) =>
         S.list()
