@@ -13,7 +13,10 @@ export default defineConfig({
   plugins: [
     presentationTool({
       previewUrl: {
-        initial: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+        initial:
+          process.env.NEXT_PUBLIC_SANITY_PREVIEW_URL ??
+          process.env.NEXT_PUBLIC_SITE_URL ??
+          "http://localhost:3000",
         previewMode: {
           enable: "/api/draft-mode/enable",
           disable: "/api/draft-mode/disable",

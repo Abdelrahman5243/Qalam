@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { draftMode } from "next/headers";
 
 import { defaultLocale, getDirection, isLocale, type Locale } from "@/lib/i18n";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
 import { siteAssets } from "@/lib/site-assets";
 import { absoluteUrl, createPageMetadata } from "@/lib/seo";
+import { SanityLive } from "@/lib/sanity/live";
+import { SanityVisualEditing } from "@/lib/sanity/visual-editing";
 
 export async function generateMetadata({
   params,
@@ -13,7 +16,6 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: value } = await params;
   const locale: Locale = isLocale(value) ? value : defaultLocale;
-
   const settings = await getSiteSettings(locale);
   const fallbackTitle =
     locale === "ar" ? "شركة المصاعد" : "Next Generation Elevators";
@@ -52,6 +54,7 @@ export default async function LocaleLayout({
 }) {
   const { locale: value } = await params;
   const locale: Locale = isLocale(value) ? value : defaultLocale;
+  const { isEnabled: isDraftMode } = await draftMode();
   const settings = await getSiteSettings(locale);
   const fallbackCompanyName =
     locale === "ar" ? "شركة المصاعد" : "Next Generation Elevators";
@@ -78,6 +81,8 @@ export default async function LocaleLayout({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       {children}
+      <SanityLive />
+      {isDraftMode && <SanityVisualEditing />}
     </div>
   );
 }
