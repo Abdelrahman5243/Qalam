@@ -6189,3 +6189,857 @@ footer,
   .status-page-primary,
   .status-page-secondary { transition: none; }
 }
+
+/* Detail pages and compact mobile service rail. */
+.project-card-link, .service-card-link { display: block; color: inherit; text-decoration: none; }
+.detail-page-section { padding: var(--section-y) 0; background: var(--surface-page); }
+.detail-page-container { width: min(100%, calc(var(--container-max) + (var(--container-gutter) * 2))); margin-inline: auto; padding-inline: var(--container-gutter); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.detail-page-media { position: relative; min-height: 520px; overflow: hidden; background: #dfe5df; }
+.detail-page-media img { object-fit: cover; }
+.detail-page-copy { padding-top: .75rem; }
+.rich-content { max-width: 68ch; color: #59635c; font-size: var(--text-body); line-height: 1.85; }
+.rich-content h2, .rich-content h3 { color: var(--brand-ink); line-height: 1.25; }
+.rich-content h2 { margin: 0 0 1rem; font-size: clamp(1.6rem, 3vw, 2.25rem); }
+.rich-content h3 { margin: 2rem 0 .5rem; font-size: 1.3rem; }
+.rich-content p { margin: 0 0 1.15rem; }
+.rich-content blockquote { margin: 1.5rem 0; padding-block: .75rem; border-block-start: 2px solid var(--brand-green); color: var(--brand-ink); }
+.rich-content ul, .rich-content ol { margin: 0 0 1.25rem; padding-inline-start: 1.4rem; }
+.rich-content li { margin-block: .35rem; padding-inline-start: .2rem; }
+.rich-strong { color: var(--brand-ink); font-weight: 700; }
+.rich-em { font-style: italic; }
+.detail-page-cta { display: inline-flex; align-items: center; gap: .55rem; margin-top: 1.5rem; padding: .85rem 1.15rem; background: var(--brand-green); color: #fff; text-decoration: none; font-weight: 700; }
+.site-footer-legal { display: grid; gap: .6rem; color: rgba(255,255,255,.72); font-size: .86rem; line-height: 1.5; }
+@media (max-width: 700px) {
+  .services-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .55rem; }
+  .service-image { aspect-ratio: 1 / 1.15; }
+  .service-card-copy { min-height: 0; padding: .6rem 0 .75rem; }
+  .service-card-copy h3 { margin: 0; font-size: .74rem; line-height: 1.35; }
+  .service-card-copy p { display: none; }
+  .detail-page-container { grid-template-columns: 1fr; gap: 2rem; }
+  .detail-page-media { min-height: 300px; }
+}
+
+
+/* Footer social rail: icon-only brand tiles stay horizontal and easy to scan. */
+.site-footer-social { display:flex; align-items:center; justify-content:space-between; gap:2rem; margin-top:clamp(3rem,6vw,4.5rem); padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.14); }
+.site-footer-social .site-footer-label { margin:0; }
+.site-footer-social-list { display:flex; align-items:center; gap:.75rem; }
+.site-footer-social-link { display:inline-flex; width:3.25rem; height:3.25rem; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.07); color:rgba(255,255,255,.9); transition:background var(--motion-fast) ease,border-color var(--motion-fast) ease,transform var(--motion-fast) ease; }
+.site-footer-social-link:hover,.site-footer-social-link:focus-visible { border-color:var(--brand-green-hover); background:var(--brand-green); color:#fff; transform:translateY(-2px); }
+@media (max-width:560px) { .site-footer-social { align-items:flex-start; flex-direction:column; gap:1rem; } }
+
+
+/* Service catalogue cards: consistent editorial grid with explicit next actions. */
+.service-detail-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; }
+.service-detail-card { display: flex; min-width: 0; flex-direction: column; border-color: #dfe6df; transition: border-color var(--motion-fast) ease, transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease; }
+.service-detail-card:hover { border-color: rgba(79,148,108,.45); box-shadow: 0 16px 34px rgba(29,64,52,.08); transform: translateY(-3px); }
+.service-detail-image { aspect-ratio: 16 / 10; }
+.service-detail-copy { display: flex; flex: 1; flex-direction: column; padding: clamp(1.25rem, 2vw, 1.75rem); }
+.service-detail-copy h2 { min-height: 2.45em; }
+.service-detail-copy > p:not(.service-detail-index) { flex: 1; margin-bottom: 1.5rem; }
+.service-detail-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: auto; }
+.service-detail-actions a { min-height: 44px; justify-content: center; padding: .7rem 1rem; }
+.service-detail-primary { background: var(--brand-green); color: #fff !important; }
+.service-detail-primary:hover { background: var(--brand-green-hover); }
+.service-detail-secondary { border: 1px solid rgba(29,64,52,.2); color: var(--surface-dark) !important; }
+.service-detail-secondary:hover { border-color: var(--brand-green); color: var(--brand-green) !important; }
+@media (max-width: 1100px) { .service-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+  .service-detail-grid { grid-template-columns: 1fr; }
+  .service-detail-copy h2 { min-height: 0; }
+  .service-detail-actions { align-items: stretch; flex-direction: column; }
+  .service-detail-actions a { width: 100%; }
+}
+
+
+/* Homepage mobile services: four readable tiles in a compact 2x2 first view. */
+@media (max-width: 700px) {
+  .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
+  .service-image { aspect-ratio: 1 / .82; }
+  .service-card-copy { min-height: 4.25rem; align-items: center; gap: .5rem; padding: .8rem 0 .9rem; }
+  .service-card-copy h3 { font-size: .9rem; line-height: 1.35; }
+  .service-card-link-indicator { display: inline-flex; width: 1.8rem; height: 1.8rem; flex: 0 0 auto; align-items: center; justify-content: center; border: 1px solid rgba(79,148,108,.35); color: var(--brand-green); }
+}
+
+
+/* Restore the original service-card button and catalogue proportions. */
+.service-detail-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.service-detail-card { display: block; border: 1px solid var(--border); box-shadow: none; transform: none; transition: none; }
+.service-detail-card:hover { border-color: var(--border); box-shadow: none; transform: none; }
+.service-detail-image { aspect-ratio: 4 / 3; }
+.service-detail-copy { display: block; padding: 1.5rem; }
+.service-detail-copy h2 { min-height: 0; }
+.service-detail-copy > p:not(.service-detail-index) { margin: 1rem 0 1.5rem; }
+.service-detail-actions { display: block; margin: 0; }
+.service-detail-copy a { display: inline-flex; min-height: 0; align-items: center; gap: .55rem; padding: 0; border: 0; background: transparent; color: var(--brand-green) !important; font-size: var(--text-body-small); font-weight: 700; text-decoration: none; }
+.service-detail-copy a:hover { color: var(--brand-green-hover) !important; }
+@media (max-width: 900px) { .service-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .service-detail-grid { grid-template-columns: 1fr; } }
+
+
+/* Integrated footer social links: part of the brand column, not a detached rail. */
+.site-footer-brand-social { margin-top: 1.75rem; }
+.site-footer-brand-social .site-footer-label { margin-bottom: .75rem; }
+.site-footer-social-list { display: flex; align-items: center; gap: .65rem; }
+.site-footer-social-link { width: 3rem; height: 3rem; border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.06); }
+.site-footer-social-link:hover, .site-footer-social-link:focus-visible { background: var(--brand-green); border-color: var(--brand-green-hover); transform: translateY(-2px); }
+
+
+/* Platform-aware social hover states. */
+.site-footer-social-link { position: relative; overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,.08); transition: transform 180ms cubic-bezier(.22,1,.36,1), background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease; }
+.site-footer-social-link:hover, .site-footer-social-link:focus-visible { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 22px rgba(0,0,0,.18); }
+.site-footer-social-link.social-facebook:hover, .site-footer-social-link.social-facebook:focus-visible { background: #1877f2; border-color: #1877f2; }
+.site-footer-social-link.social-instagram:hover, .site-footer-social-link.social-instagram:focus-visible { background: #d62976; border-color: #d62976; }
+.site-footer-social-link.social-tiktok:hover, .site-footer-social-link.social-tiktok:focus-visible { background: #111; border-color: #555; }
+.site-footer-social-link.social-whatsapp:hover, .site-footer-social-link.social-whatsapp:focus-visible { background: #25d366; border-color: #25d366; }
+
+
+/* Normalize CMS-uploaded social SVGs with the built-in footer icons. */
+.site-footer-social-link .site-footer-social-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.site-footer-social-link:hover .site-footer-social-icon,
+.site-footer-social-link:focus-visible .site-footer-social-icon {
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 560px) {
+  .site-footer-social-link .site-footer-social-icon {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+
+/* Conversion actions: WhatsApp first, phone second, contact form third. */
+.contact-cta-actions {
+  flex-wrap: wrap;
+}
+
+.contact-cta-whatsapp {
+  border-color: var(--brand-green);
+  background: var(--brand-green);
+  color: var(--text-on-dark);
+}
+
+.contact-cta-whatsapp:hover,
+.contact-cta-whatsapp:focus-visible {
+  border-color: var(--brand-green-hover);
+  background: var(--brand-green-hover);
+}
+
+.contact-cta-call,
+.contact-cta-contact {
+  border: 1px solid var(--border-on-dark);
+  background: transparent;
+  color: var(--text-on-dark);
+}
+
+.contact-cta-call {
+  display: inline-flex;
+  min-width: 148px;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    transform var(--motion-fast) ease;
+}
+
+.contact-cta-call:hover,
+.contact-cta-contact:hover {
+  border-color: var(--text-on-dark);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.contact-cta-call:focus-visible,
+.contact-cta-contact:focus-visible {
+  outline: 2px solid var(--text-on-dark);
+  outline-offset: 4px;
+}
+
+.hero-whatsapp-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+
+/* Collapsible contact control: quiet by default, clear when opened. */
+.floating-contact {
+  --floating-size: 52px;
+  position: fixed;
+  z-index: 40;
+  right: 24px;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+}
+
+[dir="rtl"] .floating-contact {
+  align-items: flex-end;
+}
+
+.floating-contact-toggle {
+  display: grid;
+  width: var(--floating-size);
+  height: var(--floating-size);
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 14px;
+  background: var(--brand-green);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(8, 34, 26, 0.26);
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease;
+}
+
+.floating-contact-toggle:hover,
+.floating-contact-toggle:focus-visible {
+  border-color: rgba(255, 255, 255, 0.58);
+  background: var(--brand-green-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(8, 34, 26, 0.34);
+}
+
+.floating-contact-menu {
+  display: grid;
+  min-width: 218px;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background: #193d31;
+  box-shadow: 0 18px 42px rgba(8, 34, 26, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.97);
+  transform-origin: bottom right;
+  filter: blur(2px);
+  transition:
+    opacity 150ms ease-out,
+    transform 250ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 150ms ease-out;
+}
+
+[dir="rtl"] .floating-contact-menu {
+  transform-origin: bottom right;
+}
+
+.floating-contact[data-open="true"] .floating-contact-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.floating-contact-action {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.floating-contact-action:hover,
+.floating-contact-action:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateX(-2px);
+}
+
+[dir="rtl"] .floating-contact-action {
+  direction: rtl;
+}
+
+[dir="rtl"] .floating-contact-action:hover,
+[dir="rtl"] .floating-contact-action:focus-visible {
+  transform: translateX(-2px);
+}
+
+.floating-contact-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.floating-contact-whatsapp .floating-contact-icon {
+  border-color: rgba(37, 211, 102, 0.7);
+  background: #25d366;
+}
+
+.floating-contact-call .floating-contact-icon {
+  border-color: rgba(150, 206, 170, 0.72);
+  background: #4fa477;
+}
+
+@media (max-width: 560px) {
+  .floating-contact {
+    --floating-size: 48px;
+    right: 16px;
+    bottom: max(0.8rem, env(safe-area-inset-bottom));
+  }
+
+  [dir="rtl"] .floating-contact {
+    right: 16px;
+    left: auto;
+  }
+
+  .floating-contact-menu {
+    min-width: min(218px, calc(100vw - 1.6rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-contact-toggle,
+  .floating-contact-menu,
+  .floating-contact-action {
+    transition: none !important;
+  }
+}
+
+
+/* Keep the expanded contact actions compact so they do not cover page content. */
+.floating-contact-menu {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 0.55rem;
+}
+
+.floating-contact-action {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 12px;
+  box-shadow: 0 10px 22px rgba(8, 34, 26, 0.24);
+}
+
+.floating-contact-action > span:last-child {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.floating-contact-whatsapp {
+  background: #25d366;
+}
+
+.floating-contact-call {
+  background: #4fa477;
+}
+
+.floating-contact-action:hover,
+.floating-contact-action:focus-visible {
+  background: var(--brand-green-hover);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.floating-contact-whatsapp:hover,
+.floating-contact-whatsapp:focus-visible {
+  background: #20bd5b;
+}
+
+.floating-contact-call:hover,
+.floating-contact-call:focus-visible {
+  background: #438d66;
+}
+
+
+/* Quiet contact controls: no decorative border or hover movement. */
+.floating-contact-toggle,
+.floating-contact-action {
+  border: 0;
+  transform: none !important;
+  transition: none;
+}
+
+.floating-contact-toggle:hover,
+.floating-contact-toggle:focus-visible,
+.floating-contact-action:hover,
+.floating-contact-action:focus-visible {
+  transform: none !important;
+}
+
+.floating-contact-toggle:focus-visible,
+.floating-contact-action:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.86);
+  outline-offset: 3px;
+}
+
+.floating-contact-menu,
+.floating-contact[data-open="true"] .floating-contact-menu {
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
+
+/* Service icons are dashboard-managed and replace large photos on narrow screens. */
+.service-icon,
+.service-detail-icon {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .service-image {
+    display: none;
+  }
+
+  .service-icon {
+    display: grid;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid rgba(79, 148, 108, 0.22);
+    background: #edf4ee;
+    color: var(--brand-green);
+  }
+
+  .service-icon img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+  }
+
+  .service-card-copy {
+    min-height: 4.5rem;
+    padding: 0.75rem 0.1rem 0.9rem;
+  }
+
+  .service-card-copy h3 {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 600px) {
+  .service-detail-image {
+    display: none;
+  }
+
+  .service-detail-icon {
+    display: grid;
+    aspect-ratio: 1.35;
+    place-items: center;
+    background: #edf4ee;
+    color: var(--brand-green);
+  }
+
+  .service-detail-icon img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+  }
+}
+
+
+/* Project cards keep a visible, consistent detail action on every surface. */
+.project-card-action,
+.project-detail-copy a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.project-card-action {
+  margin-top: 1rem;
+}
+
+.project-card-action svg,
+.project-detail-copy a svg {
+  flex: 0 0 auto;
+}
+
+.project-card-action:hover,
+.project-detail-copy a:hover {
+  color: #b9d998;
+}
+
+
+/* Flat square contact actions: background-only hover treatment. */
+.floating-contact-toggle,
+.floating-contact-action {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transition: background 180ms ease;
+}
+
+.floating-contact-toggle:hover,
+.floating-contact-toggle:focus-visible,
+.floating-contact-action:hover,
+.floating-contact-action:focus-visible {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.floating-contact-action {
+  background: var(--brand-green);
+}
+
+.floating-contact-whatsapp {
+  background: #25d366;
+}
+
+.floating-contact-call {
+  background: #4fa477;
+}
+
+.floating-contact-whatsapp:hover,
+.floating-contact-whatsapp:focus-visible {
+  background: #20bd5b;
+}
+
+.floating-contact-call:hover,
+.floating-contact-call:focus-visible {
+  background: #438d66;
+}
+
+
+/* Make the icon itself fill the same flat square as its action button. */
+.floating-contact {
+  --floating-size: 48px;
+}
+
+.floating-contact-action {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  flex: 0 0 48px;
+}
+
+.floating-contact-icon,
+.floating-contact-whatsapp .floating-contact-icon,
+.floating-contact-call .floating-contact-icon {
+  width: 100%;
+  height: 100%;
+  flex: 0 0 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+}
+
+
+/* A restrained attention cue for the primary contact trigger. */
+.floating-contact-toggle {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(8, 34, 26, 0.28);
+}
+
+.floating-contact-toggle > svg {
+  position: relative;
+  z-index: 1;
+}
+
+.floating-contact-toggle::after {
+  position: absolute;
+  inset: -70% -35%;
+  z-index: 0;
+  background: linear-gradient(
+    112deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.36) 48%,
+    transparent 58%
+  );
+  content: "";
+  pointer-events: none;
+  transform: translateX(-62%) rotate(12deg);
+  animation: floating-contact-shine 4.8s ease-in-out infinite;
+}
+
+.floating-contact[data-open="true"] .floating-contact-toggle::after {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes floating-contact-shine {
+  0%,
+  52% {
+    transform: translateX(-62%) rotate(12deg);
+    opacity: 0;
+  }
+
+  64% {
+    opacity: 1;
+  }
+
+  78%,
+  100% {
+    transform: translateX(62%) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-contact-toggle::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+
+/* Stronger but still clean attention cue on dark hero imagery. */
+.floating-contact-toggle {
+  box-shadow:
+    0 8px 22px rgba(8, 34, 26, 0.34),
+    0 0 0 0 rgba(79, 164, 119, 0.42);
+  animation: floating-contact-glow 2.8s ease-in-out infinite;
+}
+
+.floating-contact-toggle::after {
+  inset: 0 auto 0 -48%;
+  width: 42%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: skewX(-18deg) translateX(-180%);
+  animation: floating-contact-shine-strong 2.8s ease-in-out infinite;
+}
+
+@keyframes floating-contact-shine-strong {
+  0%,
+  42% {
+    transform: skewX(-18deg) translateX(-180%);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  68%,
+  100% {
+    transform: skewX(-18deg) translateX(470%);
+    opacity: 0;
+  }
+}
+
+@keyframes floating-contact-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 8px 22px rgba(8, 34, 26, 0.34),
+      0 0 0 0 rgba(79, 164, 119, 0.42);
+  }
+
+  50% {
+    box-shadow:
+      0 10px 26px rgba(8, 34, 26, 0.4),
+      0 0 0 7px rgba(79, 164, 119, 0);
+  }
+}
+
+.floating-contact[data-open="true"] .floating-contact-toggle {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-contact-toggle {
+    animation: none;
+  }
+
+  .floating-contact-toggle::after {
+    animation: none;
+  }
+}
+
+
+/* Final contact trigger scale and placement: visible without hugging the corner. */
+.floating-contact {
+  --floating-size: 52px;
+  right: 28px;
+  bottom: 28px;
+}
+
+.floating-contact-toggle,
+.floating-contact-action {
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+  flex: 0 0 52px;
+}
+
+.floating-contact-toggle {
+  animation:
+    floating-contact-glow 2.8s ease-in-out infinite,
+    floating-contact-attention 6s ease-in-out infinite;
+}
+
+@keyframes floating-contact-attention {
+  0%,
+  78%,
+  100% {
+    transform: translateY(0);
+  }
+
+  82% {
+    transform: translateY(-6px);
+  }
+
+  86% {
+    transform: translateY(0);
+  }
+
+  90% {
+    transform: translateY(-3px);
+  }
+
+  94% {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .floating-contact {
+    --floating-size: 48px;
+    right: 20px;
+    bottom: 20px;
+  }
+
+  .floating-contact-toggle,
+  .floating-contact-action {
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
+    flex: 0 0 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-contact-toggle {
+    animation: none;
+  }
+}
+
+
+/* Circular variant for the contact controls. */
+.floating-contact-toggle,
+.floating-contact-action {
+  border-radius: 50%;
+}
+
+.floating-contact-toggle:hover,
+.floating-contact-toggle:focus-visible,
+.floating-contact-action:hover,
+.floating-contact-action:focus-visible {
+  border-radius: 50%;
+}
+
+
+/* Masonry gallery for dashboard-managed cabin designs. */
+.cabin-gallery-masonry {
+  column-count: 3;
+  column-gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.cabin-gallery-item {
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+  break-inside: avoid;
+}
+
+.cabin-gallery-image {
+  position: relative;
+  overflow: hidden;
+  background: #e2e9e2;
+}
+
+.cabin-gallery-image img {
+  object-fit: cover;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cabin-gallery-item:hover .cabin-gallery-image img {
+  transform: scale(1.025);
+}
+
+.cabin-gallery-item figcaption {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 0.1rem 0;
+}
+
+.cabin-gallery-item figcaption span {
+  color: var(--brand-green);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.cabin-gallery-item figcaption strong {
+  color: var(--brand-ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.cabin-gallery-empty {
+  margin: 0;
+  color: #687069;
+}
+
+@media (max-width: 700px) {
+  .cabin-gallery-masonry {
+    column-count: 2;
+    column-gap: 0.85rem;
+  }
+
+  .cabin-gallery-item {
+    margin-bottom: 0.85rem;
+  }
+}

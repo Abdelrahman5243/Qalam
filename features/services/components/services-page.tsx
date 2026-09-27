@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, Building2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
@@ -56,14 +56,27 @@ export function ServicesPage({
                   sizes="(max-width: 700px) 100vw, 33vw"
                 />
               </div>
+              <div className="service-detail-icon" aria-hidden={!service.icon}>
+                {service.icon ? (
+                  <Image
+                    src={service.icon.url}
+                    alt={service.icon.alt}
+                    width={72}
+                    height={72}
+                    unoptimized
+                  />
+                ) : (
+                  <Building2 size={38} strokeWidth={1.5} />
+                )}
+              </div>
               <div className="service-detail-copy">
                 <p className="service-detail-index">
                   {String(index + 1).padStart(2, "0")}
                 </p>
                 <h2>{service.title}</h2>
                 <p>{service.description}</p>
-                <Link href={`/${locale}/contact`}>
-                  {isArabic ? "اطلب عرض سعر" : "Request a quote"}
+                <Link href={`/${locale}/services/${encodeURIComponent(service.slug)}`}>
+                  {isArabic ? "التفاصيل" : "View details"}
                   <DirectionArrow size={17} />
                 </Link>
               </div>

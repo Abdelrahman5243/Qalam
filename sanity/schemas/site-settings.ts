@@ -47,6 +47,9 @@ export const siteSettings = defineType({
       type: "localizedString",
       group: "company",
     }),
+    defineField({ name: "nationalNumber", title: "National number / الرقم الوطني", type: "string", group: "company" }),
+    defineField({ name: "taxNumber", title: "Tax number / الرقم الضريبي", type: "string", group: "company" }),
+    defineField({ name: "commercialRegistration", title: "Commercial registration / السجل التجاري", type: "string", group: "company" }),
     defineField({
       name: "phone",
       title: "Phone / الهاتف",
@@ -144,10 +147,28 @@ export const siteSettings = defineType({
           fields: [
             defineField({
               name: "platform",
-              title: "Platform",
+              title: "Platform / المنصة",
               type: "string",
+              options: {
+                list: [
+                  { title: "Facebook", value: "facebook" },
+                  { title: "Instagram", value: "instagram" },
+                  { title: "TikTok", value: "tiktok" },
+                  { title: "WhatsApp", value: "whatsapp" },
+                  { title: "X / Twitter", value: "x" },
+                ],
+                layout: "dropdown",
+              },
+              validation: (rule) => rule.required(),
             }),
-            defineField({ name: "url", title: "URL", type: "url" }),
+            defineField({ name: "url", title: "URL", type: "url", validation: (rule) => rule.required() }),
+            defineField({
+              name: "icon",
+              title: "Custom icon / أيقونة مخصصة",
+              description: "اختياري: ارفع أيقونة المنصة هنا. اتركها فارغة لاستخدام الأيقونة المدمجة.",
+              type: "image",
+              options: { hotspot: true },
+            }),
           ],
           preview: { select: { title: "platform", subtitle: "url" } },
         },

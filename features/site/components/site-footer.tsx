@@ -1,16 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { createDataAttribute } from "next-sanity";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import type { SVGProps } from "react";
 
 import type { Locale } from "@/lib/i18n";
+import { sanityConfig } from "@/lib/sanity/config";
 import type { SiteSettings } from "../types";
 import { Logo } from "./logo";
 
 const navigation = {
-  en: ["Home", "About Us", "Services", "Projects", "Contact Us"],
-  ar: ["الرئيسية", "من نحن", "الخدمات", "المشاريع", "تواصل معنا"],
+  en: ["Home", "About Us", "Services", "Projects", "Cabin Designs 2026", "Contact Us"],
+  ar: ["الرئيسية", "من نحن", "الخدمات", "المشاريع", "ديكورات كبائن 2026", "تواصل معنا"],
 } as const;
 
 function FacebookIcon(props: SVGProps<SVGSVGElement>) {
@@ -38,6 +41,19 @@ function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function XIcon(props: SVGProps<SVGSVGElement>) {
+  return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.4L2.8 2h6.5l4.4 5.8L18.9 2Zm-1.1 17.3h1.7L8.2 4.6H6.4l11.4 14.7Z" /></svg>;
+}
+
+function WhatsAppIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true" {...props}>
+      <path d="M5.1 18.9 4 21l2.3-1.1A8.3 8.3 0 1 0 5.1 18.9Z" />
+      <path d="M8.5 8.2c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.2.1.4-.1.6l-.6.7c.7 1.2 1.6 2.1 2.8 2.8l.7-.6c.2-.2.4-.2.6-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.4.2-1 .3-1.6.1-2.8-.8-5-3-5.8-5.8-.2-.6-.1-1.2.1-1.7Z" />
+    </svg>
+  );
+}
+
 function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -50,7 +66,17 @@ const socialIcons = {
   facebook: FacebookIcon,
   instagram: InstagramIcon,
   tiktok: TikTokIcon,
+  whatsapp: WhatsAppIcon,
+  x: XIcon,
 };
+
+const siteSettingsData = createDataAttribute({
+  id: "siteSettings",
+  type: "siteSettings",
+  baseUrl: sanityConfig.studioUrl,
+  dataset: sanityConfig.dataset,
+  projectId: sanityConfig.projectId,
+});
 
 export function SiteFooter({
   locale,
@@ -66,12 +92,13 @@ export function SiteFooter({
     `/${locale}/about`,
     `/${locale}/services`,
     `/${locale}/projects`,
+    `/${locale}/cabin-designs-2026`,
     `/${locale}/contact`,
   ];
   const fallbackSocials = [
-    { platform: "facebook", url: "#" },
-    { platform: "instagram", url: "#" },
-    { platform: "tiktok", url: "#" },
+    { platform: "facebook", url: "#", icon: null },
+    { platform: "instagram", url: "#", icon: null },
+    { platform: "tiktok", url: "#", icon: null },
   ];
   const socials = settings?.socialLinks.length
     ? settings.socialLinks
@@ -98,6 +125,41 @@ export function SiteFooter({
                   ? "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة."
                   : "Integrated elevator and escalator solutions combining quality, safety, efficiency, and modern technology.")}
             </p>
+            <div className="site-footer-brand-social" aria-label={isArabic ? "تابعنا" : "Connect"}>
+              <p className="site-footer-label">{isArabic ? "تابعنا" : "Connect"}</p>
+              <div className="site-footer-social-list">
+                {socials.map((social, socialIndex) => {
+                  const platform = social.platform.toLowerCase();
+                  const Icon = socialIcons[platform as keyof typeof socialIcons] || MessageCircle;
+                  return (
+                    <a
+                      key={social.platform}
+                      className={`site-footer-social-link social-${platform}`}
+                      href={social.url}
+                      aria-label={social.platform}
+                      title={social.platform}
+                      data-sanity={siteSettingsData(`socialLinks[${socialIndex}].url`)}
+                      target={social.url.startsWith("http") ? "_blank" : undefined}
+                      rel={social.url.startsWith("http") ? "noreferrer" : undefined}
+                    >
+                      {social.icon ? (
+                    <Image
+                      src={social.icon.url}
+                      alt=""
+                      width={24}
+                      height={24}
+                      unoptimized
+                      className="site-footer-social-icon"
+                      data-sanity={siteSettingsData(`socialLinks[${socialIndex}].icon`)}
+                    />
+                  ) : (
+                    <Icon aria-hidden="true" width={24} height={24} />
+                  )}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           <div className="site-footer-column">
@@ -118,6 +180,7 @@ export function SiteFooter({
             <a
               className={!settings?.phone ? "is-placeholder" : undefined}
               href={settings?.phone ? `tel:${settings.phone}` : "#contact"}
+              data-sanity={siteSettingsData("phone")}
             >
               <Phone aria-hidden="true" size={15} />
               {settings?.phone ||
@@ -130,6 +193,7 @@ export function SiteFooter({
               href={settings?.email ? `mailto:${settings.email}` : "#contact"}
               target={settings?.email ? "_blank" : undefined}
               rel={settings?.email ? "noreferrer" : undefined}
+              data-sanity={siteSettingsData("email")}
             >
               <Mail aria-hidden="true" size={15} />
               {settings?.email ||
@@ -142,6 +206,7 @@ export function SiteFooter({
               href={whatsappUrl || "#contact"}
               target={whatsappUrl ? "_blank" : undefined}
               rel={whatsappUrl ? "noreferrer" : undefined}
+              data-sanity={siteSettingsData("whatsapp")}
             >
               <MessageCircle aria-hidden="true" size={15} />
               {whatsappUrl
@@ -155,27 +220,20 @@ export function SiteFooter({
           </div>
 
           <div className="site-footer-column">
-            <p className="site-footer-label">
-              {isArabic ? "تابعنا" : "Connect"}
-            </p>
-            {socials.map((social) => {
-              const Icon =
-                socialIcons[
-                  social.platform.toLowerCase() as keyof typeof socialIcons
-                ] || MessageCircle;
-              return (
-                <a
-                  key={social.platform}
-                  href={social.url}
-                  target={social.url.startsWith("http") ? "_blank" : undefined}
-                  rel={social.url.startsWith("http") ? "noreferrer" : undefined}
-                >
-                  <Icon aria-hidden="true" width={15} height={15} />
-                  {social.platform}
-                </a>
-              );
-            })}
+            <p className="site-footer-label">{isArabic ? "بيانات المنشأة" : "Company details"}</p>
+            <div className="site-footer-legal" aria-label={isArabic ? "بيانات المنشأة" : "Company details"}>
+              <span data-sanity={siteSettingsData("nationalNumber")}>
+                {isArabic ? "الرقم الوطني" : "National number"}: {settings?.nationalNumber || "—"}
+              </span>
+              <span data-sanity={siteSettingsData("taxNumber")}>
+                {isArabic ? "الرقم الضريبي" : "Tax number"}: {settings?.taxNumber || "—"}
+              </span>
+              <span data-sanity={siteSettingsData("commercialRegistration")}>
+                {isArabic ? "السجل التجاري" : "Commercial registration"}: {settings?.commercialRegistration || (isArabic ? "يضاف قريبًا" : "Coming soon")}
+              </span>
+            </div>
           </div>
+
         </div>
 
         <div className="site-footer-bottom">

@@ -15,13 +15,29 @@ type FormspreeResponse = {
   errors?: Array<{ field?: string; message?: string }>;
 };
 
-export function ContactPage({ locale, settings }: { locale: Locale; settings: SiteSettings | null }) {
+type ContactPrefill = { type?: "service" | "project"; title?: string };
+
+export function ContactPage({ locale, settings, prefill }: { locale: Locale; settings: SiteSettings | null; prefill?: ContactPrefill }) {
   const isArabic = locale === "ar";
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [notice, setNotice] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [selectedService, setSelectedService] = useState("");
+  const serviceFromSlug = prefill?.type === "service" && prefill.title
+    ? prefill.title.toLowerCase().includes("maintenance") || prefill.title.includes("الصيانة")
+      ? "maintenance"
+      : prefill.title.toLowerCase().includes("after") || prefill.title.includes("ما بعد")
+        ? "after_sales"
+        : prefill.title.toLowerCase().includes("supply") || prefill.title.includes("توريد")
+          ? "supply_installation"
+          : "other"
+    : "";
+  const [selectedService, setSelectedService] = useState(serviceFromSlug || (prefill?.title ? "other" : ""));
   const busy = status === "submitting";
+  const prefilledMessage = prefill?.title
+    ? isArabic
+      ? `أرغب في الاستفسار عن ${prefill.type === "project" ? "المشروع" : "الخدمة"}: ${prefill.title}`
+      : `I would like to inquire about this ${prefill.type === "project" ? "project" : "service"}: ${prefill.title}`
+    : "";
 
   const copy = isArabic
     ? {
@@ -206,8 +222,8 @@ export function ContactPage({ locale, settings }: { locale: Locale; settings: Si
               <label htmlFor="contact-email"><span>{copy.emailLabel}</span><input id="contact-email" name="email" type="email" required maxLength={200} autoComplete="email" placeholder={copy.emailPlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? "contact-email-error" : undefined} />{fieldErrors.email ? <span id="contact-email-error" className="contact-field-error" role="alert">{fieldErrors.email}</span> : null}</label>
               <label htmlFor="contact-phone"><span>{copy.phoneLabel}</span><input id="contact-phone" name="phone" type="tel" maxLength={30} autoComplete="tel" placeholder={copy.phonePlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.phone)} aria-describedby={fieldErrors.phone ? "contact-phone-error" : undefined} />{fieldErrors.phone ? <span id="contact-phone-error" className="contact-field-error" role="alert">{fieldErrors.phone}</span> : null}</label>
               <label className="contact-form-full" htmlFor="contact-service"><span>{copy.service}</span><select id="contact-service" name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)} disabled={busy} aria-invalid={Boolean(fieldErrors.service)} aria-describedby={fieldErrors.service ? "contact-service-error" : undefined}><option value="">{copy.servicePlaceholder}</option><option value="supply_installation">{isArabic ? "توريد وتركيب" : "Supply & Installation"}</option><option value="maintenance">{isArabic ? "الصيانة والإصلاح" : "Maintenance & Repair"}</option><option value="after_sales">{isArabic ? "خدمات ما بعد البيع" : "After-Sales Services"}</option><option value="other">{copy.other}</option></select>{fieldErrors.service ? <span id="contact-service-error" className="contact-field-error" role="alert">{fieldErrors.service}</span> : null}</label>
-              {selectedService === "other" ? <label className="contact-form-full" htmlFor="contact-other-service"><span>{copy.other}</span><input id="contact-other-service" name="otherService" required maxLength={150} placeholder={copy.otherPlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.otherService)} aria-describedby={fieldErrors.otherService ? "contact-other-service-error" : undefined} />{fieldErrors.otherService ? <span id="contact-other-service-error" className="contact-field-error" role="alert">{fieldErrors.otherService}</span> : null}</label> : null}
-              <label className="contact-form-full" htmlFor="contact-message"><span>{copy.message}</span><textarea id="contact-message" name="message" required minLength={10} maxLength={5000} placeholder={copy.messagePlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.message)} aria-describedby={fieldErrors.message ? "contact-message-error" : undefined} />{fieldErrors.message ? <span id="contact-message-error" className="contact-field-error" role="alert">{fieldErrors.message}</span> : null}</label>
+              {selectedService === "other" ? <label className="contact-form-full" htmlFor="contact-other-service"><span>{copy.other}</span><input id="contact-other-service" name="otherService" required maxLength={150} defaultValue={prefill?.title || ""} placeholder={copy.otherPlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.otherService)} aria-describedby={fieldErrors.otherService ? "contact-other-service-error" : undefined} />{fieldErrors.otherService ? <span id="contact-other-service-error" className="contact-field-error" role="alert">{fieldErrors.otherService}</span> : null}</label> : null}
+              <label className="contact-form-full" htmlFor="contact-message"><span>{copy.message}</span><textarea id="contact-message" name="message" required minLength={10} maxLength={5000} defaultValue={prefilledMessage} placeholder={copy.messagePlaceholder} disabled={busy} aria-invalid={Boolean(fieldErrors.message)} aria-describedby={fieldErrors.message ? "contact-message-error" : undefined} />{fieldErrors.message ? <span id="contact-message-error" className="contact-field-error" role="alert">{fieldErrors.message}</span> : null}</label>
             </div>
             <button type="submit" disabled={busy}>
               {busy ? copy.submitting : copy.submit}

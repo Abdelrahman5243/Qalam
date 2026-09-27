@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Locale } from "@/lib/i18n";
 
@@ -11,6 +11,7 @@ const MotionLink = motion(Link);
 export function HeroContactCta({
   locale,
   whatsappUrl,
+  phone,
 }: {
   locale: Locale;
   whatsappUrl?: string | null;
@@ -64,7 +65,16 @@ export function HeroContactCta({
             whileTap={{ scale: 0.98 }}
           >
             <MessageCircle aria-hidden="true" size={20} strokeWidth={1.8} />
-            {isArabic ? "واتساب" : "WhatsApp"}
+            {isArabic ? "تواصل عبر واتساب" : "Chat on WhatsApp"}
+          </motion.a>
+          <motion.a
+            className="contact-cta-call"
+            href={phone ? `tel:${phone}` : "#contact"}
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Phone aria-hidden="true" size={18} strokeWidth={1.8} />
+            {isArabic ? "اتصل بنا" : "Call us"}
           </motion.a>
           <MotionLink
             className="contact-cta-contact"

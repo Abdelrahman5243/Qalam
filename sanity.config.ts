@@ -12,6 +12,10 @@ export default defineConfig({
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
   plugins: [
     presentationTool({
+      allowOrigins: [
+        "http://localhost:3000",
+        "http://preview.localhost:3000",
+      ],
       previewUrl: {
         initial:
           process.env.NEXT_PUBLIC_SANITY_PREVIEW_URL ??

@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Globe2,
   Home,
+  ImageIcon,
   Mail,
   PanelsTopLeft,
   Settings2,
@@ -41,12 +42,14 @@ const navigation = {
     { label: "About Us", href: "/en/about", icon: UsersRound },
     { label: "Services", href: "/en/services", icon: Settings2 },
     { label: "Projects", href: "/en/projects", icon: PanelsTopLeft },
+    { label: "Cabin Designs 2026", href: "/en/cabin-designs-2026", icon: ImageIcon },
   ],
   ar: [
     { label: "الرئيسية", href: "/ar", icon: Home },
     { label: "من نحن", href: "/ar/about", icon: UsersRound },
     { label: "الخدمات", href: "/ar/services", icon: Settings2 },
     { label: "المشاريع", href: "/ar/projects", icon: PanelsTopLeft },
+    { label: "ديكورات كبائن 2026", href: "/ar/cabin-designs-2026", icon: ImageIcon },
   ],
 } as const;
 

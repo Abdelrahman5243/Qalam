@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageCircle } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
@@ -60,12 +60,19 @@ export function HeroSection({ hero, locale, settings }: HeroSectionProps) {
 
           <div className="hero-actions">
             <MotionLink
-              className="hero-primary-action"
-              href="#contact"
+              className="hero-primary-action hero-whatsapp-action"
+              href={settings?.whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#contact"}
+              target={settings?.whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL ? "_blank" : undefined}
+              rel={settings?.whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL ? "noreferrer" : undefined}
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.98 }}
             >
-              {hero.ctaText || "Contact Us"}
+              <MessageCircle aria-hidden="true" size={18} strokeWidth={1.8} />
+              {hero.ctaText && !["تواصل معنا", "Contact Us"].includes(hero.ctaText)
+                ? hero.ctaText
+                : locale === "ar"
+                  ? "تواصل عبر واتساب"
+                  : "Chat on WhatsApp"}
             </MotionLink>
             <MotionLink
               className="hero-secondary-action"

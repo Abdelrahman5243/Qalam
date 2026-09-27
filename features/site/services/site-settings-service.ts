@@ -10,6 +10,9 @@ const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   mobileLogo,
   footerLogo,
   "companyName": coalesce(companyName[$locale], companyName.ar, companyName),
+  nationalNumber,
+  taxNumber,
+  commercialRegistration,
   phone,
   whatsapp,
   email,
@@ -65,13 +68,20 @@ type SanitySettings = {
     alt?: string | null;
   } | null;
   companyName?: string | null;
+  nationalNumber?: string | null;
+  taxNumber?: string | null;
+  commercialRegistration?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
   email?: string | null;
   address?: string | null;
   mapUrl?: string | null;
   formspreeFormId?: string | null;
-  socialLinks?: Array<{ platform?: string | null; url?: string | null }> | null;
+  socialLinks?: Array<{
+    platform?: string | null;
+    url?: string | null;
+    icon?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  }> | null;
   footerDescription?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
@@ -118,6 +128,9 @@ export async function getSiteSettings(
           }
         : null,
       companyName: data.companyName || "Next Generation Elevators",
+      nationalNumber: data.nationalNumber || null,
+      taxNumber: data.taxNumber || null,
+      commercialRegistration: data.commercialRegistration || null,
       phone: data.phone || null,
       whatsappUrl: normalizeWhatsAppUrl(data.whatsapp),
       email: data.email || null,
@@ -125,10 +138,14 @@ export async function getSiteSettings(
       mapUrl: extractMapEmbedUrl(data.mapUrl),
       formspreeFormId: data.formspreeFormId || null,
       socialLinks: (data.socialLinks || [])
-        .filter((link): link is { platform: string; url: string } =>
-          Boolean(link.platform && link.url),
-        )
-        .map((link) => ({ platform: link.platform!, url: link.url! })),
+        .filter((link) => Boolean(link.platform && link.url))
+        .map((link) => ({
+          platform: link.platform!,
+          url: link.url!,
+          icon: link.icon
+            ? { url: urlFor(link.icon).width(96).height(96).fit("crop").auto("format").url(), alt: link.icon.alt || link.platform! }
+            : null,
+        })),
       footerDescription: data.footerDescription || null,
       seo: {
         title: data.seoTitle || null,
