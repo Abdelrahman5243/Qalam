@@ -1,5 +1,24 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl } from "@/lib/seo";
+
 export default function robots(): MetadataRoute.Robots {
-  return { rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/studio/"] }, sitemap: absoluteUrl("/sitemap.xml") };
+  const isPreview = process.env.VERCEL_ENV === "preview";
+
+  if (isPreview) {
+    return {
+      rules: {
+        userAgent: "*",
+        disallow: "/",
+      },
+    };
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://next-generation-elevators.vercel.app";
+
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+    sitemap: `${siteUrl}/sitemap.xml`,
+  };
 }
