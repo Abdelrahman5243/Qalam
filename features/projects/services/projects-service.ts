@@ -42,47 +42,34 @@ type SanityProjects = {
 
 type ProjectsView = "featured" | "all";
 
-const projectSlugAliases: Record<string, string> = {
-  "فيلا سكنية خاصة": "private-residential-villa",
-  "برج تجاري": "commercial-tower",
-  "مركز طبي متخصص": "specialized-medical-center",
-  "مركز تسوق": "shopping-center",
-  "private residential villa": "private-residential-villa",
-  "commercial tower": "commercial-tower",
-  "specialized medical center": "specialized-medical-center",
-  "shopping center": "shopping-center",
-};
-
-function normalizeProjectKey(value: string | null | undefined) {
-  return value?.trim().replace(/\s+/g, " ") || "";
-}
-
-function canonicalProjectSlug(slug: string | null | undefined, arabicTitle: string | null | undefined, title: string) {
-  const normalizedSlug = normalizeProjectKey(slug);
-  const slugAsTitle = normalizedSlug.replace(/-/g, " ");
-
-  return (
-    projectSlugAliases[normalizeProjectKey(arabicTitle)] ||
-    projectSlugAliases[normalizeProjectKey(title)] ||
-    projectSlugAliases[slugAsTitle] ||
-    normalizedSlug ||
-    title.toLowerCase().replace(/\s+/g, "-")
-  );
-}
-
 function selectProjects(items: ProjectsSection["items"], view: ProjectsView) {
   return view === "featured"
     ? items.filter((item) => item.featured).slice(0, 3)
     : items;
 }
 
-type ProjectDetailData = { slug?: string | null; category?: string | null; title?: string | null; location?: string | null; image?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null; content?: { ar?: Array<Record<string, unknown>>; en?: Array<Record<string, unknown>> } | null };
+type ProjectDetailData = Array<{
+  slug?: string | null;
+  arabicTitle?: string | null;
+  titleAr?: string | null;
+  titleEn?: string | null;
+  categoryAr?: string | null;
+  categoryEn?: string | null;
+  locationAr?: string | null;
+  locationEn?: string | null;
+  image?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+  content?: { ar?: Array<Record<string, unknown>>; en?: Array<Record<string, unknown>> } | null;
+}>;
 
-const projectDetailQuery = `*[_type == "projects"][0].items[slug.current == $slug || slug.current == $rawSlug || title.ar == $title][0]{
+const projectDetailQuery = `*[_type == "projects"][0].items[]{
   "slug": slug.current,
-  "category": coalesce(category[$locale], category.ar, category),
-  "title": coalesce(title[$locale], title.ar, title),
-  "location": coalesce(location[$locale], location.ar, location),
+  "arabicTitle": title.ar,
+  "titleAr": title.ar,
+  "titleEn": title.en,
+  "categoryAr": category.ar,
+  "categoryEn": category.en,
+  "locationAr": location.ar,
+  "locationEn": location.en,
   image, content
 }`;
 
@@ -90,30 +77,19 @@ export async function getProjectBySlug(locale: Locale, slug: string) {
   if (!sanityClient.config().projectId) return null;
   try {
     const decodedSlug = decodeURIComponent(slug);
-    const normalizedSlug = normalizeProjectKey(decodedSlug);
-    const canonicalSlug = projectSlugAliases[normalizedSlug] || projectSlugAliases[normalizedSlug.replace(/-/g, " ")] || normalizedSlug;
-    const title = Object.entries(projectSlugAliases).find(
-      ([key, value]) =>
-        value === normalizedSlug ||
-        key === normalizedSlug ||
-        key.replace(/\s+/g, "-") === normalizedSlug,
-    )?.[0] ||
-      (normalizedSlug.includes("-") && !/^[a-z0-9-]+$/i.test(normalizedSlug)
-        ? normalizedSlug.replace(/-/g, " ")
-        : null);
-    const item = await sanityFetchData<ProjectDetailData | null>(projectDetailQuery, {
-      locale,
-      slug: canonicalSlug,
-      rawSlug: decodedSlug,
-      title,
-    });
-    if (!item?.title || !item.image) return null;
+    const items = await sanityFetchData<ProjectDetailData>(projectDetailQuery);
+    const item = items.find((candidate) => candidate.slug === decodedSlug);
+    if (!item?.image) return null;
+    const itemTitle = locale === "en"
+      ? item.titleEn || item.titleAr || ""
+      : item.titleAr || item.titleEn || "";
+    if (!itemTitle) return null;
     return {
       slug: item.slug || slug,
-      category: item.category || "",
-      title: item.title,
-      location: item.location || "",
-      image: { url: urlFor(item.image).width(1600).height(1000).fit("crop").auto("format").url(), alt: item.image.alt || item.title },
+      category: locale === "en" ? item.categoryEn || item.categoryAr || "" : item.categoryAr || item.categoryEn || "",
+      title: itemTitle,
+      location: locale === "en" ? item.locationEn || item.locationAr || "" : item.locationAr || item.locationEn || "",
+      image: { url: urlFor(item.image).width(1600).height(1000).fit("crop").auto("format").url(), alt: item.image.alt || itemTitle },
       content: (item.content?.[locale] || item.content?.ar || []) as ProjectsSection["items"][number]["content"],
     };
   } catch { return null; }
@@ -131,10 +107,10 @@ export async function getProjects(
     const data = await sanityFetchData<SanityProjects | null>(projectsQuery, { locale });
 
     const items = (data?.items ?? []).flatMap((item) => {
-      if (!item.category || !item.title || !item.location || !item.image) return [];
+      if (!item.slug || !item.category || !item.title || !item.location || !item.image) return [];
 
       return [{
-        slug: canonicalProjectSlug(item.slug, item.arabicTitle, item.title),
+        slug: item.slug,
         category: item.category,
         title: item.title,
         location: item.location,

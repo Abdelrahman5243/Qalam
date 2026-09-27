@@ -75,7 +75,10 @@ export function ServicesPage({
                 </p>
                 <h2>{service.title}</h2>
                 <p>{service.description}</p>
-                <Link href={`/${locale}/services/${encodeURIComponent(service.slug)}`}>
+                <Link
+                  href={`/${locale}/services/${encodeURIComponent(service.slug)}`}
+                  aria-label={`${isArabic ? "عرض تفاصيل" : "View details for"} ${service.title}`}
+                >
                   {isArabic ? "التفاصيل" : "View details"}
                   <DirectionArrow size={17} />
                 </Link>

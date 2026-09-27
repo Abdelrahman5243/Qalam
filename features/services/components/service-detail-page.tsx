@@ -13,7 +13,13 @@ export function ServiceDetailPage({ service, locale, settings }: { service: Pick
     <PageIntro settings={settings} eyebrow={ar ? "خدماتنا" : "Our services"} title={service.title} description={service.description} />
     <section className="detail-page-section"><div className="detail-page-container">
       <div className="detail-page-media"><Image src={service.image.url} alt={service.image.alt} fill unoptimized sizes="(max-width: 800px) 100vw, 50vw" /></div>
-      <div className="detail-page-copy"><RichContent blocks={service.content} locale={locale} /><Link className="detail-page-cta" href={`/${locale}/contact?type=service&title=${encodeURIComponent(service.title)}`}>{ar ? "اطلب عرض سعر" : "Request a quote"}<Arrow size={17} /></Link></div>
+      <div className="detail-page-copy"><RichContent blocks={service.content} locale={locale} /><Link
+        className="detail-page-cta"
+        href={`/${locale}/contact?type=service&title=${encodeURIComponent(service.title)}`}
+        aria-label={`${ar ? "اطلب عرض سعر لخدمة" : "Request a quote for"} ${service.title}`}
+      >
+        {ar ? "اطلب عرض سعر" : "Request a quote"}<Arrow size={17} />
+      </Link></div>
     </div></section>
   </main>;
 }
