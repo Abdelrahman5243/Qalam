@@ -31,9 +31,9 @@ export const services = defineType({
           const featuredCount = items.filter(
             (item) => (item as { featured?: boolean } | null)?.featured === true,
           ).length;
-          return featuredCount === 4
+          return featuredCount >= 3
             ? true
-            : "Select exactly 4 featured services for the homepage.";
+            : "Select at least 3 featured services for the homepage.";
         }),
       of: [
         {
@@ -63,15 +63,15 @@ export const services = defineType({
             }),
             defineField({
               name: "icon",
-              title: "Mobile icon / أيقونة الموبايل",
-              description: "اختياري: ارفع SVG أو PNG مربعًا 128×128 تقريبًا. يظهر بدل الصورة على الموبايل.",
+              title: "Mobile image / صورة الموبايل",
+              description: "اختياري: ارفع صورة أفقية بنسبة 4:3 تقريبًا، وتظهر هذه الصورة في كروت الخدمات على الموبايل.",
               type: "image",
               options: { hotspot: true },
             }),
             defineField({
               name: "featured",
               title: "Featured on homepage",
-              description: "Select exactly 4 services to show on the homepage.",
+              description: "Select at least 3 services to show on the homepage.",
               type: "boolean",
               initialValue: false,
             }),

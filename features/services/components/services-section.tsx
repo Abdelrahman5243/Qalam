@@ -40,7 +40,7 @@ export function ServicesSection({
         </div>
 
         <div id="services-list" className="services-grid">
-          {services.items.slice(0, 4).map((service, index) => (
+          {services.items.slice(0, 3).map((service, index) => (
             <Link
               key={`${service.title}-${index}`}
               className="service-card-link"
@@ -60,11 +60,20 @@ export function ServicesSection({
             >
               <div className="service-image">
                 <Image
+                  className="service-image-desktop"
                   src={service.image.url}
                   alt={service.image.alt}
                   fill
                   unoptimized
                   sizes="(max-width: 720px) 50vw, 33vw"
+                />
+                <Image
+                  className="service-image-mobile"
+                  src={(service.mobileImage ?? service.image).url}
+                  alt={(service.mobileImage ?? service.image).alt}
+                  fill
+                  unoptimized
+                  sizes="50vw"
                 />
               </div>
               <div className="service-icon" aria-hidden={!service.icon}>
