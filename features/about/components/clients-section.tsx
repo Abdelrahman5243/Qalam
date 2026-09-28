@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 
 import type { Locale } from "@/lib/i18n";
 import type { AboutClients } from "../types";
@@ -39,7 +40,17 @@ export function ClientsSection({ clients, locale }: { clients: AboutClients | nu
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.4, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
             >
-              {client.name}
+              <span className="about-client-logo-frame">
+                <Image
+                  src={client.logo.url}
+                  alt={client.logo.alt}
+                  width={180}
+                  height={180}
+                  sizes="(max-width: 639px) 70vw, (max-width: 900px) 35vw, 180px"
+                  className="about-client-logo"
+                />
+              </span>
+              <span className="sr-only">{client.name}</span>
             </motion.div>
           ))}
         </div>

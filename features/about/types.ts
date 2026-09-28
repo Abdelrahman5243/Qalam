@@ -38,7 +38,7 @@ export type AboutClients = {
   eyebrow: string;
   title: string;
   description: string;
-  items: Array<{ name: string }>;
+  items: Array<{ name: string; logo: SiteImage }>;
 };
 
 export type AboutListItem = {

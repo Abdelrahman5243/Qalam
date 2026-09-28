@@ -39,7 +39,10 @@ const aboutSectionsQuery = `{
     "eyebrow": coalesce(eyebrow[$locale], eyebrow.ar),
     "title": coalesce(title[$locale], title.ar),
     "description": coalesce(description[$locale], description.ar),
-    items[]{ "name": coalesce(name[$locale], name.ar) }
+    items[]{
+      "name": coalesce(name[$locale], name.ar),
+      logo
+    }
   }
 }`;
 
@@ -69,7 +72,13 @@ type SanitySections = {
     eyebrow?: string | null;
     title?: string | null;
     description?: string | null;
-    items?: Array<{ name?: string | null }> | null;
+    items?: Array<{
+      name?: string | null;
+      logo?: {
+        asset: { _ref: string; _type: "reference" };
+        alt?: string | null;
+      } | null;
+    }> | null;
   } | null;
 };
 
@@ -131,7 +140,15 @@ export async function getAboutSections(locale: Locale): Promise<{
 
     const clients = data.clients;
     const clientItems = (clients?.items ?? []).flatMap((item) =>
-      item.name ? [{ name: item.name }] : [],
+      item.name && item.logo
+        ? [{
+            name: item.name,
+            logo: {
+              url: urlFor(item.logo).width(480).fit("max").auto("format").url(),
+              alt: item.logo.alt || item.name,
+            },
+          }]
+        : [],
     );
     const clientsResult =
       clients?.eyebrow && clients.title && clients.description && clientItems.length
