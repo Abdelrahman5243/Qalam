@@ -49,11 +49,20 @@ export function ServicesPage({
             >
               <div className="service-detail-image">
                 <Image
+                  className="service-detail-image-desktop"
                   src={service.image.url}
                   alt={service.image.alt}
                   fill
                   unoptimized
                   sizes="(max-width: 700px) 100vw, 33vw"
+                />
+                <Image
+                  className="service-detail-image-mobile"
+                  src={(service.mobileImage ?? service.image).url}
+                  alt={(service.mobileImage ?? service.image).alt}
+                  fill
+                  unoptimized
+                  sizes="100vw"
                 />
               </div>
               <div className="service-detail-icon" aria-hidden={!service.icon}>

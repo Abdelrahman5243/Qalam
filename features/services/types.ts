@@ -8,6 +8,7 @@ export type ServiceItem = {
   description: string;
   image: SiteImage;
   icon: SiteImage | null;
+  mobileImage: SiteImage | null;
   featured: boolean;
   content: RichTextBlock[];
 };

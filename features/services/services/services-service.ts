@@ -49,7 +49,7 @@ function selectServices(items: ServicesSection["items"], view: ServicesView) {
   if (view !== "featured") return items;
   const featured = items.filter((item) => item.featured);
   const remaining = items.filter((item) => !item.featured);
-  return [...featured, ...remaining].slice(0, 4);
+  return [...featured, ...remaining].slice(0, 3);
 }
 
 type ServiceDetailData = Array<{
@@ -116,12 +116,18 @@ export async function getServices(
         title: item.title,
         description: item.description,
         image: {
-          url: urlFor(item.image).width(900).height(1100).fit("crop").auto("format").url(),
+          url: urlFor(item.image).width(1200).height(900).fit("crop").auto("format").url(),
           alt: item.image.alt || item.title,
         },
         icon: item.icon
           ? {
               url: urlFor(item.icon).width(128).height(128).fit("crop").auto("format").url(),
+              alt: item.icon.alt || item.title,
+            }
+          : null,
+        mobileImage: item.icon
+          ? {
+              url: urlFor(item.icon).width(1200).height(900).fit("crop").auto("format").url(),
               alt: item.icon.alt || item.title,
             }
           : null,
