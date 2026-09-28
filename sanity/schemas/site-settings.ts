@@ -50,6 +50,8 @@ export const siteSettings = defineType({
     defineField({ name: "nationalNumber", title: "National number / الرقم الوطني", type: "string", group: "company" }),
     defineField({ name: "taxNumber", title: "Tax number / الرقم الضريبي", type: "string", group: "company" }),
     defineField({ name: "commercialRegistration", title: "Commercial registration / السجل التجاري", type: "string", group: "company" }),
+    defineField({ name: "emergencyPhone", title: "Emergency line / خط الطوارئ", type: "string", group: "company" }),
+    defineField({ name: "maintenancePhone", title: "Maintenance line / خط الصيانة", type: "string", group: "company" }),
     defineField({
       name: "phone",
       title: "Phone / الهاتف",

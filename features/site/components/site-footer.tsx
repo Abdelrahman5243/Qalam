@@ -219,7 +219,7 @@ export function SiteFooter({
             </a>
           </div>
 
-          {(settings?.nationalNumber || settings?.taxNumber || settings?.commercialRegistration) && (
+          {(settings?.nationalNumber || settings?.taxNumber || settings?.commercialRegistration || settings?.emergencyPhone || settings?.maintenancePhone) && (
             <div className="site-footer-column">
               <p className="site-footer-label">{isArabic ? "بيانات المنشأة" : "Company details"}</p>
               <div className="site-footer-legal" aria-label={isArabic ? "بيانات المنشأة" : "Company details"}>
@@ -236,6 +236,16 @@ export function SiteFooter({
                 {settings.commercialRegistration && (
                   <span data-sanity={siteSettingsData("commercialRegistration")}>
                     {isArabic ? "السجل التجاري" : "Commercial registration"}: {settings.commercialRegistration}
+                  </span>
+                )}
+                {settings.emergencyPhone && (
+                  <span data-sanity={siteSettingsData("emergencyPhone")}>
+                    {isArabic ? "خط الطوارئ" : "Emergency line"}: {settings.emergencyPhone}
+                  </span>
+                )}
+                {settings.maintenancePhone && (
+                  <span data-sanity={siteSettingsData("maintenancePhone")}>
+                    {isArabic ? "خط الصيانة" : "Maintenance line"}: {settings.maintenancePhone}
                   </span>
                 )}
               </div>

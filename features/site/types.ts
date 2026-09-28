@@ -11,6 +11,8 @@ export type SiteSettings = {
   nationalNumber: string | null;
   taxNumber: string | null;
   commercialRegistration: string | null;
+  emergencyPhone: string | null;
+  maintenancePhone: string | null;
   phone: string | null;
   whatsappUrl: string | null;
   email: string | null;

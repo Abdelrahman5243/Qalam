@@ -12,6 +12,8 @@ const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   nationalNumber,
   taxNumber,
   commercialRegistration,
+  emergencyPhone,
+  maintenancePhone,
   phone,
   whatsapp,
   email,
@@ -70,6 +72,8 @@ type SanitySettings = {
   nationalNumber?: string | null;
   taxNumber?: string | null;
   commercialRegistration?: string | null;
+  emergencyPhone?: string | null;
+  maintenancePhone?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
   email?: string | null;
@@ -130,6 +134,8 @@ export async function getSiteSettings(
       nationalNumber: data.nationalNumber || null,
       taxNumber: data.taxNumber || null,
       commercialRegistration: data.commercialRegistration || null,
+      emergencyPhone: data.emergencyPhone || null,
+      maintenancePhone: data.maintenancePhone || null,
       phone: data.phone || null,
       whatsappUrl: normalizeWhatsAppUrl(data.whatsapp),
       email: data.email || null,
