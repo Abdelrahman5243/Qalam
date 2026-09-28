@@ -8,6 +8,7 @@ import { siteAssets } from "@/lib/site-assets";
 import { absoluteUrl, createPageMetadata } from "@/lib/seo";
 import { SanityLive } from "@/lib/sanity/live";
 import { SanityVisualEditing } from "@/lib/sanity/visual-editing";
+import { FloatingContactActions } from "@/features/site/components/floating-contact-actions";
 
 export async function generateMetadata({
   params,
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       {children}
+      <FloatingContactActions locale={locale} settings={settings} />
       <SanityLive />
       {isDraftMode && <SanityVisualEditing />}
     </div>

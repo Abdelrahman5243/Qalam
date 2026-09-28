@@ -61,8 +61,11 @@ export function ProjectsPage({
                 <p>{project.category}</p>
                 <h2>{project.title}</h2>
                 <span>{project.location}</span>
-                <Link href={`/${locale}/contact`}>
-                  {isArabic ? "ناقش مشروعك معنا" : "Discuss your project"}
+                <Link
+                  href={`/${locale}/projects/${encodeURIComponent(project.slug)}`}
+                  aria-label={`${isArabic ? "عرض تفاصيل" : "View details for"} ${project.title}`}
+                >
+                  {isArabic ? "التفاصيل" : "View details"}
                   <DirectionArrow size={17} />
                 </Link>
               </div>

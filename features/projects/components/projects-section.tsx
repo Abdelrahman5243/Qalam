@@ -41,9 +41,9 @@ export function ProjectsSection({
 
         <div id="projects-list" className="projects-grid">
           {projects.items.slice(0, 3).map((project, index) => (
+            <Link key={`${project.title}-${index}`} href={`/${locale}/projects/${encodeURIComponent(project.slug)}`} className="project-card-link" aria-label={project.title}>
             <motion.article
-              key={`${project.title}-${index}`}
-              className={`project-card project-card-${index + 1}`}
+              className="project-card"
               initial={reduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -65,8 +65,13 @@ export function ProjectsSection({
                 <p>{project.category}</p>
                 <h3>{project.title}</h3>
                 <span>{project.location}</span>
+                <span className="project-card-action">
+                  {isArabic ? "التفاصيل" : "View details"}
+                  <DirectionArrow aria-hidden="true" size={16} />
+                </span>
               </div>
             </motion.article>
+            </Link>
           ))}
         </div>
       </div>

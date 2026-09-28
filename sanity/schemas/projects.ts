@@ -30,6 +30,8 @@ export const projects = defineType({
         {
           type: "object",
           fields: [
+            defineField({ name: "slug", title: "URL slug / الرابط", type: "slug", options: { source: "title.ar", maxLength: 96 }, validation: (rule) => rule.required() }),
+
             defineField({
               name: "category",
               title: "Category",
@@ -48,6 +50,7 @@ export const projects = defineType({
               type: "localizedString",
               validation: (rule) => rule.required(),
             }),
+            defineField({ name: "content", title: "Project page content / محتوى صفحة المشروع", type: "localizedRichText" }),
             defineField({
               name: "image",
               title: "Image",

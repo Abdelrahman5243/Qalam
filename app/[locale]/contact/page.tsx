@@ -17,10 +17,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function ContactRoute({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ type?: string; title?: string }>;
 }) {
   const { locale: value } = await params;
+  const query = searchParams ? await searchParams : {};
 
   if (!isLocale(value)) {
     notFound();
@@ -32,7 +35,14 @@ export default async function ContactRoute({
   return (
     <>
       <SiteHeader locale={locale} settings={settings} active="contact" />
-      <ContactPage locale={locale} settings={settings} />
+      <ContactPage
+        locale={locale}
+        settings={settings}
+        prefill={{
+          type: query.type === "project" ? "project" : query.type === "service" ? "service" : undefined,
+          title: query.title?.slice(0, 180),
+        }}
+      />
       <SiteFooter locale={locale} settings={settings} />
     </>
   );

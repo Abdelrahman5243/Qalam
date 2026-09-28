@@ -31,14 +31,16 @@ export const services = defineType({
           const featuredCount = items.filter(
             (item) => (item as { featured?: boolean } | null)?.featured === true,
           ).length;
-          return featuredCount === 3
+          return featuredCount === 4
             ? true
-            : "Select exactly 3 featured services for the homepage.";
+            : "Select exactly 4 featured services for the homepage.";
         }),
       of: [
         {
           type: "object",
           fields: [
+            defineField({ name: "slug", title: "URL slug / الرابط", type: "slug", options: { source: "title.ar", maxLength: 96 }, validation: (rule) => rule.required() }),
+
             defineField({
               name: "title",
               title: "Title",
@@ -51,6 +53,7 @@ export const services = defineType({
               type: "localizedText",
               validation: (rule) => rule.required(),
             }),
+            defineField({ name: "content", title: "Service page content / محتوى صفحة الخدمة", type: "localizedRichText" }),
             defineField({
               name: "image",
               title: "Image",
@@ -59,9 +62,16 @@ export const services = defineType({
               validation: (rule) => rule.required(),
             }),
             defineField({
+              name: "icon",
+              title: "Mobile icon / أيقونة الموبايل",
+              description: "اختياري: ارفع SVG أو PNG مربعًا 128×128 تقريبًا. يظهر بدل الصورة على الموبايل.",
+              type: "image",
+              options: { hotspot: true },
+            }),
+            defineField({
               name: "featured",
               title: "Featured on homepage",
-              description: "Select exactly 3 services to show on the homepage.",
+              description: "Select exactly 4 services to show on the homepage.",
               type: "boolean",
               initialValue: false,
             }),

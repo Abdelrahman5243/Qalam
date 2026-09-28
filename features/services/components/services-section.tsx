@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
@@ -40,9 +40,14 @@ export function ServicesSection({
         </div>
 
         <div id="services-list" className="services-grid">
-          {services.items.slice(0, 3).map((service, index) => (
-            <motion.article
+          {services.items.slice(0, 4).map((service, index) => (
+            <Link
               key={`${service.title}-${index}`}
+              className="service-card-link"
+              href={`/${locale}/services/${encodeURIComponent(service.slug)}`}
+              aria-label={service.title}
+            >
+            <motion.article
               className="service-card"
               initial={reduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -59,16 +64,33 @@ export function ServicesSection({
                   alt={service.image.alt}
                   fill
                   unoptimized
-                  sizes="(max-width: 720px) 100vw, 33vw"
+                  sizes="(max-width: 720px) 50vw, 33vw"
                 />
+              </div>
+              <div className="service-icon" aria-hidden={!service.icon}>
+                {service.icon ? (
+                  <Image
+                    src={service.icon.url}
+                    alt={service.icon.alt}
+                    width={64}
+                    height={64}
+                    unoptimized
+                  />
+                ) : (
+                  <Building2 size={34} strokeWidth={1.5} />
+                )}
               </div>
               <div className="service-card-copy">
                 <div>
                   <h3>{service.title}</h3>
                   <p>{service.description}</p>
                 </div>
+                <span className="service-card-link-indicator" aria-hidden="true">
+                  <DirectionArrow size={15} />
+                </span>
               </div>
             </motion.article>
+            </Link>
           ))}
         </div>
       </div>
