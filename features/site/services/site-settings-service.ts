@@ -1,6 +1,5 @@
 import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
 
 import type { SiteSettings } from "../types";
@@ -99,7 +98,7 @@ export async function getSiteSettings(
   }
 
   try {
-    const data = await sanityFetchData<SanitySettings | null>(siteSettingsQuery, { locale });
+    const data = await sanityClient.fetch<SanitySettings | null>(siteSettingsQuery, { locale }, { perspective: "published", useCdn: false });
 
     if (!data?.logo) {
       return null;

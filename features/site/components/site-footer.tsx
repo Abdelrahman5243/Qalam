@@ -219,20 +219,28 @@ export function SiteFooter({
             </a>
           </div>
 
-          <div className="site-footer-column">
-            <p className="site-footer-label">{isArabic ? "بيانات المنشأة" : "Company details"}</p>
-            <div className="site-footer-legal" aria-label={isArabic ? "بيانات المنشأة" : "Company details"}>
-              <span data-sanity={siteSettingsData("nationalNumber")}>
-                {isArabic ? "الرقم الوطني" : "National number"}: {settings?.nationalNumber || "—"}
-              </span>
-              <span data-sanity={siteSettingsData("taxNumber")}>
-                {isArabic ? "الرقم الضريبي" : "Tax number"}: {settings?.taxNumber || "—"}
-              </span>
-              <span data-sanity={siteSettingsData("commercialRegistration")}>
-                {isArabic ? "السجل التجاري" : "Commercial registration"}: {settings?.commercialRegistration || (isArabic ? "يضاف قريبًا" : "Coming soon")}
-              </span>
+          {(settings?.nationalNumber || settings?.taxNumber || settings?.commercialRegistration) && (
+            <div className="site-footer-column">
+              <p className="site-footer-label">{isArabic ? "بيانات المنشأة" : "Company details"}</p>
+              <div className="site-footer-legal" aria-label={isArabic ? "بيانات المنشأة" : "Company details"}>
+                {settings.nationalNumber && (
+                  <span data-sanity={siteSettingsData("nationalNumber")}>
+                    {isArabic ? "الرقم الوطني" : "National number"}: {settings.nationalNumber}
+                  </span>
+                )}
+                {settings.taxNumber && (
+                  <span data-sanity={siteSettingsData("taxNumber")}>
+                    {isArabic ? "الرقم الضريبي" : "Tax number"}: {settings.taxNumber}
+                  </span>
+                )}
+                {settings.commercialRegistration && (
+                  <span data-sanity={siteSettingsData("commercialRegistration")}>
+                    {isArabic ? "السجل التجاري" : "Commercial registration"}: {settings.commercialRegistration}
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
 
