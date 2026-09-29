@@ -76,7 +76,7 @@ function BrandMark({
       />
       <Logo
         variant="light"
-        layout="mark"
+        layout="horizontal"
         locale={locale}
         settings={settings}
         className={`${styles.brandImage} ${styles.mobileBrandImage}`}

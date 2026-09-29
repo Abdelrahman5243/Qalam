@@ -18,7 +18,6 @@ export type SiteSettings = {
   email: string | null;
   address: string | null;
   mapUrl: string | null;
-  formspreeFormId: string | null;
   socialLinks: Array<{ platform: string; url: string; icon: SiteImage | null }>;
   footerDescription: string | null;
   seo: {

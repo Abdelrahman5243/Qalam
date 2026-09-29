@@ -19,7 +19,6 @@ const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   email,
   "address": coalesce(address[$locale], address.ar, address),
   mapUrl,
-  formspreeFormId,
   socialLinks,
   "footerDescription": coalesce(footerDescription[$locale], footerDescription.ar, footerDescription),
   "seoTitle": coalesce(seo.title[$locale], seo.title.ar, seo.title),
@@ -79,7 +78,6 @@ type SanitySettings = {
   email?: string | null;
   address?: string | null;
   mapUrl?: string | null;
-  formspreeFormId?: string | null;
   socialLinks?: Array<{
     platform?: string | null;
     url?: string | null;
@@ -141,7 +139,6 @@ export async function getSiteSettings(
       email: data.email || null,
       address: data.address || null,
       mapUrl: extractMapEmbedUrl(data.mapUrl),
-      formspreeFormId: data.formspreeFormId || null,
       socialLinks: (data.socialLinks || [])
         .filter((link) => Boolean(link.platform && link.url))
         .map((link) => ({

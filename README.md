@@ -27,13 +27,9 @@ These values are read by `lib/sanity/config.ts` and `sanity.config.ts`. `SANITY_
 
 The embedded Studio includes Presentation Tool. It opens the app in Draft Mode, and the shared `sanityFetchData(query, params)` wrapper automatically switches to draft content. Add `<SanityLive />` and `<VisualEditing />` only through `app/layout.tsx`; new pages should use the wrapper instead of calling a Sanity client directly.
 
-## 3. Create the Formspree form
+## 3. Contact messages
 
-1. Create a form at [formspree.io](https://formspree.io/).
-2. Copy its form ID from the endpoint `https://formspree.io/f/YOUR_FORM_ID`.
-3. Open Sanity Studio → **Site settings** → **Contact** and save the Formspree form ID there.
-
-Formspree handles the submission endpoint, email notifications, dashboard storage, and spam controls. The contact form keeps the existing client-side validation and success/error UX.
+The contact form opens WhatsApp with a pre-filled message containing visitor details. Configure the WhatsApp URL in Sanity Studio → Site settings → Contact.
 
 ## 4. Run the project
 
