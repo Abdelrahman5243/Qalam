@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     template: "%s | Next Generation Elevators",
   },
   description: "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
+  verification: {
+    google: "Qv5uswk89gVu1GdhVaeYHIM03uZb4qIXFQ-g5tzecAQ",
+  },
   icons: {
     icon: [
       { url: siteAssets.faviconIco },
