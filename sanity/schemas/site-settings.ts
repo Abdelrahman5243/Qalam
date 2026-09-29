@@ -23,15 +23,6 @@ export const siteSettings = defineType({
       group: "branding",
     }),
     defineField({
-      name: "mobileLogo",
-      title: "Mobile logo / شعار الموبايل",
-      description:
-        "اختياري: أيقونة مختصرة فاتحة للموبايل. اتركه فارغًا لاستخدام icon-light.svg المحلي تلقائيًا.",
-      type: "image",
-      options: { hotspot: true },
-      group: "branding",
-    }),
-    defineField({
       name: "footerLogo",
       title: "Footer logo / شعار الفوتر",
       description:

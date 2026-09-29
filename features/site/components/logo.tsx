@@ -6,7 +6,7 @@ import { siteAssets } from "@/lib/site-assets";
 import type { Locale } from "@/lib/i18n";
 
 export type LogoVariant = "light" | "color";
-type LogoLayout = "horizontal" | "stacked" | "mark";
+type LogoLayout = "horizontal" | "stacked";
 
 type LogoProps = {
   variant: LogoVariant;
@@ -41,19 +41,14 @@ export function Logo({
     light: {
       horizontal: settings?.logo?.url,
       stacked: settings?.footerLogo?.url,
-      mark: settings?.mobileLogo?.url,
     },
     color: {
       horizontal: undefined,
       stacked: undefined,
-      mark: undefined,
     },
   } as const;
-  const fallbackMark =
-    variant === "light" ? siteAssets.iconLight : siteAssets.iconColor;
-  const src =
-    dynamicSources[variant][layout] ||
-    (layout === "mark" ? fallbackMark : fallbackSources[variant][layout]);
+  const src = dynamicSources[variant][layout] || fallbackSources[variant][layout];
+
   const alt = decorative
     ? ""
     : settings?.companyName || "Next Generation Elevators";
@@ -62,8 +57,8 @@ export function Logo({
       className={className}
       src={src}
       alt={alt}
-      width={layout === "stacked" ? 180 : layout === "mark" ? 48 : 240}
-      height={layout === "stacked" ? 140 : layout === "mark" ? 48 : 90}
+      width={layout === "stacked" ? 180 : 240}
+      height={layout === "stacked" ? 140 : 90}
       priority={priority}
       unoptimized={src.startsWith("http")}
       aria-hidden={decorative}

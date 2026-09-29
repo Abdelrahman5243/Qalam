@@ -5,7 +5,6 @@ export type SiteImage = {
 
 export type SiteSettings = {
   logo: SiteImage;
-  mobileLogo: SiteImage | null;
   footerLogo: SiteImage | null;
   companyName: string;
   nationalNumber: string | null;

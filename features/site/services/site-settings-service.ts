@@ -6,7 +6,6 @@ import type { SiteSettings } from "../types";
 
 const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   logo,
-  mobileLogo,
   footerLogo,
   "companyName": coalesce(companyName[$locale], companyName.ar, companyName),
   nationalNumber,
@@ -59,10 +58,6 @@ function extractMapEmbedUrl(value?: string | null) {
 
 type SanitySettings = {
   logo: { asset: { _ref: string; _type: "reference" }; alt?: string | null };
-  mobileLogo?: {
-    asset: { _ref: string; _type: "reference" };
-    alt?: string | null;
-  } | null;
   footerLogo?: {
     asset: { _ref: string; _type: "reference" };
     alt?: string | null;
@@ -111,17 +106,6 @@ export async function getSiteSettings(
         url: urlFor(data.logo).width(240).auto("format").url(),
         alt: data.logo.alt || data.companyName || "Company logo",
       },
-      mobileLogo: data.mobileLogo
-        ? {
-            url: urlFor(data.mobileLogo)
-              .width(256)
-              .height(256)
-              .fit("crop")
-              .auto("format")
-              .url(),
-            alt: data.mobileLogo.alt || data.companyName || "Company logo",
-          }
-        : null,
       footerLogo: data.footerLogo
         ? {
             url: urlFor(data.footerLogo).width(800).auto("format").url(),
