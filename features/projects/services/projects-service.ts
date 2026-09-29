@@ -2,6 +2,7 @@ import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
 import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
+import { normalizeContentSlug } from "@/lib/content-slug";
 
 import type { ProjectsSection } from "../types";
 
@@ -78,14 +79,14 @@ export async function getProjectBySlug(locale: Locale, slug: string) {
   try {
     const decodedSlug = decodeURIComponent(slug);
     const items = await sanityFetchData<ProjectDetailData>(projectDetailQuery);
-    const item = items.find((candidate) => candidate.slug === decodedSlug);
+    const item = items.find((candidate) => candidate.slug && normalizeContentSlug(candidate.slug) === normalizeContentSlug(decodedSlug));
     if (!item?.image) return null;
     const itemTitle = locale === "en"
       ? item.titleEn || item.titleAr || ""
       : item.titleAr || item.titleEn || "";
     if (!itemTitle) return null;
     return {
-      slug: item.slug || slug,
+      slug: item.slug ? normalizeContentSlug(item.slug) : normalizeContentSlug(slug),
       category: locale === "en" ? item.categoryEn || item.categoryAr || "" : item.categoryAr || item.categoryEn || "",
       title: itemTitle,
       location: locale === "en" ? item.locationEn || item.locationAr || "" : item.locationAr || item.locationEn || "",
@@ -110,7 +111,7 @@ export async function getProjects(
       if (!item.slug || !item.category || !item.title || !item.location || !item.image) return [];
 
       return [{
-        slug: item.slug,
+        slug: normalizeContentSlug(item.slug),
         category: item.category,
         title: item.title,
         location: item.location,

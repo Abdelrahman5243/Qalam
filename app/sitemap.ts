@@ -2,19 +2,13 @@ import type { MetadataRoute } from "next";
 
 import { sanityClient } from "@/lib/sanity/config";
 import { absoluteUrl } from "@/lib/seo";
+import { normalizeContentSlug } from "@/lib/content-slug";
 
 export const revalidate = 3600;
 
 const locales = ["ar", "en"] as const;
 
-const routes = [
-  { route: "", changeFrequency: "weekly", priority: 1 },
-  { route: "/about", changeFrequency: "monthly", priority: 0.7 },
-  { route: "/services", changeFrequency: "weekly", priority: 0.8 },
-  { route: "/projects", changeFrequency: "weekly", priority: 0.8 },
-  { route: "/cabin-designs-2026", changeFrequency: "monthly", priority: 0.7 },
-  { route: "/contact", changeFrequency: "monthly", priority: 0.7 },
-] as const;
+const routes = ["", "/about", "/services", "/projects", "/cabin-designs-2026", "/contact"] as const;
 
 type SitemapDocument = {
   _updatedAt?: string;
@@ -49,50 +43,49 @@ function localizedAlternates(route: string) {
   return { languages: Object.fromEntries([...locales.map((locale) => [locale, absoluteUrl("/" + locale + route)]), ["x-default", absoluteUrl("/ar" + route)]]) };
 }
 
-function staticEntries(): MetadataRoute.Sitemap {
+function staticEntries(data?: SitemapData): MetadataRoute.Sitemap {
+  const lastModifiedByRoute: Record<string, string | undefined> = {
+    "/services": data?.services?._updatedAt,
+    "/projects": data?.projects?._updatedAt,
+    "/cabin-designs-2026": data?.cabinGallery?._updatedAt,
+  };
+
   return locales.flatMap((locale) =>
-    routes.map(({ route, changeFrequency, priority }) => ({
+    routes.map((route) => ({
       url: absoluteUrl("/" + locale + route),
       alternates: localizedAlternates(route),
-      changeFrequency,
-      priority,
+      ...(lastModifiedByRoute[route] ? { lastModified: lastModifiedByRoute[route] } : {}),
     })),
   );
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const entries = staticEntries();
-  if (!sanityClient.config().projectId) return entries;
+  if (!sanityClient.config().projectId) return staticEntries();
 
   try {
     const data = await sanityClient.fetch<SitemapData>(sitemapQuery);
+    const entries = staticEntries(data);
     const dynamicEntries = locales.flatMap((locale) => [
       ...(data.services?.items ?? []).flatMap((item) => {
         if (!item.slug || (!item.title && !item.arabicTitle)) return [];
-        const slug = item.slug;
+        const slug = normalizeContentSlug(item.slug);
         return [{
           url: absoluteUrl("/" + locale + "/services/" + encodeURIComponent(slug)),
           alternates: localizedAlternates("/services/" + encodeURIComponent(slug)),
-          lastModified: data.services?._updatedAt,
-          changeFrequency: "monthly" as const,
-          priority: 0.7,
         }];
       }),
       ...(data.projects?.items ?? []).flatMap((item) => {
         if (!item.slug || (!item.title && !item.arabicTitle)) return [];
-        const slug = item.slug;
+        const slug = normalizeContentSlug(item.slug);
         return [{
           url: absoluteUrl("/" + locale + "/projects/" + encodeURIComponent(slug)),
           alternates: localizedAlternates("/projects/" + encodeURIComponent(slug)),
-          lastModified: data.projects?._updatedAt,
-          changeFrequency: "monthly" as const,
-          priority: 0.7,
         }];
       }),
     ]);
     return [...entries, ...dynamicEntries];
   } catch (error) {
     console.error("Unable to load dynamic sitemap entries from Sanity", error);
-    return entries;
+    return staticEntries();
   }
 }

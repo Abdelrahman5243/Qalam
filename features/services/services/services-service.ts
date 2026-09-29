@@ -2,6 +2,7 @@ import type { Locale } from "@/lib/i18n";
 import { sanityClient } from "@/lib/sanity/config";
 import { sanityFetchData } from "@/lib/sanity/live";
 import { urlFor } from "@/lib/sanity/image";
+import { normalizeContentSlug } from "@/lib/content-slug";
 
 import type { ServicesSection } from "../types";
 
@@ -78,7 +79,7 @@ export async function getServiceBySlug(locale: Locale, slug: string) {
   try {
     const decodedSlug = decodeURIComponent(slug);
     const items = await sanityFetchData<ServiceDetailData>(serviceDetailQuery);
-    const item = items.find((candidate) => candidate.slug === decodedSlug);
+    const item = items.find((candidate) => candidate.slug && normalizeContentSlug(candidate.slug) === normalizeContentSlug(decodedSlug));
     if (!item?.image) return null;
     const itemTitle = locale === "en"
       ? item.titleEn || item.titleAr || ""
@@ -88,7 +89,7 @@ export async function getServiceBySlug(locale: Locale, slug: string) {
       : item.descriptionAr || item.descriptionEn || "";
     if (!itemTitle) return null;
     return {
-      slug: item.slug || slug,
+      slug: item.slug ? normalizeContentSlug(item.slug) : normalizeContentSlug(slug),
       title: itemTitle,
       description: itemDescription,
       image: { url: urlFor(item.image).width(1400).height(900).fit("crop").auto("format").url(), alt: item.image.alt || itemTitle },
@@ -112,7 +113,7 @@ export async function getServices(
       if (!item.slug || !item.title || !item.description || !item.image) return [];
 
       return [{
-        slug: item.slug,
+        slug: normalizeContentSlug(item.slug),
         title: item.title,
         description: item.description,
         image: {
