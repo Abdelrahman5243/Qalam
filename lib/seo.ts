@@ -3,17 +3,17 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n";
 import type { SiteSettings } from "@/features/site/types";
 
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://next-generation-elevators.vercel.app";
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
 export const metadataBase = new URL(siteUrl);
 
 export function absoluteUrl(path = "") {
   return new URL(path.replace(/^\/+/, "/"), metadataBase).toString();
 }
 
-type PageMetadataOptions = { locale: Locale; path: string; title: string; description: string; settings?: SiteSettings | null };
+type PageMetadataOptions = { locale: Locale; path: string; title: string; description: string; settings?: SiteSettings | null; image?: { url: string; alt?: string } | null };
 
-export function createPageMetadata({ locale, path, title, description, settings }: PageMetadataOptions): Metadata {
-  const image = settings?.seo.ogImage;
+export function createPageMetadata({ locale, path, title, description, settings, image: pageImage }: PageMetadataOptions): Metadata {
+  const image = settings?.seo.ogImage || pageImage;
   const canonical = absoluteUrl(path);
   const alternateLocale: Locale = locale === "ar" ? "en" : "ar";
   const alternatePath = path.replace(/^\/(ar|en)(?=\/|$)/, `/${alternateLocale}`);

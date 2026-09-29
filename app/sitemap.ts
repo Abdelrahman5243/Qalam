@@ -45,10 +45,15 @@ const sitemapQuery = [
   "}",
 ].join("\n");
 
+function localizedAlternates(route: string) {
+  return { languages: Object.fromEntries([...locales.map((locale) => [locale, absoluteUrl("/" + locale + route)]), ["x-default", absoluteUrl("/ar" + route)]]) };
+}
+
 function staticEntries(): MetadataRoute.Sitemap {
   return locales.flatMap((locale) =>
     routes.map(({ route, changeFrequency, priority }) => ({
       url: absoluteUrl("/" + locale + route),
+      alternates: localizedAlternates(route),
       changeFrequency,
       priority,
     })),
@@ -67,6 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const slug = item.slug;
         return [{
           url: absoluteUrl("/" + locale + "/services/" + encodeURIComponent(slug)),
+          alternates: localizedAlternates("/services/" + encodeURIComponent(slug)),
           lastModified: data.services?._updatedAt,
           changeFrequency: "monthly" as const,
           priority: 0.7,
@@ -77,19 +83,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const slug = item.slug;
         return [{
           url: absoluteUrl("/" + locale + "/projects/" + encodeURIComponent(slug)),
+          alternates: localizedAlternates("/projects/" + encodeURIComponent(slug)),
           lastModified: data.projects?._updatedAt,
           changeFrequency: "monthly" as const,
           priority: 0.7,
         }];
       }),
-      ...(data.cabinGallery?._updatedAt
-        ? [{
-            url: absoluteUrl("/" + locale + "/cabin-designs-2026"),
-            lastModified: data.cabinGallery._updatedAt,
-            changeFrequency: "monthly" as const,
-            priority: 0.7,
-          }]
-        : []),
     ]);
     return [...entries, ...dynamicEntries];
   } catch (error) {

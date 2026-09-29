@@ -5,14 +5,13 @@ import { SiteFooter } from "@/features/site/components/site-footer";
 import { SiteHeader } from "@/features/site/components/site-header";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
 import { isLocale, type Locale } from "@/lib/i18n";
+import { createPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale: value } = await params;
   const locale: Locale = isLocale(value) ? value : "ar";
-  return {
-    title: locale === "ar" ? "ديكورات كبائن 2026" : "Cabin Designs 2026",
-    description: locale === "ar" ? "استكشف تصاميم وتشطيبات كبائن المصاعد." : "Explore elevator cabin designs and finishes.",
-  };
+  const settings = await getSiteSettings(locale);
+  return createPageMetadata({ locale, path: "/" + locale + "/cabin-designs-2026", title: locale === "ar" ? "ديكورات كبائن 2026" : "Cabin Designs 2026", description: locale === "ar" ? "استكشف تصاميم وتشطيبات كبائن المصاعد." : "Explore elevator cabin designs and finishes.", settings });
 }
 
 export default async function CabinGalleryRoute({ params }: { params: Promise<{ locale: string }> }) {

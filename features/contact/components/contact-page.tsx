@@ -162,7 +162,7 @@ export function ContactPage({ locale, settings, prefill }: { locale: Locale; set
 
   return (
     <main className="contact-page" dir={isArabic ? "rtl" : "ltr"}>
-      <PageIntro eyebrow={copy.eyebrow} title={copy.title} description={copy.intro} />
+      <PageIntro locale={locale} eyebrow={copy.eyebrow} title={copy.title} description={copy.intro} />
 
         <section className="contact-content" aria-labelledby="contact-form-title">
         <div className="contact-page-inner contact-content-inner">

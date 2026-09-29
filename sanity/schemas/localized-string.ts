@@ -9,13 +9,13 @@ export const localizedString = defineType({
       name: "ar",
       title: "Arabic",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().min(2).max(80),
     }),
     defineField({
       name: "en",
       title: "English",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().min(2).max(80),
     }),
   ],
 });

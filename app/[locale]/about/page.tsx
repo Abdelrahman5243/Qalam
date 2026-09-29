@@ -52,7 +52,7 @@ export default async function AboutRoute({
       <SiteHeader locale={locale} settings={settings} active="about" />
       <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
         <PageIntro
-          settings={settings}
+          settings={settings} locale={locale}
           eyebrow={isArabic ? "من نحن" : "About us"}
           title={
             isArabic

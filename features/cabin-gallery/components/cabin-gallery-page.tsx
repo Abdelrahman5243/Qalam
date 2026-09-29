@@ -22,7 +22,7 @@ export function CabinGalleryPage({
   return (
     <main className="inner-page cabin-gallery-page" dir={isArabic ? "rtl" : "ltr"}>
       <PageIntro
-        settings={settings}
+        settings={settings} locale={locale}
         eyebrow={isArabic ? "تصميمات الكبائن" : "Cabin collection"}
         title={title}
         description={description}

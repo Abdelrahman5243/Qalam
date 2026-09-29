@@ -67,10 +67,13 @@ export default async function LocaleLayout({
   const companyName = settings?.companyName || fallbackCompanyName;
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "LocalBusiness"],
     name: companyName,
     url: absoluteUrl(`/${locale}`),
     logo: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
+    image: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
+    address: settings?.address ? { "@type": "PostalAddress", streetAddress: settings.address } : undefined,
+    contactPoint: settings?.phone ? [{ "@type": "ContactPoint", telephone: settings.phone, contactType: "customer service", availableLanguage: ["ar", "en"] }] : undefined,
     telephone: settings?.phone || undefined,
     email: settings?.email || undefined,
     sameAs: settings?.socialLinks.map((link) => link.url) || undefined,

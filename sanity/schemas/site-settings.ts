@@ -115,6 +115,7 @@ export const siteSettings = defineType({
             "الصورة الأساسية عند مشاركة صفحات الموقع. يفضل صورة أفقية 1200×630.",
           type: "image",
           options: { hotspot: true },
+          fields: [defineField({ name: "alt", title: "Alt text / وصف الصورة", type: "string", validation: (rule) => rule.required().min(8).max(140) })],
         }),
       ],
     }),
