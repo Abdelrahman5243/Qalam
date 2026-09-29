@@ -3739,7 +3739,7 @@ body {
 
 .site-footer-main {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) repeat(3, minmax(0, 0.8fr));
+  grid-template-columns: minmax(0, 1.45fr) repeat(2, minmax(0, 0.8fr));
   gap: clamp(2rem, 5vw, 5rem);
 }
 
@@ -6311,7 +6311,7 @@ footer,
 /* Integrated footer social links: part of the brand column, not a detached rail. */
 .site-footer-brand-social { margin-top: 1.75rem; }
 .site-footer-brand-social .site-footer-label { margin-bottom: .75rem; }
-.site-footer-social-list { display: flex; align-items: center; gap: .65rem; }
+.site-footer-social-list { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; max-width: 100%; }
 .site-footer-social-link { width: 3rem; height: 3rem; border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.06); }
 .site-footer-social-link:hover, .site-footer-social-link:focus-visible { background: var(--brand-green); border-color: var(--brand-green-hover); transform: translateY(-2px); }
 
@@ -6323,6 +6323,7 @@ footer,
 .site-footer-social-link.social-instagram:hover, .site-footer-social-link.social-instagram:focus-visible { background: #d62976; border-color: #d62976; }
 .site-footer-social-link.social-tiktok:hover, .site-footer-social-link.social-tiktok:focus-visible { background: #111; border-color: #555; }
 .site-footer-social-link.social-whatsapp:hover, .site-footer-social-link.social-whatsapp:focus-visible { background: #25d366; border-color: #25d366; }
+.site-footer-social-link.social-call:hover, .site-footer-social-link.social-call:focus-visible { background: #4f946c; border-color: #4f946c; }
 
 
 /* Normalize CMS-uploaded social SVGs with the built-in footer icons. */

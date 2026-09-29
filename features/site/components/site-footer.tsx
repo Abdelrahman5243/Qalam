@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createDataAttribute } from "next-sanity";
-import { Mail, MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import type { SVGProps } from "react";
 
 import type { Locale } from "@/lib/i18n";
@@ -67,6 +67,7 @@ const socialIcons = {
   instagram: InstagramIcon,
   tiktok: TikTokIcon,
   whatsapp: WhatsAppIcon,
+  call: Phone,
   x: XIcon,
 };
 
@@ -103,10 +104,6 @@ export function SiteFooter({
   const socials = settings?.socialLinks.length
     ? settings.socialLinks
     : fallbackSocials;
-  const whatsappUrl =
-    settings?.whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL || null;
-  const contactLabel = isArabic ? "تواصل معنا" : "Contact";
-
   return (
     <footer className="site-footer" dir={isArabic ? "rtl" : "ltr"}>
       <div className="site-footer-inner">
@@ -173,50 +170,6 @@ export function SiteFooter({
                 </Link>
               ))}
             </nav>
-          </div>
-
-          <div className="site-footer-column">
-            <p className="site-footer-label">{contactLabel}</p>
-            <a
-              className={!settings?.phone ? "is-placeholder" : undefined}
-              href={settings?.phone ? `tel:${settings.phone}` : "#contact"}
-              data-sanity={siteSettingsData("phone")}
-            >
-              <Phone aria-hidden="true" size={15} />
-              {settings?.phone ||
-                (isArabic
-                  ? "رقم الهاتف يضاف قريبًا"
-                  : "Phone number coming soon")}
-            </a>
-            <a
-              className={!settings?.email ? "is-placeholder" : undefined}
-              href={settings?.email ? `mailto:${settings.email}` : "#contact"}
-              target={settings?.email ? "_blank" : undefined}
-              rel={settings?.email ? "noreferrer" : undefined}
-              data-sanity={siteSettingsData("email")}
-            >
-              <Mail aria-hidden="true" size={15} />
-              {settings?.email ||
-                (isArabic
-                  ? "البريد الإلكتروني يضاف قريبًا"
-                  : "Email coming soon")}
-            </a>
-            <a
-              className={!whatsappUrl ? "is-placeholder" : undefined}
-              href={whatsappUrl || "#contact"}
-              target={whatsappUrl ? "_blank" : undefined}
-              rel={whatsappUrl ? "noreferrer" : undefined}
-              data-sanity={siteSettingsData("whatsapp")}
-            >
-              <MessageCircle aria-hidden="true" size={15} />
-              {whatsappUrl
-                ? isArabic
-                  ? "واتساب"
-                  : "WhatsApp"
-                : isArabic
-                  ? "واتساب يضاف قريبًا"
-                  : "WhatsApp coming soon"}
-            </a>
           </div>
 
           {(settings?.nationalNumber || settings?.taxNumber || settings?.commercialRegistration || settings?.emergencyPhone || settings?.maintenancePhone) && (
