@@ -164,7 +164,24 @@ export const siteSettings = defineType({
               },
               validation: (rule) => rule.required(),
             }),
-            defineField({ name: "url", title: "URL", type: "url", validation: (rule) => rule.required() }),
+            defineField({
+              name: "url",
+              title: "URL / رابط التواصل",
+              type: "string",
+              validation: (rule) =>
+                rule.required().custom((value) => {
+                  if (typeof value !== "string") return "أدخل رابطًا صحيحًا.";
+
+                  try {
+                    const protocol = new URL(value).protocol;
+                    return ["http:", "https:", "tel:", "mailto:"].includes(protocol)
+                      ? true
+                      : "استخدم https أو tel أو mailto.";
+                  } catch {
+                    return "أدخل رابطًا صحيحًا مثل https://... أو tel:...";
+                  }
+                }),
+            }),
             defineField({
               name: "icon",
               title: "Custom icon / أيقونة مخصصة",
