@@ -10,6 +10,11 @@ import { SanityLive } from "@/lib/sanity/live";
 import { SanityVisualEditing } from "@/lib/sanity/visual-editing";
 import { FloatingContactActions } from "@/features/site/components/floating-contact-actions";
 
+// Site settings include mutable branding assets. Keep the locale tree dynamic
+// so a published logo change is read on the next request instead of being
+// embedded into a statically generated page at build time.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
