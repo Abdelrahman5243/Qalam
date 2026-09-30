@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { createDataAttribute } from "next-sanity";
 import { ArrowRight, Check, Mail, MessageCircle, Phone, UserRound } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n";
 import { PageIntro } from "@/features/site/components/page-intro";
 import type { SiteSettings } from "@/features/site/types";
+import { sanityConfig } from "@/lib/sanity/config";
 
 type SubmitStatus = "idle" | "success" | "error";
 type FieldName = "name" | "company" | "email" | "phone" | "service" | "otherService" | "message";
@@ -13,6 +15,14 @@ type FieldErrors = Partial<Record<FieldName, string>>;
 
 
 type ContactPrefill = { type?: "service" | "project"; title?: string };
+
+const siteSettingsData = createDataAttribute({
+  id: "siteSettings",
+  type: "siteSettings",
+  baseUrl: sanityConfig.studioUrl,
+  dataset: sanityConfig.dataset,
+  projectId: sanityConfig.projectId,
+});
 
 export function ContactPage({ locale, settings, prefill }: { locale: Locale; settings: SiteSettings | null; prefill?: ContactPrefill }) {
   const isArabic = locale === "ar";
@@ -169,16 +179,16 @@ export function ContactPage({ locale, settings, prefill }: { locale: Locale; set
           <aside className="contact-details">
             <p className="contact-eyebrow">{copy.getInTouch}</p>
             <div className="contact-detail-list">
-              <div className="contact-detail"><span className="contact-detail-icon"><UserRound size={17} /></span><span><small>{copy.manager}</small><strong>{settings?.companyName || (isArabic ? "شركة المصاعد" : "Next Generation Elevators")}</strong></span></div>
-              <a className="contact-detail" href={settings?.phone ? `tel:${settings.phone}` : "#contact-form"}><span className="contact-detail-icon"><Phone size={17} /></span><span><small>{copy.phone}</small><strong>{settings?.phone || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
-              <a className="contact-detail" href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}><span className="contact-detail-icon"><MessageCircle size={17} /></span><span><small>{copy.whatsapp}</small><strong>{settings?.whatsappUrl ? (isArabic ? "ابدأ محادثة" : "Start a chat") : (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
-              <a className="contact-detail" href={settings?.email ? `mailto:${settings.email}` : "#contact-form"}><span className="contact-detail-icon"><Mail size={17} /></span><span><small>{copy.email}</small><strong>{settings?.email || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <div className="contact-detail"><span className="contact-detail-icon"><UserRound size={17} /></span><span><small>{copy.manager}</small><strong data-sanity={siteSettingsData("companyName")}>{settings?.companyName || (isArabic ? "شركة المصاعد" : "Next Generation Elevators")}</strong></span></div>
+              <a className="contact-detail" href={settings?.phone ? `tel:${settings.phone}` : "#contact-form"}><span className="contact-detail-icon"><Phone size={17} /></span><span><small>{copy.phone}</small><strong data-sanity={siteSettingsData("phone")}>{settings?.phone || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <a className="contact-detail" data-sanity={siteSettingsData("whatsapp")} href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}><span className="contact-detail-icon"><MessageCircle size={17} /></span><span><small>{copy.whatsapp}</small><strong data-sanity={siteSettingsData("whatsapp")}>{settings?.whatsappUrl ? (isArabic ? "ابدأ محادثة" : "Start a chat") : (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
+              <a className="contact-detail" href={settings?.email ? `mailto:${settings.email}` : "#contact-form"}><span className="contact-detail-icon"><Mail size={17} /></span><span><small>{copy.email}</small><strong data-sanity={siteSettingsData("email")}>{settings?.email || (isArabic ? "سيتم الإضافة قريبًا" : "Coming soon")}</strong></span></a>
             </div>
 
             <div className="quick-contact">
               <div className="quick-contact-heading"><MessageCircle size={19} /><strong>{copy.quickTitle}</strong></div>
               <p>{copy.quickText}</p>
-              <a href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}>{copy.quickLink}<ArrowRight size={17} /></a>
+              <a data-sanity={siteSettingsData("whatsapp")} href={settings?.whatsappUrl || "#contact-form"} target={settings?.whatsappUrl ? "_blank" : undefined} rel={settings?.whatsappUrl ? "noreferrer" : undefined}>{copy.quickLink}<ArrowRight size={17} /></a>
             </div>
           </aside>
 
@@ -217,12 +227,13 @@ export function ContactPage({ locale, settings, prefill }: { locale: Locale; set
                 <p className="contact-eyebrow">{isArabic ? "موقعنا" : "Our location"}</p>
                 <h2 id="contact-location-title">{isArabic ? "نحن هنا لمساعدتك" : "Find us where you need us"}</h2>
               </div>
-              {settings?.address ? <p>{settings.address}</p> : null}
+              {settings?.address ? <p data-sanity={siteSettingsData("address")}>{settings.address}</p> : null}
             </div>
 
             <div className="contact-map-frame">
               <iframe
                 title={isArabic ? "موقع الشركة على الخريطة" : "Company location map"}
+                data-sanity={siteSettingsData("mapUrl")}
                 src={settings?.mapUrl || "https://www.openstreetmap.org/export/embed.html?bbox=46.638%2C24.684%2C46.704%2C24.735&layer=mapnik&marker=24.7136%2C46.6753"}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

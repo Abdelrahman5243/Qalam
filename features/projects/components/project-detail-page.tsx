@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { stegaClean } from "@sanity/client/stega";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
@@ -15,8 +16,8 @@ export function ProjectDetailPage({ project, locale, settings }: { project: Pick
       <div className="detail-page-media"><Image src={project.image.url} alt={project.image.alt} fill unoptimized sizes="(max-width: 800px) 100vw, 50vw" /></div>
       <div className="detail-page-copy"><RichContent blocks={project.content} locale={locale} /><Link
         className="detail-page-cta"
-        href={`/${locale}/contact?type=project&title=${encodeURIComponent(project.title)}`}
-        aria-label={`${ar ? "ناقش مشروع" : "Discuss project"} ${project.title}`}
+        href={`/${locale}/contact?type=project&title=${encodeURIComponent(stegaClean(project.title))}`}
+        aria-label={`${ar ? "ناقش مشروع" : "Discuss project"} ${stegaClean(project.title)}`}
       >
         {ar ? "ناقش مشروعك معنا" : "Discuss your project"}<Arrow size={17} />
       </Link></div>

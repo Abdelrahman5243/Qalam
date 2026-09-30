@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { stegaClean } from "@sanity/client/stega";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
@@ -15,8 +16,8 @@ export function ServiceDetailPage({ service, locale, settings }: { service: Pick
       <div className="detail-page-media"><Image src={service.image.url} alt={service.image.alt} fill unoptimized sizes="(max-width: 800px) 100vw, 50vw" /></div>
       <div className="detail-page-copy"><RichContent blocks={service.content} locale={locale} /><Link
         className="detail-page-cta"
-        href={`/${locale}/contact?type=service&title=${encodeURIComponent(service.title)}`}
-        aria-label={`${ar ? "اطلب عرض سعر لخدمة" : "Request a quote for"} ${service.title}`}
+        href={`/${locale}/contact?type=service&title=${encodeURIComponent(stegaClean(service.title))}`}
+        aria-label={`${ar ? "اطلب عرض سعر لخدمة" : "Request a quote for"} ${stegaClean(service.title)}`}
       >
         {ar ? "اطلب عرض سعر" : "Request a quote"}<Arrow size={17} />
       </Link></div>

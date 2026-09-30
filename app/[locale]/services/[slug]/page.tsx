@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { stegaClean } from "@sanity/client/stega";
 import { notFound } from "next/navigation";
 import { ServiceDetailPage } from "@/features/services/components/service-detail-page";
 import { getServiceBySlug } from "@/features/services/services/services-service";
@@ -16,6 +17,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function ServiceRoute({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale: value, slug } = await params; if (!isLocale(value)) notFound(); const locale: Locale = value;
   const [settings, service] = await Promise.all([getSiteSettings(locale), getServiceBySlug(locale, slug)]); if (!service) notFound();
-  const structuredData = { "@context": "https://schema.org", "@type": "Service", name: service.title, description: service.description, image: service.image.url, url: absoluteUrl(`/${locale}/services/${encodeURIComponent(service.slug)}`), provider: { "@type": "Organization", name: settings?.companyName || "Next Generation Elevators", url: absoluteUrl(`/${locale}`) } };
+  const structuredData = { "@context": "https://schema.org", "@type": "Service", name: stegaClean(service.title), description: stegaClean(service.description), image: service.image.url, url: absoluteUrl(`/${locale}/services/${encodeURIComponent(stegaClean(service.slug))}`), provider: { "@type": "Organization", name: stegaClean(settings?.companyName || "Next Generation Elevators"), url: absoluteUrl(`/${locale}`) } };
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} /><SiteHeader locale={locale} settings={settings} active="services" /><ServiceDetailPage service={service} locale={locale} settings={settings} /><SiteFooter locale={locale} settings={settings} /></>;
 }

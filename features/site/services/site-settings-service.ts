@@ -103,7 +103,7 @@ export async function getSiteSettings(
 
     return {
       logo: {
-        url: urlFor(data.logo).width(240).auto("format").url(),
+        url: urlFor(data.logo).width(480).auto("format").url(),
         alt: data.logo.alt || data.companyName || "Company logo",
       },
       footerLogo: data.footerLogo

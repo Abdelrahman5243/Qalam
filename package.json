@@ -11,6 +11,7 @@
     "sanity:prepare-import": "node scripts/build-sanity-import.mjs"
   },
   "dependencies": {
+    "@next/third-parties": "^16.3.5",
     "@sanity/image-url": "^2.1.1",
     "framer-motion": "^13.4.0",
     "lucide-react": "^1.47.0",

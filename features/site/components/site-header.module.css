@@ -71,8 +71,8 @@
 
   .mobileBrandImage {
     display: block;
-    width: clamp(132px, 42vw, 158px);
-    max-width: calc(100vw - 150px);
+    width: clamp(150px, 48vw, 180px);
+    max-width: calc(100vw - 135px);
     height: auto;
     aspect-ratio: 1200 / 269;
   }
@@ -230,7 +230,7 @@
 }
 
 .mobileTopbar .mobileBrandImage {
-  max-width: min(170px, 58vw);
+  max-width: min(180px, 64vw);
 }
 
 .mobileNav {

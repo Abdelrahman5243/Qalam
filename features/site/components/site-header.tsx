@@ -81,7 +81,6 @@ function BrandMark({
         settings={settings}
         className={`${styles.brandImage} ${styles.mobileBrandImage}`}
         linkClassName={`${styles.brand} ${styles.mobileBrand}`}
-        priority
       />
     </>
   );

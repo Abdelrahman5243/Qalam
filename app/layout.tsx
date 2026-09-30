@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { Cairo, Manrope } from "next/font/google";
 import "./globals.css";
 import { siteAssets } from "@/lib/site-assets";
@@ -41,6 +42,9 @@ export const metadata: Metadata = {
   },
 };
 
+const GOOGLE_ANALYTICS_ID = "G-KWVYH6Z9NY";
+const GOOGLE_TAG_MANAGER_ID = "GTM-MW87DPTG";
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -55,8 +59,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}
     >
       <body className="min-h-full flex flex-col">
-          {children}
-        </body>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+            title="Google Tag Manager"
+          />
+        </noscript>
+        {children}
+      </body>
+      <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} />
+      <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} />
     </html>
   );
 }

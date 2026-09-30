@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { stegaClean } from "@sanity/client/stega";
 import { draftMode } from "next/headers";
 
 import { defaultLocale, getDirection, isLocale, type Locale } from "@/lib/i18n";
@@ -68,7 +69,7 @@ export default async function LocaleLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": ["Organization", "LocalBusiness"],
-    name: companyName,
+    name: stegaClean(companyName),
     url: absoluteUrl(`/${locale}`),
     logo: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
     image: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),

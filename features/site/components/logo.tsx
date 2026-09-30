@@ -2,6 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { SiteSettings } from "../types";
+import { createDataAttribute } from "next-sanity";
+
+import { sanityConfig } from "@/lib/sanity/config";
 import { siteAssets } from "@/lib/site-assets";
 import type { Locale } from "@/lib/i18n";
 
@@ -48,6 +51,16 @@ export function Logo({
     },
   } as const;
   const src = dynamicSources[variant][layout] || fallbackSources[variant][layout];
+  const editableField = layout === "horizontal" ? "logo" : "footerLogo";
+  const siteSettingsData = settings
+    ? createDataAttribute({
+        id: "siteSettings",
+        type: "siteSettings",
+        baseUrl: sanityConfig.studioUrl,
+        dataset: sanityConfig.dataset,
+        projectId: sanityConfig.projectId,
+      })
+    : null;
 
   const alt = decorative
     ? ""
@@ -57,8 +70,10 @@ export function Logo({
       className={className}
       src={src}
       alt={alt}
-      width={layout === "stacked" ? 180 : 240}
-      height={layout === "stacked" ? 140 : 90}
+      width={layout === "stacked" ? 180 : 480}
+      height={layout === "stacked" ? 140 : 108}
+      sizes={layout === "horizontal" ? "(max-width: 1023px) 42vw, 190px" : "180px"}
+      data-sanity={siteSettingsData?.(editableField)}
       priority={priority}
       unoptimized={src.startsWith("http")}
       aria-hidden={decorative}
