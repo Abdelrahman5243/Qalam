@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
 };
 
-const GOOGLE_ANALYTICS_ID = "G-KWVYH6Z9NY";
-const GOOGLE_TAG_MANAGER_ID = "GTM-MW87DPTG";
+const GOOGLE_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;
 
 export const viewport = {
   width: "device-width",
@@ -59,19 +59,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}
     >
       <body className="min-h-full flex flex-col">
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
+        {GOOGLE_TAG_MANAGER_ID ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+              title="Google Tag Manager"
+            />
+          </noscript>
+        ) : null}
         {children}
       </body>
-      <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} />
-      <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} />
+      {GOOGLE_TAG_MANAGER_ID ? <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} /> : null}
+      {GOOGLE_ANALYTICS_ID ? <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} /> : null}
     </html>
   );
 }
