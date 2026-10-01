@@ -23,7 +23,7 @@ export function createPageMetadata({ locale, path, title, description, settings,
   return {
     title: cleanTitle, description: cleanDescription,
     alternates: { canonical, languages: { [locale]: canonical, [alternateLocale]: absoluteUrl(alternatePath), "x-default": absoluteUrl(path.replace(/^\/(ar|en)(?=\/|$)/, "/ar")) } },
-    openGraph: { type: "website", title: cleanTitle, description: cleanDescription, url: canonical, siteName: "Next Generation Elevators", locale, images: [{ url: image?.url || absoluteUrl("/og/og-image-1200x630.png"), alt: image?.alt || cleanTitle }] },
+    openGraph: { type: "website", title: cleanTitle, description: cleanDescription, url: canonical, siteName: "مصاعد الجيل القادم", locale, images: [{ url: image?.url || absoluteUrl("/og/og-image-1200x630.png"), alt: image?.alt || cleanTitle }] },
     twitter: { card: "summary_large_image", title: cleanTitle, description: cleanDescription, images: [image?.url || absoluteUrl("/og/og-image-1200x630.png")] },
     robots: { index: true, follow: true },
   };
