@@ -66,9 +66,11 @@ export default async function LocaleLayout({
   const fallbackCompanyName =
     locale === "ar" ? "شركة المصاعد" : "Next Generation Elevators";
   const companyName = settings?.companyName || fallbackCompanyName;
-  const structuredData = {
-    "@context": "https://schema.org",
+  const organizationId = `${absoluteUrl(`/${locale}`)}#organization`;
+  const websiteId = `${absoluteUrl()}#website`;
+  const organization = {
     "@type": ["Organization", "LocalBusiness"],
+    "@id": organizationId,
     name: stegaClean(companyName),
     url: absoluteUrl(`/${locale}`),
     logo: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
@@ -78,6 +80,20 @@ export default async function LocaleLayout({
     telephone: settings?.phone || undefined,
     email: settings?.email || undefined,
     sameAs: settings?.socialLinks.map((link) => link.url) || undefined,
+  };
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": websiteId,
+        name: "مصاعد الجيل القادم",
+        alternateName: "Next Generation Elevators",
+        url: absoluteUrl(),
+        publisher: { "@id": organizationId },
+      },
+      organization,
+    ],
   };
 
   return (
