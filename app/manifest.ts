@@ -4,10 +4,10 @@ import { siteAssets } from "@/lib/site-assets";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Next Generation Elevators",
-    short_name: "NGE",
+    name: "مصاعد الجيل القادم",
+    short_name: "مصاعد الجيل القادم",
     description:
-      "Elevator installation, maintenance, and modern mobility solutions.",
+      "حلول المصاعد من توريد وتركيب وصيانة وخدمات ما بعد البيع في الرياض",
     start_url: "/ar",
     display: "standalone",
     background_color: "#f7f8f3",
