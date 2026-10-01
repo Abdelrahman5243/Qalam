@@ -79,6 +79,10 @@ const siteSettingsData = createDataAttribute({
   projectId: sanityConfig.projectId,
 });
 
+function siteSettingsPath(path: Parameters<typeof siteSettingsData>[0]) {
+  return sanityConfig.projectId ? siteSettingsData(path) : undefined;
+}
+
 export function SiteFooter({
   locale,
   settings,
@@ -116,7 +120,7 @@ export function SiteFooter({
               settings={settings}
               className="site-footer-logo"
             />
-            <p>
+            <p data-sanity={siteSettingsPath(["footerDescription", locale])}>
               {settings?.footerDescription ||
                 (isArabic
                   ? "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة."
@@ -135,7 +139,7 @@ export function SiteFooter({
                       href={social.url}
                       aria-label={social.platform}
                       title={social.platform}
-                      data-sanity={siteSettingsData(`socialLinks[${socialIndex}].url`)}
+                      data-sanity={siteSettingsPath(["socialLinks", socialIndex, "url"])}
                       target={social.url.startsWith("http") ? "_blank" : undefined}
                       rel={social.url.startsWith("http") ? "noreferrer" : undefined}
                     >
@@ -147,7 +151,7 @@ export function SiteFooter({
                       height={24}
                       unoptimized
                       className="site-footer-social-icon"
-                      data-sanity={siteSettingsData(`socialLinks[${socialIndex}].icon`)}
+                      data-sanity={siteSettingsPath(["socialLinks", socialIndex, "icon"])}
                     />
                   ) : (
                     <Icon aria-hidden="true" width={24} height={24} />
@@ -177,27 +181,27 @@ export function SiteFooter({
               <p className="site-footer-label">{isArabic ? "بيانات المنشأة" : "Company details"}</p>
               <div className="site-footer-legal" aria-label={isArabic ? "بيانات المنشأة" : "Company details"}>
                 {settings.nationalNumber && (
-                  <span data-sanity={siteSettingsData("nationalNumber")}>
+                  <span data-sanity={siteSettingsPath("nationalNumber")}>
                     {isArabic ? "الرقم الوطني" : "National number"}: {settings.nationalNumber}
                   </span>
                 )}
                 {settings.taxNumber && (
-                  <span data-sanity={siteSettingsData("taxNumber")}>
+                  <span data-sanity={siteSettingsPath("taxNumber")}>
                     {isArabic ? "الرقم الضريبي" : "Tax number"}: {settings.taxNumber}
                   </span>
                 )}
                 {settings.commercialRegistration && (
-                  <span data-sanity={siteSettingsData("commercialRegistration")}>
+                  <span data-sanity={siteSettingsPath("commercialRegistration")}>
                     {isArabic ? "السجل التجاري" : "Commercial registration"}: {settings.commercialRegistration}
                   </span>
                 )}
                 {settings.emergencyPhone && (
-                  <span data-sanity={siteSettingsData("emergencyPhone")}>
+                  <span data-sanity={siteSettingsPath("emergencyPhone")}>
                     {isArabic ? "خط الطوارئ" : "Emergency line"}: {settings.emergencyPhone}
                   </span>
                 )}
                 {settings.maintenancePhone && (
-                  <span data-sanity={siteSettingsData("maintenancePhone")}>
+                  <span data-sanity={siteSettingsPath("maintenancePhone")}>
                     {isArabic ? "خط الصيانة" : "Maintenance line"}: {settings.maintenancePhone}
                   </span>
                 )}
@@ -210,7 +214,9 @@ export function SiteFooter({
         <div className="site-footer-bottom">
           <p>
             © {new Date().getFullYear()}{" "}
-            {settings?.companyName || "Next Generation Elevators"}.{" "}
+            <span data-sanity={siteSettingsPath(["companyName", locale])}>
+              {settings?.companyName || "Next Generation Elevators"}
+            </span>.{" "}
             {isArabic ? "جميع الحقوق محفوظة." : "All rights reserved."}
           </p>
           <p>{isArabic ? "تأسست عام 2010" : "Established 2010"}</p>
