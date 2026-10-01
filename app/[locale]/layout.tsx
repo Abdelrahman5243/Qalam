@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { stegaClean } from "@sanity/client/stega";
 import { draftMode } from "next/headers";
 
 import { defaultLocale, getDirection, isLocale, type Locale } from "@/lib/i18n";
@@ -63,49 +62,46 @@ export default async function LocaleLayout({
   const locale: Locale = isLocale(value) ? value : defaultLocale;
   const { isEnabled: isDraftMode } = await draftMode();
   const settings = await getSiteSettings(locale);
-  const fallbackCompanyName =
-    locale === "ar" ? "شركة المصاعد" : "Next Generation Elevators";
-  const companyName = settings?.companyName || fallbackCompanyName;
   const organizationId = `${absoluteUrl(`/${locale}`)}#organization`;
-  const websiteId = `${absoluteUrl()}#website`;
-  const organization = {
-    "@type": ["Organization", "LocalBusiness"],
-    "@id": organizationId,
-    name: stegaClean(companyName),
-    url: absoluteUrl(`/${locale}`),
-    logo: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
-    image: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
-    address: settings?.address ? { "@type": "PostalAddress", streetAddress: settings.address } : undefined,
-    contactPoint: settings?.phone ? [{ "@type": "ContactPoint", telephone: settings.phone, contactType: "customer service", availableLanguage: ["ar", "en"] }] : undefined,
-    telephone: settings?.phone || undefined,
-    email: settings?.email || undefined,
-    sameAs: settings?.socialLinks.map((link) => link.url) || undefined,
-  };
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": websiteId,
-        name: "مصاعد الجيل القادم",
-        alternateName: "Next Generation Elevators",
-        url: absoluteUrl(),
-        publisher: { "@id": organizationId },
-      },
-      organization,
-    ],
-  };
-
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${absoluteUrl()}#website`,
+      name: "مصاعد الجيل القادم",
+      alternateName: "Next Generation Elevators",
+      url: "https://next-generation-elevators.vercel.app/",
+      publisher: { "@id": organizationId },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "LocalBusiness"],
+      "@id": organizationId,
+      name: "مصاعد الجيل القادم",
+      alternateName: "Next Generation Elevators",
+      url: "https://next-generation-elevators.vercel.app/",
+      logo: "https://cdn.sanity.io/images/qwovtgh7/production/da584322ee51dd595475a6710113839ab872b7b1-1200x269.png?w=480&auto=format",
+      image: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
+      address: settings?.address ? { "@type": "PostalAddress", streetAddress: settings.address } : undefined,
+      contactPoint: settings?.phone ? [{ "@type": "ContactPoint", telephone: settings.phone, contactType: "customer service", availableLanguage: ["ar", "en"] }] : undefined,
+      telephone: settings?.phone || undefined,
+      email: settings?.email || undefined,
+      sameAs: settings?.socialLinks.map((link) => link.url) || undefined,
+    },
+  ];
   return (
     <div
       lang={locale}
       dir={getDirection(locale)}
       className={`min-h-full ${locale === "ar" ? "locale-ar" : "locale-en"}`}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      {structuredData.map((data) => (
+        <script
+          key={data["@type"].toString()}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+        />
+      ))}
       {children}
       <FloatingContactActions locale={locale} settings={settings} />
       <SanityLive />
