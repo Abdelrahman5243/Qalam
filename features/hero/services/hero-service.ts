@@ -1,10 +1,9 @@
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
+import { querySanity } from "@/lib/sanity/live";
 import type { Locale } from "@/lib/i18n";
 
 import { sanityHeroSchema } from "../schemas/hero-schema";
 import type { Hero } from "../types";
-import { urlFor } from "@/lib/sanity/image";
+import { getImageUrl } from "@/lib/sanity/image";
 
 const heroQuery = `*[_type == "hero"] | order(_updatedAt desc)[0]{
   _id,
@@ -58,49 +57,29 @@ function resolveCopy(
 }
 
 export async function getHero(locale: Locale): Promise<Hero | null> {
-  if (!sanityClient.config().projectId) {
-    return null;
-  }
+  const hero = await querySanity({
+    query: heroQuery,
+    params: { locale },
+    schema: sanityHeroSchema,
+    name: "hero",
+  });
 
-  try {
-    const data = await sanityFetchData<unknown>(heroQuery, { locale });
-    const parsedHero = sanityHeroSchema.safeParse(data);
+  if (!hero) return null;
 
-    if (!parsedHero.success) {
-      console.error(
-        "Invalid hero content received from Sanity",
-        parsedHero.error.flatten(),
-      );
-      return null;
-    }
-
-    return {
-      _id: parsedHero.data._id,
-      eyebrow: resolveCopy(parsedHero.data.eyebrow, "eyebrow", locale),
-      title: resolveCopy(parsedHero.data.title, "title", locale),
-      description: resolveCopy(
-        parsedHero.data.description,
-        "description",
-        locale,
-      ),
-      ctaText: resolveCopy(parsedHero.data.ctaText, "ctaText", locale),
-      secondaryCtaText: resolveCopy(
-        parsedHero.data.secondaryCtaText,
-        "secondaryCtaText",
-        locale,
-      ),
-      image: {
-        url: urlFor(parsedHero.data.image)
-          .width(1600)
-          .height(1800)
-          .fit("crop")
-          .auto("format")
-          .url(),
-        alt: parsedHero.data.image.alt || parsedHero.data.title,
-      },
-    };
-  } catch (error) {
-    console.error("Unable to load hero content from Sanity", error);
-    return null;
-  }
+  return {
+    _id: hero._id,
+    eyebrow: resolveCopy(hero.eyebrow, "eyebrow", locale),
+    title: resolveCopy(hero.title, "title", locale),
+    description: resolveCopy(hero.description, "description", locale),
+    ctaText: resolveCopy(hero.ctaText, "ctaText", locale),
+    secondaryCtaText: resolveCopy(
+      hero.secondaryCtaText,
+      "secondaryCtaText",
+      locale,
+    ),
+    image: {
+      url: getImageUrl(hero.image, { width: 1600, height: 1800, fit: "crop" }),
+      alt: hero.image.alt || hero.title,
+    },
+  };
 }

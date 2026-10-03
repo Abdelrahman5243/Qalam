@@ -12,10 +12,7 @@ export default defineConfig({
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
   plugins: [
     presentationTool({
-      allowOrigins: [
-        "http://localhost:3000",
-        "http://preview.localhost:3000",
-      ],
+      allowOrigins: ["http://localhost:3000", "http://preview.localhost:3000"],
       previewUrl: {
         initial:
           process.env.NEXT_PUBLIC_SANITY_PREVIEW_URL ??
@@ -93,23 +90,33 @@ export default defineConfig({
           },
           vision: {
             select: {},
-            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+            resolve: () => ({
+              locations: [{ title: "About", href: "/ar/about" }],
+            }),
           },
           mission: {
             select: {},
-            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+            resolve: () => ({
+              locations: [{ title: "About", href: "/ar/about" }],
+            }),
           },
           qualitySafety: {
             select: {},
-            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+            resolve: () => ({
+              locations: [{ title: "About", href: "/ar/about" }],
+            }),
           },
           values: {
             select: {},
-            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+            resolve: () => ({
+              locations: [{ title: "About", href: "/ar/about" }],
+            }),
           },
           clients: {
             select: {},
-            resolve: () => ({ locations: [{ title: "About", href: "/ar/about" }] }),
+            resolve: () => ({
+              locations: [{ title: "About", href: "/ar/about" }],
+            }),
           },
         },
       },
@@ -139,26 +146,38 @@ export default defineConfig({
                       .id("vision")
                       .title("Our vision")
                       .child(
-                        S.document()
-                          .schemaType("vision")
-                          .documentId("vision"),
+                        S.document().schemaType("vision").documentId("vision"),
                       ),
                     S.listItem()
                       .id("mission")
                       .title("Our mission")
-                      .child(S.document().schemaType("mission").documentId("mission")),
+                      .child(
+                        S.document()
+                          .schemaType("mission")
+                          .documentId("mission"),
+                      ),
                     S.listItem()
                       .id("qualitySafety")
                       .title("Quality & safety")
-                      .child(S.document().schemaType("qualitySafety").documentId("qualitySafety")),
+                      .child(
+                        S.document()
+                          .schemaType("qualitySafety")
+                          .documentId("qualitySafety"),
+                      ),
                     S.listItem()
                       .id("values")
                       .title("Our values")
-                      .child(S.document().schemaType("values").documentId("values")),
+                      .child(
+                        S.document().schemaType("values").documentId("values"),
+                      ),
                     S.listItem()
                       .id("clients")
                       .title("Our clients")
-                      .child(S.document().schemaType("clients").documentId("clients")),
+                      .child(
+                        S.document()
+                          .schemaType("clients")
+                          .documentId("clients"),
+                      ),
                   ]),
               ),
             ...S.documentTypeListItems().filter(
@@ -172,9 +191,7 @@ export default defineConfig({
                   "qualitySafety",
                   "values",
                   "clients",
-                ].includes(
-                  item.getId() || "",
-                ),
+                ].includes(item.getId() || ""),
             ),
           ]),
     }),

@@ -5,9 +5,24 @@ export const clients = defineType({
   title: "Our clients",
   type: "document",
   fields: [
-    defineField({ name: "eyebrow", title: "Eyebrow", type: "localizedString", validation: (rule) => rule.required() }),
-    defineField({ name: "title", title: "Title", type: "localizedString", validation: (rule) => rule.required() }),
-    defineField({ name: "description", title: "Description", type: "localizedText", validation: (rule) => rule.required() }),
+    defineField({
+      name: "eyebrow",
+      title: "Eyebrow",
+      type: "localizedString",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "title",
+      title: "Title",
+      type: "localizedString",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "description",
+      title: "Description",
+      type: "localizedText",
+      validation: (rule) => rule.required(),
+    }),
     defineField({
       name: "items",
       title: "Clients",

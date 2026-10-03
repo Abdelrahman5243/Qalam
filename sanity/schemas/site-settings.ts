@@ -38,11 +38,36 @@ export const siteSettings = defineType({
       type: "localizedString",
       group: "company",
     }),
-    defineField({ name: "nationalNumber", title: "National number / الرقم الوطني", type: "string", group: "company" }),
-    defineField({ name: "taxNumber", title: "Tax number / الرقم الضريبي", type: "string", group: "company" }),
-    defineField({ name: "commercialRegistration", title: "Commercial registration / السجل التجاري", type: "string", group: "company" }),
-    defineField({ name: "emergencyPhone", title: "Emergency line / خط الطوارئ", type: "string", group: "company" }),
-    defineField({ name: "maintenancePhone", title: "Maintenance line / خط الصيانة", type: "string", group: "company" }),
+    defineField({
+      name: "nationalNumber",
+      title: "National number / الرقم الوطني",
+      type: "string",
+      group: "company",
+    }),
+    defineField({
+      name: "taxNumber",
+      title: "Tax number / الرقم الضريبي",
+      type: "string",
+      group: "company",
+    }),
+    defineField({
+      name: "commercialRegistration",
+      title: "Commercial registration / السجل التجاري",
+      type: "string",
+      group: "company",
+    }),
+    defineField({
+      name: "emergencyPhone",
+      title: "Emergency line / خط الطوارئ",
+      type: "string",
+      group: "company",
+    }),
+    defineField({
+      name: "maintenancePhone",
+      title: "Maintenance line / خط الصيانة",
+      type: "string",
+      group: "company",
+    }),
     defineField({
       name: "phone",
       title: "Phone / الهاتف",
@@ -115,7 +140,14 @@ export const siteSettings = defineType({
             "الصورة الأساسية عند مشاركة صفحات الموقع. يفضل صورة أفقية 1200×630.",
           type: "image",
           options: { hotspot: true },
-          fields: [defineField({ name: "alt", title: "Alt text / وصف الصورة", type: "string", validation: (rule) => rule.required().min(8).max(140) })],
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt text / وصف الصورة",
+              type: "string",
+              validation: (rule) => rule.required().min(8).max(140),
+            }),
+          ],
         }),
       ],
     }),
@@ -157,7 +189,9 @@ export const siteSettings = defineType({
 
                   try {
                     const protocol = new URL(value).protocol;
-                    return ["http:", "https:", "tel:", "mailto:"].includes(protocol)
+                    return ["http:", "https:", "tel:", "mailto:"].includes(
+                      protocol,
+                    )
                       ? true
                       : "استخدم https أو tel أو mailto.";
                   } catch {
@@ -168,7 +202,8 @@ export const siteSettings = defineType({
             defineField({
               name: "icon",
               title: "Custom icon / أيقونة مخصصة",
-              description: "اختياري: ارفع أيقونة المنصة هنا. اتركها فارغة لاستخدام الأيقونة المدمجة.",
+              description:
+                "اختياري: ارفع أيقونة المنصة هنا. اتركها فارغة لاستخدام الأيقونة المدمجة.",
               type: "image",
               options: { hotspot: true },
             }),

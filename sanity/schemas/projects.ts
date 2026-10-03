@@ -20,7 +20,8 @@ export const projects = defineType({
         rule.custom((items) => {
           if (!Array.isArray(items)) return true;
           const featuredCount = items.filter(
-            (item) => (item as { featured?: boolean } | null)?.featured === true,
+            (item) =>
+              (item as { featured?: boolean } | null)?.featured === true,
           ).length;
           return featuredCount === 3
             ? true
@@ -30,7 +31,13 @@ export const projects = defineType({
         {
           type: "object",
           fields: [
-            defineField({ name: "slug", title: "URL slug / الرابط", type: "slug", options: { source: "title.ar", maxLength: 96 }, validation: (rule) => rule.required() }),
+            defineField({
+              name: "slug",
+              title: "URL slug / الرابط",
+              type: "slug",
+              options: { source: "title.ar", maxLength: 96 },
+              validation: (rule) => rule.required(),
+            }),
 
             defineField({
               name: "category",
@@ -50,13 +57,24 @@ export const projects = defineType({
               type: "localizedString",
               validation: (rule) => rule.required(),
             }),
-            defineField({ name: "content", title: "Project page content / محتوى صفحة المشروع", type: "localizedRichText" }),
+            defineField({
+              name: "content",
+              title: "Project page content / محتوى صفحة المشروع",
+              type: "localizedRichText",
+            }),
             defineField({
               name: "image",
               title: "Image",
               type: "image",
               options: { hotspot: true },
-              fields: [defineField({ name: "alt", title: "Alt text / وصف الصورة", type: "string", validation: (rule) => rule.required().min(8).max(140) })],
+              fields: [
+                defineField({
+                  name: "alt",
+                  title: "Alt text / وصف الصورة",
+                  type: "string",
+                  validation: (rule) => rule.required().min(8).max(140),
+                }),
+              ],
               validation: (rule) => rule.required(),
             }),
             defineField({

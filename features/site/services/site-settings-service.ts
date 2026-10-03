@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { urlFor } from "@/lib/sanity/image";
-import { sanityFetchData } from "@/lib/sanity/live";
+import { querySanity } from "@/lib/sanity/live";
+import { getImageUrl } from "@/lib/sanity/image";
 
 import type { SiteSettings } from "../types";
 
@@ -77,7 +76,10 @@ type SanitySettings = {
   socialLinks?: Array<{
     platform?: string | null;
     url?: string | null;
-    icon?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
+    icon?: {
+      asset: { _ref: string; _type: "reference" };
+      alt?: string | null;
+    } | null;
   }> | null;
   footerDescription?: string | null;
   seoTitle?: string | null;
@@ -91,62 +93,62 @@ type SanitySettings = {
 export async function getSiteSettings(
   locale: Locale,
 ): Promise<SiteSettings | null> {
-  if (!sanityClient.config().projectId) {
-    return null;
-  }
+  const data = await querySanity<SanitySettings | null>({
+    query: siteSettingsQuery,
+    params: { locale },
+    name: "site settings",
+  });
 
-  try {
-    const data = await sanityFetchData<SanitySettings | null>(siteSettingsQuery, { locale });
+  if (!data?.logo) return null;
 
-    if (!data?.logo) {
-      return null;
-    }
-
-    return {
-      logo: {
-        url: urlFor(data.logo).width(480).auto("format").url(),
-        alt: data.logo.alt || data.companyName || "Company logo",
-      },
-      footerLogo: data.footerLogo
-        ? {
-            url: urlFor(data.footerLogo).width(800).auto("format").url(),
-            alt: data.footerLogo.alt || data.companyName || "Company logo",
-          }
-        : null,
-      companyName: data.companyName || "Next Generation Elevators",
-      nationalNumber: data.nationalNumber || null,
-      taxNumber: data.taxNumber || null,
-      commercialRegistration: data.commercialRegistration || null,
-      emergencyPhone: data.emergencyPhone || null,
-      maintenancePhone: data.maintenancePhone || null,
-      phone: data.phone || null,
-      whatsappUrl: normalizeWhatsAppUrl(data.whatsapp),
-      email: data.email || null,
-      address: data.address || null,
-      mapUrl: extractMapEmbedUrl(data.mapUrl),
-      socialLinks: (data.socialLinks || [])
-        .filter((link) => Boolean(link.platform && link.url))
-        .map((link) => ({
-          platform: link.platform!,
-          url: link.url!,
-          icon: link.icon
-            ? { url: urlFor(link.icon).width(96).height(96).fit("crop").auto("format").url(), alt: link.icon.alt || link.platform! }
-            : null,
-        })),
-      footerDescription: data.footerDescription || null,
-      seo: {
-        title: data.seoTitle || null,
-        description: data.seoDescription || null,
-        ogImage: data.seoImage
+  return {
+    logo: {
+      url: getImageUrl(data.logo, { width: 480 }),
+      alt: data.logo.alt || data.companyName || "Company logo",
+    },
+    footerLogo: data.footerLogo
+      ? {
+          url: getImageUrl(data.footerLogo, { width: 800 }),
+          alt: data.footerLogo.alt || data.companyName || "Company logo",
+        }
+      : null,
+    companyName: data.companyName || "Next Generation Elevators",
+    nationalNumber: data.nationalNumber || null,
+    taxNumber: data.taxNumber || null,
+    commercialRegistration: data.commercialRegistration || null,
+    emergencyPhone: data.emergencyPhone || null,
+    maintenancePhone: data.maintenancePhone || null,
+    phone: data.phone || null,
+    whatsappUrl: normalizeWhatsAppUrl(data.whatsapp),
+    email: data.email || null,
+    address: data.address || null,
+    mapUrl: extractMapEmbedUrl(data.mapUrl),
+    socialLinks: (data.socialLinks || [])
+      .filter((link) => Boolean(link.platform && link.url))
+      .map((link) => ({
+        platform: link.platform!,
+        url: link.url!,
+        icon: link.icon
           ? {
-              url: urlFor(data.seoImage).width(1200).auto("format").url(),
-              alt: data.seoImage.alt || data.seoTitle || "",
+              url: getImageUrl(link.icon, {
+                width: 96,
+                height: 96,
+                fit: "crop",
+              }),
+              alt: link.icon.alt || link.platform!,
             }
           : null,
-      },
-    };
-  } catch (error) {
-    console.error("Unable to load site settings from Sanity", error);
-    return null;
-  }
+      })),
+    footerDescription: data.footerDescription || null,
+    seo: {
+      title: data.seoTitle || null,
+      description: data.seoDescription || null,
+      ogImage: data.seoImage
+        ? {
+            url: getImageUrl(data.seoImage, { width: 1200 }),
+            alt: data.seoImage.alt || data.seoTitle || "",
+          }
+        : null,
+    },
+  };
 }
