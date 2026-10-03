@@ -4,7 +4,12 @@
   width: 100%;
   min-height: 100vh;
   flex: 1 1 auto;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 /* The marketing stylesheet is global, so neutralize only its broad rules inside Studio. */

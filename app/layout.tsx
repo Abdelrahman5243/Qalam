@@ -5,6 +5,7 @@ import { Cairo, Manrope } from "next/font/google";
 import "./globals.css";
 import { siteAssets } from "@/lib/site-assets";
 import { metadataBase } from "@/lib/seo";
+import { publicConfig } from "@/config/public";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -26,7 +27,8 @@ export const metadata: Metadata = {
     default: "الجيل القادم للمصاعد | Next Generation Elevators",
     template: "%s | Next Generation Elevators",
   },
-  description: "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
+  description:
+    "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
   verification: {
     google: "Qv5uswk89gVu1GdhVaeYHIM03uZb4qIXFQ-g5tzecAQ",
   },
@@ -42,9 +44,6 @@ export const metadata: Metadata = {
   },
 };
 
-const GOOGLE_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
-const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;
-
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -59,10 +58,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}
     >
       <body className="min-h-full flex flex-col">
-        {GOOGLE_TAG_MANAGER_ID ? (
+        {publicConfig.googleTagManagerId ? (
           <noscript>
             <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${publicConfig.googleTagManagerId}`}
               height="0"
               width="0"
               style={{ display: "none", visibility: "hidden" }}
@@ -72,8 +71,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ) : null}
         {children}
       </body>
-      {GOOGLE_TAG_MANAGER_ID ? <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} /> : null}
-      {GOOGLE_ANALYTICS_ID ? <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} /> : null}
+      {publicConfig.googleTagManagerId ? (
+        <GoogleTagManager gtmId={publicConfig.googleTagManagerId} />
+      ) : null}
+      {publicConfig.googleAnalyticsId ? (
+        <GoogleAnalytics gaId={publicConfig.googleAnalyticsId} />
+      ) : null}
     </html>
   );
 }

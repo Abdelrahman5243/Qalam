@@ -82,8 +82,19 @@ export default async function LocaleLayout({
       url: "https://next-generation-elevators.vercel.app/",
       logo: "https://cdn.sanity.io/images/qwovtgh7/production/da584322ee51dd595475a6710113839ab872b7b1-1200x269.png?w=480&auto=format",
       image: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
-      address: settings?.address ? { "@type": "PostalAddress", streetAddress: settings.address } : undefined,
-      contactPoint: settings?.phone ? [{ "@type": "ContactPoint", telephone: settings.phone, contactType: "customer service", availableLanguage: ["ar", "en"] }] : undefined,
+      address: settings?.address
+        ? { "@type": "PostalAddress", streetAddress: settings.address }
+        : undefined,
+      contactPoint: settings?.phone
+        ? [
+            {
+              "@type": "ContactPoint",
+              telephone: settings.phone,
+              contactType: "customer service",
+              availableLanguage: ["ar", "en"],
+            },
+          ]
+        : undefined,
       telephone: settings?.phone || undefined,
       email: settings?.email || undefined,
       sameAs: settings?.socialLinks.map((link) => link.url) || undefined,

@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
+import { publicConfig } from "@/config/public";
+import { environment } from "@/config/environment";
 
 export default function robots(): MetadataRoute.Robots {
-  const isPreview = process.env.VERCEL_ENV === "preview";
+  const isPreview = environment.isPreview;
 
   if (isPreview) {
     return {
@@ -12,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
     };
   }
 
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const siteUrl = publicConfig.siteUrl.replace(/\/$/, "");
 
   return {
     rules: {
