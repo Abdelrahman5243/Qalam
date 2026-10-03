@@ -1,6 +1,5 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
+import { querySanity } from "@/lib/sanity/live";
 
 import type { WhySection, WhyValue } from "../types";
 
@@ -24,34 +23,19 @@ type SanityWhy = {
   }> | null;
 };
 
-const emptyWhy: WhySection = {
-  eyebrow: "",
-  title: "",
-  items: [],
-};
-
 export async function getWhyChooseUs(locale: Locale): Promise<WhySection> {
-  if (!sanityClient.config().projectId) return emptyWhy;
+  const data = await querySanity<SanityWhy | null>({
+    query: whyQuery,
+    params: { locale },
+    name: "why choose us",
+  });
 
-  try {
-    const data = await sanityFetchData<SanityWhy | null>(whyQuery, { locale });
+  const items = (data?.items ?? []).flatMap((item) => {
+    if (!item.icon || !item.title || !item.description) return [];
+    return [
+      { icon: item.icon, title: item.title, description: item.description },
+    ];
+  });
 
-    const items = (data?.items ?? []).flatMap((item) => {
-      if (!item.icon || !item.title || !item.description) return [];
-      return [{
-        icon: item.icon,
-        title: item.title,
-        description: item.description,
-      }];
-    });
-
-    return {
-      eyebrow: data?.eyebrow || "",
-      title: data?.title || "",
-      items,
-    };
-  } catch (error) {
-    console.error("Unable to load why choose us content from Sanity", error);
-    return emptyWhy;
-  }
+  return { eyebrow: data?.eyebrow || "", title: data?.title || "", items };
 }

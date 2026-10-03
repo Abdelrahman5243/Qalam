@@ -11,4 +11,3 @@ export function normalizeContentSlug(value: string) {
 
   return knownSlugCorrections[slug] || slug;
 }
-

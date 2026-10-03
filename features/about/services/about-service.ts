@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
-import { urlFor } from "@/lib/sanity/image";
+import { querySanity } from "@/lib/sanity/live";
+import { getImageUrl } from "@/lib/sanity/image";
 
 import type { About } from "../types";
 
@@ -45,31 +44,26 @@ export async function getAbout(
           ctaText: "Discover More",
         };
 
-  if (!sanityClient.config().projectId) {
-    return { ...defaults, image: fallbackImage };
-  }
+  const data = await querySanity<SanityAbout | null>({
+    query: aboutQuery,
+    params: { locale },
+    name: "about",
+  });
 
-  try {
-    const data = await sanityFetchData<SanityAbout | null>(aboutQuery, { locale });
-    return {
-      eyebrow: data?.eyebrow || defaults.eyebrow,
-      title: data?.title || defaults.title,
-      description: data?.description || defaults.description,
-      ctaText: data?.ctaText || defaults.ctaText,
-      image: data?.image
-        ? {
-            url: urlFor(data.image)
-              .width(1400)
-              .height(900)
-              .fit("crop")
-              .auto("format")
-              .url(),
-            alt: data.image.alt || data.title || defaults.title,
-          }
-        : fallbackImage,
-    };
-  } catch (error) {
-    console.error("Unable to load about content from Sanity", error);
-    return { ...defaults, image: fallbackImage };
-  }
+  return {
+    eyebrow: data?.eyebrow || defaults.eyebrow,
+    title: data?.title || defaults.title,
+    description: data?.description || defaults.description,
+    ctaText: data?.ctaText || defaults.ctaText,
+    image: data?.image
+      ? {
+          url: getImageUrl(data.image, {
+            width: 1400,
+            height: 900,
+            fit: "crop",
+          }),
+          alt: data.image.alt || data.title || defaults.title,
+        }
+      : fallbackImage,
+  };
 }

@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
-import { urlFor } from "@/lib/sanity/image";
+import { querySanity } from "@/lib/sanity/live";
+import { getImageUrl } from "@/lib/sanity/image";
 
 import type {
   AboutClients,
@@ -66,7 +65,9 @@ type SanitySections = {
   values?: {
     eyebrow?: string | null;
     title?: string | null;
-    items?: Array<LocalizedItem & { icon?: AboutValues["items"][number]["icon"] | null }> | null;
+    items?: Array<
+      LocalizedItem & { icon?: AboutValues["items"][number]["icon"] | null }
+    > | null;
   } | null;
   clients?: {
     eyebrow?: string | null;
@@ -96,73 +97,100 @@ export async function getAboutSections(locale: Locale): Promise<{
   values: AboutValues | null;
   clients: AboutClients | null;
 }> {
-  const empty = { mission: null, qualitySafety: null, values: null, clients: null };
-  if (!sanityClient.config().projectId) return empty;
+  const empty = {
+    mission: null,
+    qualitySafety: null,
+    values: null,
+    clients: null,
+  };
+  const data = await querySanity<SanitySections | null>({
+    query: aboutSectionsQuery,
+    params: { locale },
+    name: "About sections",
+  });
+  if (!data) return empty;
 
-  try {
-    const data = await sanityFetchData<SanitySections | null>(aboutSectionsQuery, { locale });
-    if (!data) return empty;
+  const mission = data.mission;
+  const missionParagraphs = (mission?.paragraphs ?? []).flatMap((paragraph) =>
+    paragraph.value ? [paragraph.value] : [],
+  );
+  const missionResult =
+    mission?.eyebrow &&
+    mission.title &&
+    missionParagraphs.length &&
+    mission.image
+      ? {
+          eyebrow: mission.eyebrow,
+          title: mission.title,
+          paragraphs: missionParagraphs,
+          image: {
+            url: getImageUrl(mission.image, {
+              width: 1400,
+              height: 1000,
+              fit: "crop",
+            }),
+            alt: mission.image.alt || mission.title,
+          },
+        }
+      : null;
 
-    const mission = data.mission;
-    const missionParagraphs = (mission?.paragraphs ?? []).flatMap((paragraph) =>
-      paragraph.value ? [paragraph.value] : [],
-    );
-    const missionResult =
-      mission?.eyebrow && mission.title && missionParagraphs.length && mission.image
-        ? {
-            eyebrow: mission.eyebrow,
-            title: mission.title,
-            paragraphs: missionParagraphs,
-            image: {
-              url: urlFor(mission.image).width(1400).height(1000).fit("crop").auto("format").url(),
-              alt: mission.image.alt || mission.title,
-            },
-          }
-        : null;
+  const quality = data.qualitySafety;
+  const qualityItems = listItems(quality?.items);
+  const qualityResult =
+    quality?.eyebrow &&
+    quality.title &&
+    quality.description &&
+    qualityItems.length
+      ? {
+          eyebrow: quality.eyebrow,
+          title: quality.title,
+          description: quality.description,
+          items: qualityItems,
+        }
+      : null;
 
-    const quality = data.qualitySafety;
-    const qualityItems = listItems(quality?.items);
-    const qualityResult =
-      quality?.eyebrow && quality.title && quality.description && qualityItems.length
-        ? { eyebrow: quality.eyebrow, title: quality.title, description: quality.description, items: qualityItems }
-        : null;
+  const values = data.values;
+  const valueItems = (values?.items ?? []).flatMap((item) =>
+    item.icon && item.title && item.description
+      ? [{ icon: item.icon, title: item.title, description: item.description }]
+      : [],
+  );
+  const valuesResult =
+    values?.eyebrow && values.title && valueItems.length
+      ? { eyebrow: values.eyebrow, title: values.title, items: valueItems }
+      : null;
 
-    const values = data.values;
-    const valueItems = (values?.items ?? []).flatMap((item) =>
-      item.icon && item.title && item.description
-        ? [{ icon: item.icon, title: item.title, description: item.description }]
-        : [],
-    );
-    const valuesResult =
-      values?.eyebrow && values.title && valueItems.length
-        ? { eyebrow: values.eyebrow, title: values.title, items: valueItems }
-        : null;
-
-    const clients = data.clients;
-    const clientItems = (clients?.items ?? []).flatMap((item) =>
-      item.name && item.logo
-        ? [{
+  const clients = data.clients;
+  const clientItems = (clients?.items ?? []).flatMap((item) =>
+    item.name && item.logo
+      ? [
+          {
             name: item.name,
             logo: {
-              url: urlFor(item.logo).width(480).fit("max").auto("format").url(),
+              url: getImageUrl(item.logo, { width: 480, fit: "max" }),
               alt: item.logo.alt || item.name,
             },
-          }]
-        : [],
-    );
-    const clientsResult =
-      clients?.eyebrow && clients.title && clients.description && clientItems.length
-        ? { eyebrow: clients.eyebrow, title: clients.title, description: clients.description, items: clientItems }
-        : null;
+          },
+        ]
+      : [],
+  );
+  const clientsResult =
+    clients?.eyebrow &&
+    clients.title &&
+    clients.description &&
+    clientItems.length
+      ? {
+          eyebrow: clients.eyebrow,
+          title: clients.title,
+          description: clients.description,
+          items: clientItems,
+        }
+      : null;
 
-    return {
-      mission: missionResult,
-      qualitySafety: qualityResult,
-      values: valuesResult,
-      clients: clientsResult,
-    };
-  } catch (error) {
-    console.error("Unable to load About sections from Sanity", error);
-    return empty;
-  }
+  return {
+    mission: missionResult,
+    qualitySafety: qualityResult,
+    values: valuesResult,
+    clients: clientsResult,
+  };
 }

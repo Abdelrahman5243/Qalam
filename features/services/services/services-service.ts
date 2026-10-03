@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
-import { urlFor } from "@/lib/sanity/image";
+import { querySanity } from "@/lib/sanity/live";
+import { getImageUrl } from "@/lib/sanity/image";
 import { normalizeContentSlug } from "@/lib/content-slug";
 
 import type { ServicesSection } from "../types";
@@ -40,7 +39,10 @@ type SanityServices = {
       alt?: string | null;
     } | null;
     featured?: boolean | null;
-    content?: { ar?: Array<Record<string, unknown>>; en?: Array<Record<string, unknown>> } | null;
+    content?: {
+      ar?: Array<Record<string, unknown>>;
+      en?: Array<Record<string, unknown>>;
+    } | null;
   }> | null;
 };
 
@@ -60,8 +62,14 @@ type ServiceDetailData = Array<{
   titleEn?: string | null;
   descriptionAr?: string | null;
   descriptionEn?: string | null;
-  image?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
-  content?: { ar?: Array<Record<string, unknown>>; en?: Array<Record<string, unknown>> } | null;
+  image?: {
+    asset: { _ref: string; _type: "reference" };
+    alt?: string | null;
+  } | null;
+  content?: {
+    ar?: Array<Record<string, unknown>>;
+    en?: Array<Record<string, unknown>>;
+  } | null;
 }>;
 
 const serviceDetailQuery = `*[_type == "services"][0].items[]{
@@ -75,76 +83,108 @@ const serviceDetailQuery = `*[_type == "services"][0].items[]{
 }`;
 
 export async function getServiceBySlug(locale: Locale, slug: string) {
-  if (!sanityClient.config().projectId) return null;
+  let decodedSlug: string;
   try {
-    const decodedSlug = decodeURIComponent(slug);
-    const items = await sanityFetchData<ServiceDetailData>(serviceDetailQuery);
-    const item = items.find((candidate) => candidate.slug && normalizeContentSlug(candidate.slug) === normalizeContentSlug(decodedSlug));
-    if (!item?.image) return null;
-    const itemTitle = locale === "en"
+    decodedSlug = decodeURIComponent(slug);
+  } catch {
+    return null;
+  }
+
+  const items = await querySanity<ServiceDetailData>({
+    query: serviceDetailQuery,
+    name: "service detail",
+  });
+  const item = items?.find(
+    (candidate) =>
+      candidate.slug &&
+      normalizeContentSlug(candidate.slug) ===
+        normalizeContentSlug(decodedSlug),
+  );
+  if (!item?.image) return null;
+  const itemTitle =
+    locale === "en"
       ? item.titleEn || item.titleAr || ""
       : item.titleAr || item.titleEn || "";
-    const itemDescription = locale === "en"
+  const itemDescription =
+    locale === "en"
       ? item.descriptionEn || item.descriptionAr || ""
       : item.descriptionAr || item.descriptionEn || "";
-    if (!itemTitle) return null;
-    return {
-      slug: item.slug ? normalizeContentSlug(item.slug) : normalizeContentSlug(slug),
-      title: itemTitle,
-      description: itemDescription,
-      image: { url: urlFor(item.image).width(1400).height(900).fit("crop").auto("format").url(), alt: item.image.alt || itemTitle },
-      content: (item.content?.[locale] || item.content?.ar || []) as ServicesSection["items"][number]["content"],
-    };
-  } catch { return null; }
+  if (!itemTitle) return null;
+  return {
+    slug: item.slug
+      ? normalizeContentSlug(item.slug)
+      : normalizeContentSlug(slug),
+    title: itemTitle,
+    description: itemDescription,
+    image: {
+      url: getImageUrl(item.image, { width: 1400, height: 900, fit: "crop" }),
+      alt: item.image.alt || itemTitle,
+    },
+    content: (item.content?.[locale] ||
+      item.content?.ar ||
+      []) as ServicesSection["items"][number]["content"],
+  };
 }
 
 export async function getServices(
   locale: Locale,
   view: ServicesView = "all",
 ): Promise<ServicesSection> {
-  if (!sanityClient.config().projectId) {
-    return { eyebrow: "", title: "", linkText: "", items: [] };
-  }
+  const data = await querySanity<SanityServices | null>({
+    query: servicesQuery,
+    params: { locale },
+    name: "services",
+  });
 
-  try {
-    const data = await sanityFetchData<SanityServices | null>(servicesQuery, { locale });
+  const items = (data?.items ?? []).flatMap((item) => {
+    if (!item.slug || !item.title || !item.description || !item.image)
+      return [];
 
-    const items = (data?.items ?? []).flatMap((item) => {
-      if (!item.slug || !item.title || !item.description || !item.image) return [];
-
-      return [{
+    return [
+      {
         slug: normalizeContentSlug(item.slug),
         title: item.title,
         description: item.description,
         image: {
-          url: urlFor(item.image).width(1200).height(900).fit("crop").auto("format").url(),
+          url: getImageUrl(item.image, {
+            width: 1200,
+            height: 900,
+            fit: "crop",
+          }),
           alt: item.image.alt || item.title,
         },
         icon: item.icon
           ? {
-              url: urlFor(item.icon).width(128).height(128).fit("crop").auto("format").url(),
+              url: getImageUrl(item.icon, {
+                width: 128,
+                height: 128,
+                fit: "crop",
+              }),
               alt: item.icon.alt || item.title,
             }
           : null,
         mobileImage: item.icon
           ? {
-              url: urlFor(item.icon).width(1200).height(900).fit("crop").auto("format").url(),
+              url: getImageUrl(item.icon, {
+                width: 1200,
+                height: 900,
+                fit: "crop",
+              }),
               alt: item.icon.alt || item.title,
             }
           : null,
         featured: item.featured === true,
-        content: (item.content?.[locale] || item.content?.ar || []) as ServicesSection["items"][number]["content"],
-      }];
-    });
+        content: (item.content?.[locale] ||
+          item.content?.ar ||
+          []) as ServicesSection["items"][number]["content"],
+      },
+    ];
+  });
 
-    return {
-      eyebrow: data?.eyebrow || "",
-      title: data?.title || "",
-      linkText: data?.linkText || "",
-      items: selectServices(items, view),
-    };
-  } catch (error) {
-    console.error("Unable to load services content from Sanity", error);
-    return { eyebrow: "", title: "", linkText: "", items: [] };
-  }
+  return {
+    eyebrow: data?.eyebrow || "",
+    title: data?.title || "",
+    linkText: data?.linkText || "",
+    items: selectServices(items, view),
+  };
 }

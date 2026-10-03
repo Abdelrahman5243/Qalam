@@ -1,7 +1,7 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
-import { urlFor } from "@/lib/sanity/image";
+import { environment } from "@/config/environment";
+import { querySanity } from "@/lib/sanity/live";
+import { getImageUrl } from "@/lib/sanity/image";
 
 import type { BrandsSection } from "../types";
 
@@ -71,14 +71,12 @@ export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
     logo: { url: `/brands/${demoLogos[index]}.svg`, alt: name },
   }));
 
-  if (!sanityClient.config().projectId) {
-    return process.env.NODE_ENV !== "production"
-      ? { enabled: true, ...defaults, items: demoItems }
-      : null;
-  }
-
   try {
-    const data = await sanityFetchData<SanityBrands | null>(brandsQuery, { locale });
+    const data = await querySanity<SanityBrands | null>({
+      query: brandsQuery,
+      params: { locale },
+      name: "brands",
+    });
     const items = (data?.items || [])
       .filter(
         (
@@ -93,17 +91,12 @@ export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
         name: item.name,
         url: item.url || null,
         logo: {
-          url: urlFor(item.logo)
-            .width(320)
-            .height(160)
-            .fit("crop")
-            .auto("format")
-            .url(),
+          url: getImageUrl(item.logo, { width: 320, height: 160, fit: "crop" }),
           alt: item.logo.alt || item.name,
         },
       }));
 
-    if (!data && process.env.NODE_ENV !== "production") {
+    if (!data && environment.isDevelopment) {
       return { enabled: true, ...defaults, items: demoItems };
     }
 
@@ -119,8 +112,9 @@ export async function getBrands(locale: Locale): Promise<BrandsSection | null> {
       items,
     };
   } catch (error) {
-    console.error("Unable to load brands content from Sanity", error);
-    return process.env.NODE_ENV !== "production"
+    // Keep the demo fallback for unexpected feature mapping errors.
+    console.error("Unable to map brands content", error);
+    return environment.isDevelopment
       ? { enabled: true, ...defaults, items: demoItems }
       : null;
   }

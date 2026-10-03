@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/i18n";
-import { sanityClient } from "@/lib/sanity/config";
-import { sanityFetchData } from "@/lib/sanity/live";
-import { urlFor } from "@/lib/sanity/image";
+import { querySanity } from "@/lib/sanity/live";
+import { getImageUrl } from "@/lib/sanity/image";
 import { normalizeContentSlug } from "@/lib/content-slug";
 
 import type { ProjectsSection } from "../types";
@@ -37,7 +36,10 @@ type SanityProjects = {
       alt?: string | null;
     } | null;
     featured?: boolean | null;
-    content?: { ar?: Array<Record<string, unknown>>; en?: Array<Record<string, unknown>> } | null;
+    content?: {
+      ar?: Array<Record<string, unknown>>;
+      en?: Array<Record<string, unknown>>;
+    } | null;
   }> | null;
 };
 
@@ -58,8 +60,14 @@ type ProjectDetailData = Array<{
   categoryEn?: string | null;
   locationAr?: string | null;
   locationEn?: string | null;
-  image?: { asset: { _ref: string; _type: "reference" }; alt?: string | null } | null;
-  content?: { ar?: Array<Record<string, unknown>>; en?: Array<Record<string, unknown>> } | null;
+  image?: {
+    asset: { _ref: string; _type: "reference" };
+    alt?: string | null;
+  } | null;
+  content?: {
+    ar?: Array<Record<string, unknown>>;
+    en?: Array<Record<string, unknown>>;
+  } | null;
 }>;
 
 const projectDetailQuery = `*[_type == "projects"][0].items[]{
@@ -75,63 +83,98 @@ const projectDetailQuery = `*[_type == "projects"][0].items[]{
 }`;
 
 export async function getProjectBySlug(locale: Locale, slug: string) {
-  if (!sanityClient.config().projectId) return null;
+  let decodedSlug: string;
   try {
-    const decodedSlug = decodeURIComponent(slug);
-    const items = await sanityFetchData<ProjectDetailData>(projectDetailQuery);
-    const item = items.find((candidate) => candidate.slug && normalizeContentSlug(candidate.slug) === normalizeContentSlug(decodedSlug));
-    if (!item?.image) return null;
-    const itemTitle = locale === "en"
+    decodedSlug = decodeURIComponent(slug);
+  } catch {
+    return null;
+  }
+
+  const items = await querySanity<ProjectDetailData>({
+    query: projectDetailQuery,
+    name: "project detail",
+  });
+  const item = items?.find(
+    (candidate) =>
+      candidate.slug &&
+      normalizeContentSlug(candidate.slug) ===
+        normalizeContentSlug(decodedSlug),
+  );
+  if (!item?.image) return null;
+  const itemTitle =
+    locale === "en"
       ? item.titleEn || item.titleAr || ""
       : item.titleAr || item.titleEn || "";
-    if (!itemTitle) return null;
-    return {
-      slug: item.slug ? normalizeContentSlug(item.slug) : normalizeContentSlug(slug),
-      category: locale === "en" ? item.categoryEn || item.categoryAr || "" : item.categoryAr || item.categoryEn || "",
-      title: itemTitle,
-      location: locale === "en" ? item.locationEn || item.locationAr || "" : item.locationAr || item.locationEn || "",
-      image: { url: urlFor(item.image).width(1600).height(1000).fit("crop").auto("format").url(), alt: item.image.alt || itemTitle },
-      content: (item.content?.[locale] || item.content?.ar || []) as ProjectsSection["items"][number]["content"],
-    };
-  } catch { return null; }
+  if (!itemTitle) return null;
+  return {
+    slug: item.slug
+      ? normalizeContentSlug(item.slug)
+      : normalizeContentSlug(slug),
+    category:
+      locale === "en"
+        ? item.categoryEn || item.categoryAr || ""
+        : item.categoryAr || item.categoryEn || "",
+    title: itemTitle,
+    location:
+      locale === "en"
+        ? item.locationEn || item.locationAr || ""
+        : item.locationAr || item.locationEn || "",
+    image: {
+      url: getImageUrl(item.image, { width: 1600, height: 1000, fit: "crop" }),
+      alt: item.image.alt || itemTitle,
+    },
+    content: (item.content?.[locale] ||
+      item.content?.ar ||
+      []) as ProjectsSection["items"][number]["content"],
+  };
 }
 
 export async function getProjects(
   locale: Locale,
   view: ProjectsView = "all",
 ): Promise<ProjectsSection> {
-  if (!sanityClient.config().projectId) {
-    return { eyebrow: "", title: "", linkText: "", items: [] };
-  }
+  const data = await querySanity<SanityProjects | null>({
+    query: projectsQuery,
+    params: { locale },
+    name: "projects",
+  });
 
-  try {
-    const data = await sanityFetchData<SanityProjects | null>(projectsQuery, { locale });
+  const items = (data?.items ?? []).flatMap((item) => {
+    if (
+      !item.slug ||
+      !item.category ||
+      !item.title ||
+      !item.location ||
+      !item.image
+    )
+      return [];
 
-    const items = (data?.items ?? []).flatMap((item) => {
-      if (!item.slug || !item.category || !item.title || !item.location || !item.image) return [];
-
-      return [{
+    return [
+      {
         slug: normalizeContentSlug(item.slug),
         category: item.category,
         title: item.title,
         location: item.location,
         image: {
-          url: urlFor(item.image).width(1200).height(1100).fit("crop").auto("format").url(),
+          url: getImageUrl(item.image, {
+            width: 1200,
+            height: 1100,
+            fit: "crop",
+          }),
           alt: item.image.alt || item.title,
         },
         featured: item.featured === true,
-        content: (item.content?.[locale] || item.content?.ar || []) as ProjectsSection["items"][number]["content"],
-      }];
-    });
+        content: (item.content?.[locale] ||
+          item.content?.ar ||
+          []) as ProjectsSection["items"][number]["content"],
+      },
+    ];
+  });
 
-    return {
-      eyebrow: data?.eyebrow || "",
-      title: data?.title || "",
-      linkText: data?.linkText || "",
-      items: selectProjects(items, view),
-    };
-  } catch (error) {
-    console.error("Unable to load projects content from Sanity", error);
-    return { eyebrow: "", title: "", linkText: "", items: [] };
-  }
+  return {
+    eyebrow: data?.eyebrow || "",
+    title: data?.title || "",
+    linkText: data?.linkText || "",
+    items: selectProjects(items, view),
+  };
 }

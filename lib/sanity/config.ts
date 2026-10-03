@@ -11,3 +11,5 @@ export const sanityConfig = {
 };
 
 export const sanityClient = createClient(sanityConfig);
+
+export const isSanityConfigured = Boolean(sanityConfig.projectId);
