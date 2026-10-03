@@ -1,9 +1,11 @@
 "use client";
 
+import siteStyles from "./site.module.css";
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Phone, X } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n";
+import { publicConfig } from "@/config/public";
 import type { SiteSettings } from "@/features/site/types";
 
 export function FloatingContactActions({
@@ -16,7 +18,7 @@ export function FloatingContactActions({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const isArabic = locale === "ar";
-  const whatsappUrl = settings?.whatsappUrl || process.env.NEXT_PUBLIC_WHATSAPP_URL;
+  const whatsappUrl = settings?.whatsappUrl || publicConfig.whatsappUrl;
   const phone = settings?.phone;
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export function FloatingContactActions({
   return (
     <div
       ref={containerRef}
-      className="floating-contact"
+      className={siteStyles["floating-contact"]}
       data-open={String(isOpen)}
       dir={isArabic ? "rtl" : "ltr"}
       onBlur={(event) => {
@@ -54,13 +56,13 @@ export function FloatingContactActions({
       }}
     >
       <div
-        className="floating-contact-menu"
+        className={siteStyles["floating-contact-menu"]}
         id="floating-contact-menu"
         aria-hidden={!isOpen}
       >
         {whatsappUrl && (
           <a
-            className="floating-contact-action floating-contact-whatsapp"
+            className={`${siteStyles["floating-contact-action"]} ${siteStyles["floating-contact-whatsapp"]}`}
             href={whatsappUrl}
             target="_blank"
             rel="noreferrer"
@@ -68,7 +70,10 @@ export function FloatingContactActions({
             title={isArabic ? "تواصل عبر واتساب" : "Chat on WhatsApp"}
             tabIndex={isOpen ? 0 : -1}
           >
-            <span className="floating-contact-icon" aria-hidden="true">
+            <span
+              className={siteStyles["floating-contact-icon"]}
+              aria-hidden="true"
+            >
               <MessageCircle size={20} strokeWidth={1.8} />
             </span>
             <span>{isArabic ? "تواصل عبر واتساب" : "Chat on WhatsApp"}</span>
@@ -77,13 +82,16 @@ export function FloatingContactActions({
 
         {phone && (
           <a
-            className="floating-contact-action floating-contact-call"
+            className={`${siteStyles["floating-contact-action"]} ${siteStyles["floating-contact-call"]}`}
             href={`tel:${phone}`}
             aria-label={isArabic ? "اتصل بنا" : "Call us"}
             title={isArabic ? "اتصل بنا" : "Call us"}
             tabIndex={isOpen ? 0 : -1}
           >
-            <span className="floating-contact-icon" aria-hidden="true">
+            <span
+              className={siteStyles["floating-contact-icon"]}
+              aria-hidden="true"
+            >
               <Phone size={19} strokeWidth={1.8} />
             </span>
             <span>{isArabic ? "اتصل بنا" : "Call us"}</span>
@@ -92,7 +100,7 @@ export function FloatingContactActions({
       </div>
 
       <button
-        className="floating-contact-toggle"
+        className={siteStyles["floating-contact-toggle"]}
         type="button"
         aria-expanded={isOpen}
         aria-controls="floating-contact-menu"

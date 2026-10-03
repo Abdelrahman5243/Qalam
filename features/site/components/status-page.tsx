@@ -1,5 +1,6 @@
 "use client";
 
+import siteStyles from "./site.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,7 +20,9 @@ export function StatusPage({ kind, onRetry }: StatusPageProps) {
   const copy = isEnglish
     ? {
         eyebrow: isNotFound ? "Page not found" : "System interruption",
-        title: isNotFound ? "This lift doesn’t stop here." : "The lift needs a moment.",
+        title: isNotFound
+          ? "This lift doesn’t stop here."
+          : "The lift needs a moment.",
         description: isNotFound
           ? "The page may have moved, or the address may be incorrect. Let’s get you back to a working floor."
           : "An unexpected error interrupted this page. You can try again or return to the home floor.",
@@ -39,36 +42,58 @@ export function StatusPage({ kind, onRetry }: StatusPageProps) {
       };
 
   return (
-    <main className={"status-page " + (isEnglish ? "locale-en" : "locale-ar")} dir={isEnglish ? "ltr" : "rtl"} lang={locale}>
-      <div className="status-page-grid" aria-hidden="true" />
-        <SiteHeader locale={locale} settings={null} />
+    <main
+      className={`${siteStyles["status-page"]} ${isEnglish ? "locale-en" : "locale-ar"}`}
+      dir={isEnglish ? "ltr" : "rtl"}
+      lang={locale}
+    >
+      <div className={siteStyles["status-page-grid"]} aria-hidden="true" />
+      <SiteHeader locale={locale} settings={null} />
 
-      <div className="status-page-content">
-        <section className="status-page-copy" aria-labelledby="status-title">
-          <p className="status-page-kicker">{copy.eyebrow}</p>
+      <div className={siteStyles["status-page-content"]}>
+        <section
+          className={siteStyles["status-page-copy"]}
+          aria-labelledby="status-title"
+        >
+          <p className={siteStyles["status-page-kicker"]}>{copy.eyebrow}</p>
           <h1 id="status-title">{copy.title}</h1>
-          <p className="status-page-description">{copy.description}</p>
-          <div className="status-page-actions">
-            <Link className="status-page-primary" href={`/${locale}`}>
+          <p className={siteStyles["status-page-description"]}>
+            {copy.description}
+          </p>
+          <div className={siteStyles["status-page-actions"]}>
+            <Link
+              className={siteStyles["status-page-primary"]}
+              href={`/${locale}`}
+            >
               {copy.home}
             </Link>
             {onRetry ? (
-              <button className="status-page-secondary" type="button" onClick={onRetry}>
+              <button
+                className={siteStyles["status-page-secondary"]}
+                type="button"
+                onClick={onRetry}
+              >
                 {copy.retry}
               </button>
             ) : null}
           </div>
         </section>
 
-        <div className="status-page-visual" aria-hidden="true">
-          <div className="status-page-code">{isNotFound ? "404" : "500"}</div>
-          <div className="status-page-shaft">
-            <div className="status-page-cabin">
+        <div className={siteStyles["status-page-visual"]} aria-hidden="true">
+          <div className={siteStyles["status-page-code"]}>
+            {isNotFound ? "404" : "500"}
+          </div>
+          <div className={siteStyles["status-page-shaft"]}>
+            <div className={siteStyles["status-page-cabin"]}>
               <span />
               <span />
             </div>
-            <div className="status-page-floor status-page-floor-top" />
-            <div className="status-page-floor status-page-floor-bottom" />
+            <div
+              className={`${siteStyles["status-page-floor"]} ${siteStyles["status-page-floor-top"]}`}
+            />
+            <div
+              className={`${siteStyles["status-page-floor"]} ${siteStyles["status-page-floor-bottom"]}`}
+            />
           </div>
         </div>
       </div>

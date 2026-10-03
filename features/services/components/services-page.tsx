@@ -1,5 +1,7 @@
 "use client";
 
+import siteStyles from "@/features/site/components/site.module.css";
+import styles from "./services.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowLeft, Building2 } from "lucide-react";
@@ -24,9 +26,10 @@ export function ServicesPage({
   const DirectionArrow = isArabic ? ArrowLeft : ArrowRight;
 
   return (
-    <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
+    <main className={siteStyles["inner-page"]} dir={isArabic ? "rtl" : "ltr"}>
       <PageIntro
-        settings={settings} locale={locale}
+        settings={settings}
+        locale={locale}
         eyebrow={services.eyebrow || (isArabic ? "خدماتنا" : "Our services")}
         title={services.title || (isArabic ? "خدماتنا" : "Our Services")}
         description={
@@ -36,20 +39,25 @@ export function ServicesPage({
         }
       />
 
-      <section className="inner-page-section" aria-label={services.title}>
-        <div className="inner-page-container service-detail-grid">
+      <section
+        className={siteStyles["inner-page-section"]}
+        aria-label={services.title}
+      >
+        <div
+          className={`${siteStyles["inner-page-container"]} ${styles["service-detail-grid"]}`}
+        >
           {services.items.map((service, index) => (
             <motion.article
               key={`${service.title}-${index}`}
-              className="service-detail-card"
+              className={styles["service-detail-card"]}
               initial={reduceMotion ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.45, delay: index * 0.06 }}
             >
-              <div className="service-detail-image">
+              <div className={styles["service-detail-image"]}>
                 <Image
-                  className="service-detail-image-desktop"
+                  className={styles["service-detail-image-desktop"]}
                   src={service.image.url}
                   alt={service.image.alt}
                   fill
@@ -57,7 +65,7 @@ export function ServicesPage({
                   sizes="(max-width: 700px) 100vw, 33vw"
                 />
                 <Image
-                  className="service-detail-image-mobile"
+                  className={styles["service-detail-image-mobile"]}
                   src={(service.mobileImage ?? service.image).url}
                   alt={(service.mobileImage ?? service.image).alt}
                   fill
@@ -65,7 +73,10 @@ export function ServicesPage({
                   sizes="100vw"
                 />
               </div>
-              <div className="service-detail-icon" aria-hidden={!service.icon}>
+              <div
+                className={styles["service-detail-icon"]}
+                aria-hidden={!service.icon}
+              >
                 {service.icon ? (
                   <Image
                     src={service.icon.url}
@@ -78,8 +89,8 @@ export function ServicesPage({
                   <Building2 size={38} strokeWidth={1.5} />
                 )}
               </div>
-              <div className="service-detail-copy">
-                <p className="service-detail-index">
+              <div className={styles["service-detail-copy"]}>
+                <p className={styles["service-detail-index"]}>
                   {String(index + 1).padStart(2, "0")}
                 </p>
                 <h2>{service.title}</h2>

@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 import type { Locale } from "@/lib/i18n";
 import type { ServicesSection } from "../types";
+import styles from "./services.module.css";
 
 export function ServicesSection({
   services,
@@ -23,82 +24,91 @@ export function ServicesSection({
   return (
     <section
       id="services"
-      className="services-section"
+      className={styles["services-section"]}
       dir={isArabic ? "rtl" : "ltr"}
       aria-labelledby="services-title"
     >
-      <div className="services-inner">
-        <div className="services-heading">
+      <div className={styles["services-inner"]}>
+        <div className={styles["services-heading"]}>
           <div>
-            <p className="services-eyebrow">{services.eyebrow}</p>
+            <p className={styles["services-eyebrow"]}>{services.eyebrow}</p>
             <h2 id="services-title">{services.title}</h2>
           </div>
-          <Link className="services-all-link" href={`/${locale}/services`}>
+          <Link
+            className={styles["services-all-link"]}
+            href={`/${locale}/services`}
+          >
             {services.linkText}
             <DirectionArrow aria-hidden="true" size={16} />
           </Link>
         </div>
 
-        <div id="services-list" className="services-grid">
+        <div id="services-list" className={styles["services-grid"]}>
           {services.items.slice(0, 3).map((service, index) => (
             <Link
               key={`${service.title}-${index}`}
-              className="service-card-link"
+              className={styles["service-card-link"]}
               href={`/${locale}/services/${encodeURIComponent(service.slug)}`}
               aria-label={service.title}
             >
-            <motion.article
-              className="service-card"
-              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.45,
-                delay: index * 0.08,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <div className="service-image">
-                <Image
-                  className="service-image-desktop"
-                  src={service.image.url}
-                  alt={service.image.alt}
-                  fill
-                  unoptimized
-                  sizes="(max-width: 720px) 50vw, 33vw"
-                />
-                <Image
-                  className="service-image-mobile"
-                  src={(service.mobileImage ?? service.image).url}
-                  alt={(service.mobileImage ?? service.image).alt}
-                  fill
-                  unoptimized
-                  sizes="50vw"
-                />
-              </div>
-              <div className="service-icon" aria-hidden={!service.icon}>
-                {service.icon ? (
+              <motion.article
+                className={styles["service-card"]}
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.45,
+                  delay: index * 0.08,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <div className={styles["service-image"]}>
                   <Image
-                    src={service.icon.url}
-                    alt={service.icon.alt}
-                    width={64}
-                    height={64}
+                    className={styles["service-image-desktop"]}
+                    src={service.image.url}
+                    alt={service.image.alt}
+                    fill
                     unoptimized
+                    sizes="(max-width: 720px) 50vw, 33vw"
                   />
-                ) : (
-                  <Building2 size={34} strokeWidth={1.5} />
-                )}
-              </div>
-              <div className="service-card-copy">
-                <div>
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
+                  <Image
+                    className={styles["service-image-mobile"]}
+                    src={(service.mobileImage ?? service.image).url}
+                    alt={(service.mobileImage ?? service.image).alt}
+                    fill
+                    unoptimized
+                    sizes="50vw"
+                  />
                 </div>
-                <span className="service-card-link-indicator" aria-hidden="true">
-                  <DirectionArrow size={15} />
-                </span>
-              </div>
-            </motion.article>
+                <div
+                  className={styles["service-icon"]}
+                  aria-hidden={!service.icon}
+                >
+                  {service.icon ? (
+                    <Image
+                      src={service.icon.url}
+                      alt={service.icon.alt}
+                      width={64}
+                      height={64}
+                      unoptimized
+                    />
+                  ) : (
+                    <Building2 size={34} strokeWidth={1.5} />
+                  )}
+                </div>
+                <div className={styles["service-card-copy"]}>
+                  <div>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                  </div>
+                  <span
+                    className={styles["service-card-link-indicator"]}
+                    aria-hidden="true"
+                  >
+                    <DirectionArrow size={15} />
+                  </span>
+                </div>
+              </motion.article>
             </Link>
           ))}
         </div>

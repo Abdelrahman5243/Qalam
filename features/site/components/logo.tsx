@@ -2,9 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { SiteSettings } from "../types";
-import { createDataAttribute } from "next-sanity";
-
-import { sanityConfig } from "@/lib/sanity/config";
+import { siteSettingsPath } from "@/lib/sanity/presentation";
 import { siteAssets } from "@/lib/site-assets";
 import type { Locale } from "@/lib/i18n";
 
@@ -50,18 +48,9 @@ export function Logo({
       stacked: undefined,
     },
   } as const;
-  const src = dynamicSources[variant][layout] || fallbackSources[variant][layout];
+  const src =
+    dynamicSources[variant][layout] || fallbackSources[variant][layout];
   const editableField = layout === "horizontal" ? "logo" : "footerLogo";
-  const siteSettingsData = settings
-    ? createDataAttribute({
-        id: "siteSettings",
-        type: "siteSettings",
-        baseUrl: sanityConfig.studioUrl,
-        dataset: sanityConfig.dataset,
-        projectId: sanityConfig.projectId,
-      })
-    : null;
-
   const alt = decorative
     ? ""
     : settings?.companyName || "Next Generation Elevators";
@@ -72,8 +61,10 @@ export function Logo({
       alt={alt}
       width={layout === "stacked" ? 180 : 480}
       height={layout === "stacked" ? 140 : 108}
-      sizes={layout === "horizontal" ? "(max-width: 1023px) 42vw, 190px" : "180px"}
-      data-sanity={siteSettingsData?.(editableField)}
+      sizes={
+        layout === "horizontal" ? "(max-width: 1023px) 42vw, 190px" : "180px"
+      }
+      data-sanity={settings ? siteSettingsPath(editableField) : undefined}
       priority={priority}
       unoptimized={src.startsWith("http")}
       aria-hidden={decorative}

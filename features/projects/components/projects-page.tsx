@@ -1,5 +1,7 @@
 "use client";
 
+import siteStyles from "@/features/site/components/site.module.css";
+import styles from "./projects.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowLeft } from "lucide-react";
@@ -24,9 +26,10 @@ export function ProjectsPage({
   const DirectionArrow = isArabic ? ArrowLeft : ArrowRight;
 
   return (
-    <main className="inner-page" dir={isArabic ? "rtl" : "ltr"}>
+    <main className={siteStyles["inner-page"]} dir={isArabic ? "rtl" : "ltr"}>
       <PageIntro
-        settings={settings} locale={locale}
+        settings={settings}
+        locale={locale}
         eyebrow={projects.eyebrow || (isArabic ? "مشاريعنا" : "Our projects")}
         title={projects.title || (isArabic ? "مشاريعنا" : "Our Projects")}
         description={
@@ -36,18 +39,23 @@ export function ProjectsPage({
         }
       />
 
-      <section className="inner-page-section" aria-label={projects.title}>
-        <div className="inner-page-container project-detail-grid">
+      <section
+        className={siteStyles["inner-page-section"]}
+        aria-label={projects.title}
+      >
+        <div
+          className={`${siteStyles["inner-page-container"]} ${styles["project-detail-grid"]}`}
+        >
           {projects.items.map((project, index) => (
             <motion.article
               key={`${project.title}-${index}`}
-              className={`project-detail-card project-detail-card-${index + 1}`}
+              className={`${styles["project-detail-card"]} ${styles[`project-detail-card-${index + 1}`]}`}
               initial={reduceMotion ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.45, delay: index * 0.06 }}
             >
-              <div className="project-detail-image">
+              <div className={styles["project-detail-image"]}>
                 <Image
                   src={project.image.url}
                   alt={project.image.alt}
@@ -55,9 +63,9 @@ export function ProjectsPage({
                   unoptimized
                   sizes="(max-width: 700px) 100vw, 50vw"
                 />
-                <div className="project-detail-overlay" />
+                <div className={styles["project-detail-overlay"]} />
               </div>
-              <div className="project-detail-copy">
+              <div className={styles["project-detail-copy"]}>
                 <p>{project.category}</p>
                 <h2>{project.title}</h2>
                 <span>{project.location}</span>

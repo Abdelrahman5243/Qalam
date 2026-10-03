@@ -24,10 +24,11 @@ import {
 import type { RefObject } from "react";
 import { createPortal } from "react-dom";
 
-import type { Locale } from "@/lib/i18n";
+import { getOtherLocale, switchLocalePath, type Locale } from "@/lib/i18n";
 import type { SiteSettings } from "../types";
 import { Logo } from "./logo";
 import styles from "./site-header.module.css";
+import "./site.module.css";
 
 type HeaderProps = {
   locale: Locale;
@@ -42,14 +43,22 @@ const navigation = {
     { label: "About Us", href: "/en/about", icon: UsersRound },
     { label: "Services", href: "/en/services", icon: Settings2 },
     { label: "Projects", href: "/en/projects", icon: PanelsTopLeft },
-    { label: "Cabin Designs 2026", href: "/en/cabin-designs-2026", icon: ImageIcon },
+    {
+      label: "Cabin Designs 2026",
+      href: "/en/cabin-designs-2026",
+      icon: ImageIcon,
+    },
   ],
   ar: [
     { label: "الرئيسية", href: "/ar", icon: Home },
     { label: "من نحن", href: "/ar/about", icon: UsersRound },
     { label: "الخدمات", href: "/ar/services", icon: Settings2 },
     { label: "المشاريع", href: "/ar/projects", icon: PanelsTopLeft },
-    { label: "ديكورات كبائن 2026", href: "/ar/cabin-designs-2026", icon: ImageIcon },
+    {
+      label: "ديكورات كبائن 2026",
+      href: "/ar/cabin-designs-2026",
+      icon: ImageIcon,
+    },
   ],
 } as const;
 
@@ -86,24 +95,12 @@ function BrandMark({
   );
 }
 
-function getLocalizedPath(pathname: string | undefined, locale: Locale) {
-  const path = pathname || "/";
-  const hasArabicPrefix = path === "/ar" || path.startsWith("/ar/");
-  const hasEnglishPrefix = path === "/en" || path.startsWith("/en/");
-
-  if (hasArabicPrefix || hasEnglishPrefix) {
-    return "/" + locale + path.slice(3);
-  }
-
-  return "/" + locale + (path === "/" ? "" : path.startsWith("/") ? path : "/" + path);
-}
-
 function LanguageSwitch({
   locale,
   pathname,
 }: Pick<HeaderProps, "locale"> & { pathname?: string }) {
-  const otherLocale = locale === "ar" ? "en" : "ar";
-  const targetPath = getLocalizedPath(pathname, otherLocale);
+  const otherLocale = getOtherLocale(locale);
+  const targetPath = switchLocalePath(pathname, otherLocale);
 
   return (
     <Link

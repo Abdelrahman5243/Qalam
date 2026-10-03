@@ -1,9 +1,8 @@
-"use client";
-
 import Image from "next/image";
 
 import type { Locale } from "@/lib/i18n";
 import type { BrandsSection } from "../types";
+import styles from "./brands.module.css";
 
 export function BrandsSection({
   brands,
@@ -43,26 +42,26 @@ export function BrandsSection({
 
   return (
     <section
-      className="brands-section"
+      className={styles["brands-section"]}
       dir={isArabic ? "rtl" : "ltr"}
       aria-labelledby="brands-title"
     >
-      <div className="brands-inner">
-        <div className="brands-heading">
+      <div className={styles["brands-inner"]}>
+        <div className={styles["brands-heading"]}>
           <div>
-            <p className="brands-eyebrow">{brands.eyebrow}</p>
+            <p className={styles["brands-eyebrow"]}>{brands.eyebrow}</p>
             <h2 id="brands-title">{brands.title}</h2>
           </div>
           <p>{brands.description}</p>
         </div>
         <div
-          className="brands-marquee"
+          className={styles["brands-marquee"]}
           aria-label={isArabic ? "شعارات الشركاء" : "Partner logos"}
         >
-          <div className="brands-track">{items.map(renderLogo)}</div>
+          <div className={styles["brands-track"]}>{items.map(renderLogo)}</div>
         </div>
         <div
-          className="brands-mobile-grid"
+          className={styles["brands-mobile-grid"]}
           aria-label={isArabic ? "كل شعارات الشركاء" : "All partner logos"}
         >
           {brands.items.map(renderLogo)}

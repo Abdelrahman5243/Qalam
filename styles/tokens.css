@@ -1,0 +1,35 @@
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --surface-page: #f7f8f3;
+  --surface-header: #fafbf7;
+  --surface-dark: #1d4034;
+  --brand-green: #4f946c;
+  --brand-green-hover: #62a37c;
+  --brand-ink: #1d241f;
+  --text-on-dark: #ffffff;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.8);
+  --border-on-dark: rgba(255, 255, 255, 0.56);
+  --motion-fast: 180ms;
+  --container-max: 1280px;
+  --container-gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-y: clamp(4.5rem, 8vw, 7rem);
+  --font-body: var(--font-brand), "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-display: var(--font-brand), "Segoe UI", Tahoma, Arial, sans-serif;
+  --text-nav: clamp(0.92rem, 1vw, 1rem);
+  --text-eyebrow: clamp(0.82rem, 0.8vw, 0.95rem);
+  --text-body: clamp(1rem, 1.1vw, 1.125rem);
+  --text-body-small: clamp(0.9rem, 0.95vw, 1rem);
+  --text-hero: clamp(2.5rem, 4.2vw, 4.75rem);
+  --leading-body: 1.7;
+  --leading-hero: 1.08;
+}
