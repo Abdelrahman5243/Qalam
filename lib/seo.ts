@@ -53,20 +53,15 @@ export function createPageMetadata({
       title: cleanTitle,
       description: cleanDescription,
       url: canonical,
-      siteName: "مصاعد الجيل القادم",
+      siteName: settings?.companyName || "New website",
       locale,
-      images: [
-        {
-          url: image?.url || absoluteUrl("/og/og-image-1200x630.png"),
-          alt: image?.alt || cleanTitle,
-        },
-      ],
+      ...(image ? { images: [{ url: image.url, alt: image.alt || cleanTitle }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: cleanTitle,
       description: cleanDescription,
-      images: [image?.url || absoluteUrl("/og/og-image-1200x630.png")],
+      ...(image ? { images: [image.url] } : {}),
     },
     robots: { index: true, follow: true },
   };

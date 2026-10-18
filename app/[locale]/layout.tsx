@@ -4,11 +4,10 @@ import { draftMode } from "next/headers";
 
 import { defaultLocale, getDirection, isLocale, type Locale } from "@/lib/i18n";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
-import { siteAssets } from "@/lib/site-assets";
 import { absoluteUrl, createPageMetadata } from "@/lib/seo";
 import { SanityLive } from "@/lib/sanity/live";
 import { SanityVisualEditing } from "@/lib/sanity/visual-editing";
-import { FloatingContactActions } from "@/features/site/components/floating-contact-actions";
+import type { CSSProperties } from "react";
 
 // Site settings include mutable branding assets. Keep the locale tree dynamic
 // so a published logo change is read on the next request instead of being
@@ -23,12 +22,11 @@ export async function generateMetadata({
   const { locale: value } = await params;
   const locale: Locale = isLocale(value) ? value : defaultLocale;
   const settings = await getSiteSettings(locale);
-  const fallbackTitle =
-    locale === "ar" ? "شركة المصاعد" : "Next Generation Elevators";
+  const fallbackTitle = locale === "ar" ? "موقع جديد" : "New website";
   const fallbackDescription =
     locale === "ar"
-      ? "حلول المصاعد والتركيب والصيانة للمشاريع السكنية والتجارية."
-      : "Elevator installation, maintenance, and modern mobility solutions for your building.";
+      ? "موقع بسيط قابل للتخصيص."
+      : "A simple website ready to customize.";
 
   return {
     ...createPageMetadata({
@@ -38,16 +36,6 @@ export async function generateMetadata({
       description: settings?.seo.description || fallbackDescription,
       settings,
     }),
-    icons: {
-      icon: [
-        { url: siteAssets.faviconIco },
-        { url: siteAssets.favicon16, sizes: "16x16", type: "image/png" },
-        { url: siteAssets.favicon32, sizes: "32x32", type: "image/png" },
-      ],
-      apple: [
-        { url: siteAssets.appleTouchIcon, sizes: "180x180", type: "image/png" },
-      ],
-    },
   };
 }
 
@@ -68,20 +56,20 @@ export default async function LocaleLayout({
       "@context": "https://schema.org",
       "@type": "WebSite",
       "@id": `${absoluteUrl()}#website`,
-      name: "مصاعد الجيل القادم",
-      alternateName: "Next Generation Elevators",
-      url: "https://next-generation-elevators.vercel.app/",
+      name: settings?.companyName || "New website",
+      alternateName: settings?.companyName || undefined,
+      url: absoluteUrl(`/${locale}`),
       publisher: { "@id": organizationId },
     },
     {
       "@context": "https://schema.org",
       "@type": ["Organization", "LocalBusiness"],
       "@id": organizationId,
-      name: "مصاعد الجيل القادم",
-      alternateName: "Next Generation Elevators",
-      url: "https://next-generation-elevators.vercel.app/",
-      logo: "https://cdn.sanity.io/images/qwovtgh7/production/da584322ee51dd595475a6710113839ab872b7b1-1200x269.png?w=480&auto=format",
-      image: absoluteUrl(settings?.logo.url || siteAssets.logoTransparent),
+      name: settings?.companyName || "New website",
+      alternateName: settings?.companyName || undefined,
+      url: absoluteUrl(`/${locale}`),
+      logo: settings?.logo?.url ? absoluteUrl(settings.logo.url) : undefined,
+      image: settings?.logo?.url ? absoluteUrl(settings.logo.url) : undefined,
       address: settings?.address
         ? { "@type": "PostalAddress", streetAddress: settings.address }
         : undefined,
@@ -105,6 +93,25 @@ export default async function LocaleLayout({
       lang={locale}
       dir={getDirection(locale)}
       className={`min-h-full ${locale === "ar" ? "locale-ar" : "locale-en"}`}
+      style={
+        {
+          ...(settings?.branding.primaryColor
+            ? { "--brand-green": settings.branding.primaryColor }
+            : {}),
+          ...(settings?.branding.accentColor
+            ? { "--brand-green-hover": settings.branding.accentColor }
+            : {}),
+          ...(settings?.branding.darkColor
+            ? { "--surface-dark": settings.branding.darkColor }
+            : {}),
+          ...(settings?.branding.bodyFont
+            ? { "--font-body": settings.branding.bodyFont }
+            : {}),
+          ...(settings?.branding.headingFont
+            ? { "--font-display": settings.branding.headingFont }
+            : {}),
+        } as CSSProperties
+      }
     >
       {structuredData.map((data) => (
         <script
@@ -114,7 +121,6 @@ export default async function LocaleLayout({
         />
       ))}
       {children}
-      <FloatingContactActions locale={locale} settings={settings} />
       <SanityLive />
       {isDraftMode && <SanityVisualEditing />}
     </div>

@@ -1,47 +1,18 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
-import { Cairo, Manrope } from "next/font/google";
 import "./globals.css";
-import { siteAssets } from "@/lib/site-assets";
 import { metadataBase } from "@/lib/seo";
 import { publicConfig } from "@/config/public";
-
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  variable: "--font-arabic",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-brand",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 export const metadata: Metadata = {
   metadataBase,
   title: {
-    default: "الجيل القادم للمصاعد | Next Generation Elevators",
-    template: "%s | Next Generation Elevators",
+    default: "New website",
+    template: "%s | New website",
   },
   description:
-    "حلول متكاملة للمصاعد والسلالم المتحركة تجمع بين الجودة والأمان والكفاءة والتكنولوجيا الحديثة.",
-  verification: {
-    google: "Qv5uswk89gVu1GdhVaeYHIM03uZb4qIXFQ-g5tzecAQ",
-  },
-  icons: {
-    icon: [
-      { url: siteAssets.faviconIco },
-      { url: siteAssets.favicon16, sizes: "16x16", type: "image/png" },
-      { url: siteAssets.favicon32, sizes: "32x32", type: "image/png" },
-    ],
-    apple: [
-      { url: siteAssets.appleTouchIcon, sizes: "180x180", type: "image/png" },
-    ],
-  },
+    "A simple, bilingual website starter.",
 };
 
 export const viewport = {
@@ -55,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="ar"
       dir="rtl"
-      className={`h-full antialiased ${cairo.variable} ${manrope.variable}`}
+      className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
         {publicConfig.googleTagManagerId ? (

@@ -1,5 +1,4 @@
 import { createDataAttribute } from "next-sanity";
-
 import { sanityConfig } from "./config";
 
 const siteSettingsData = createDataAttribute({

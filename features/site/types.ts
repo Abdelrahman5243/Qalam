@@ -4,9 +4,11 @@ export type SiteImage = {
 };
 
 export type SiteSettings = {
-  logo: SiteImage;
+  logo: SiteImage | null;
   footerLogo: SiteImage | null;
   companyName: string;
+  headline: string | null;
+  description: string | null;
   nationalNumber: string | null;
   taxNumber: string | null;
   commercialRegistration: string | null;
@@ -23,5 +25,12 @@ export type SiteSettings = {
     title: string | null;
     description: string | null;
     ogImage: SiteImage | null;
+  };
+  branding: {
+    primaryColor: string | null;
+    accentColor: string | null;
+    darkColor: string | null;
+    bodyFont: string | null;
+    headingFont: string | null;
   };
 };
