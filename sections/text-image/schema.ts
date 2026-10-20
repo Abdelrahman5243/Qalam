@@ -7,7 +7,11 @@ export const textImage = defineSection({
     heading: { type: "text", required: true, max: 80 },
     body: "richText",
     image: "image",
-    imageSide: { type: "string", title: "Image side", options: ["end", "start"] },
+    imageSide: {
+      type: "string",
+      title: "Image side",
+      options: ["end", "start"],
+    },
     button: "link",
   },
 });

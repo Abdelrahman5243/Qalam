@@ -10,7 +10,11 @@ export default function GlobalNotFound() {
   return (
     <html lang={defaultLocale} dir={direction(defaultLocale)}>
       <body>
-        <StatusPage label="404" title="الصفحة غير موجودة" message="تحقق من الرابط وحاول مرة أخرى." />
+        <StatusPage
+          label="404"
+          title="الصفحة غير موجودة"
+          message="تحقق من الرابط وحاول مرة أخرى."
+        />
       </body>
     </html>
   );

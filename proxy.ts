@@ -4,7 +4,13 @@ import { defaultLocale, locales } from "@/lib/i18n";
 /** Paths without a language go to the default one: "/" → "/ar", "/about" → "/ar/about". */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (locales.some((locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`))) return;
+  if (
+    locales.some(
+      (locale) =>
+        pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
+    )
+  )
+    return;
 
   const url = request.nextUrl.clone();
   url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;

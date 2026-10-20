@@ -18,7 +18,13 @@ export default defineConfig({
     presentationTool({
       // Sites the preview may load from: this deployment, plus local development.
       // Each one must also be a CORS origin (with credentials) in the Sanity project.
-      allowOrigins: [...new Set([new URL(env.sanity.previewUrl).origin, new URL(env.siteUrl).origin, "http://localhost:3000"])],
+      allowOrigins: [
+        ...new Set([
+          new URL(env.sanity.previewUrl).origin,
+          new URL(env.siteUrl).origin,
+          "http://localhost:3000",
+        ]),
+      ],
       previewUrl: {
         initial: env.sanity.previewUrl,
         previewMode: {

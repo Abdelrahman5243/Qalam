@@ -11,7 +11,11 @@ const isInsideStudio = () => window.parent !== window;
  * In a normal tab: a bar saying unpublished changes are visible (to this browser only), with a way out.
  */
 export function VisualEditing() {
-  const insideStudio = useSyncExternalStore(subscribe, isInsideStudio, () => true);
+  const insideStudio = useSyncExternalStore(
+    subscribe,
+    isInsideStudio,
+    () => true,
+  );
   if (insideStudio) return <SanityVisualEditing />;
   return (
     // A full page load (not <Link>) so the route can clear the draft cookie.

@@ -14,14 +14,14 @@ Next.js 16 (App Router) · React 19 · TypeScript (strict) · Sanity v5 · Visua
 
 In a typical Next.js + Sanity project, adding one section means keeping the same data shape in sync across many places:
 
-| Where | What you write by hand |
-|---|---|
-| Sanity schema | `defineField` for every field, for every language |
-| GROQ query | a projection that picks the fields again |
-| TypeScript | a type that describes them a third time |
+| Where         | What you write by hand                                   |
+| ------------- | -------------------------------------------------------- |
+| Sanity schema | `defineField` for every field, for every language        |
+| GROQ query    | a projection that picks the fields again                 |
+| TypeScript    | a type that describes them a third time                  |
 | Mapping layer | code that picks the right language and cleans each field |
-| Studio config | structure, preview routes, document locations |
-| Component | `data-sanity` attributes for click-to-edit |
+| Studio config | structure, preview routes, document locations            |
+| Component     | `data-sanity` attributes for click-to-edit               |
 
 That was the state of this project before the refactor: **one section touched 8 files, and the shape was declared 4 times.** Each copy can drift, and nothing tells you when it does.
 
@@ -65,6 +65,7 @@ export function Faq({ heading, items }: SectionProps<typeof faq>) {
 ## Features
 
 **For editors**
+
 - **Page builder**: unlimited pages, each composed of reorderable sections (`/ar/<slug>` and `/en/<slug>`).
 - **Visual Editing**: click any text on the live preview to edit it. Icons and images are click-to-edit too.
 - **Side-by-side languages**: Arabic and English fields next to each other, with a full RTL / LTR layout.
@@ -72,6 +73,7 @@ export function Faq({ heading, items }: SectionProps<typeof faq>) {
 - **Menu and branding from the dashboard**: internal links are written once (`/about`) and prefixed with the right language automatically.
 
 **For developers**
+
 - **Inferred types end to end**, with no codegen step and no hand-written content types.
 - **A single CMS boundary.** Only `cms/` knows Sanity exists, so components receive plain, typed, language-resolved props.
 - **Content migrations** via the Sanity CLI: dry-run by default and idempotent.
@@ -150,13 +152,13 @@ Options on any field: `title`, `description`, `required`, `recommended`, `min`, 
 
 ## Included sections
 
-| Section | Shows |
-|---|---|
-| `hero` | status badge, headline, role, location, rich-text intro, two buttons, social links |
-| `features` | heading, intro, grid of cards |
-| `textImage` | heading, rich text, image on either side, button |
-| `faq` | accessible accordion (`<details>`, no JavaScript) |
-| `cta` | heading, text, button |
+| Section     | Shows                                                                              |
+| ----------- | ---------------------------------------------------------------------------------- |
+| `hero`      | status badge, headline, role, location, rich-text intro, two buttons, social links |
+| `features`  | heading, intro, grid of cards                                                      |
+| `textImage` | heading, rich text, image on either side, button                                   |
+| `faq`       | accessible accordion (`<details>`, no JavaScript)                                  |
+| `cta`       | heading, text, button                                                              |
 
 ## Checks
 

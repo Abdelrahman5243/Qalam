@@ -16,13 +16,17 @@ const ogLocales = { ar: "ar_EG", en: "en_US" } satisfies Record<Locale, string>;
 export const absoluteUrl = (path = "") => `${env.siteUrl}${path}`;
 
 /** Site path of a page: the home page lives at /{locale}, others at /{locale}/{slug}. */
-export const pagePath = (locale: Locale, slug = homeSlug) => (slug === homeSlug ? `/${locale}` : `/${locale}/${slug}`);
+export const pagePath = (locale: Locale, slug = homeSlug) =>
+  slug === homeSlug ? `/${locale}` : `/${locale}/${slug}`;
 
-export const pageUrl = (locale: Locale, slug?: string) => absoluteUrl(pagePath(locale, slug));
+export const pageUrl = (locale: Locale, slug?: string) =>
+  absoluteUrl(pagePath(locale, slug));
 
 /** hreflang map: the same page in every language. */
 export const languageAlternates = (slug?: string) => ({
-  ...Object.fromEntries(locales.map((locale) => [locale, pageUrl(locale, slug)])),
+  ...Object.fromEntries(
+    locales.map((locale) => [locale, pageUrl(locale, slug)]),
+  ),
   "x-default": pageUrl(defaultLocale, slug),
 });
 
@@ -35,10 +39,20 @@ export function cropImage(url: string, width: number, height = width) {
   return image.toString();
 }
 
-export const siteTitle = (settings: Settings | null) => settings?.seo?.title || settings?.companyName || siteName;
+export const siteTitle = (settings: Settings | null) =>
+  settings?.seo?.title || settings?.companyName || siteName;
 
 const shareImage = (image: Image | null | undefined, fallbackAlt: string) =>
-  image ? [{ url: cropImage(image.url, 1200, 630), width: 1200, height: 630, alt: image.alt || fallbackAlt }] : undefined;
+  image
+    ? [
+        {
+          url: cropImage(image.url, 1200, 630),
+          width: 1200,
+          height: 630,
+          alt: image.alt || fallbackAlt,
+        },
+      ]
+    : undefined;
 
 /** Site-wide metadata (layout level): icons, verification, defaults every page starts from. */
 export function siteMetadata(settings: Settings | null): Metadata {
@@ -51,25 +65,44 @@ export function siteMetadata(settings: Settings | null): Metadata {
     description: settings?.seo?.description || undefined,
     icons: favicon
       ? {
-          icon: [32, 192].map((size) => ({ url: cropImage(favicon.url, size), sizes: `${size}x${size}`, type: "image/png" })),
+          icon: [32, 192].map((size) => ({
+            url: cropImage(favicon.url, size),
+            sizes: `${size}x${size}`,
+            type: "image/png",
+          })),
           apple: { url: cropImage(favicon.url, 180), sizes: "180x180" },
         }
       : { icon: { url: "/favicon.svg", type: "image/svg+xml" } },
-    verification: settings?.seo?.googleVerification ? { google: settings.seo.googleVerification } : undefined,
+    verification: settings?.seo?.googleVerification
+      ? { google: settings.seo.googleVerification }
+      : undefined,
     formatDetection: { telephone: false, email: false, address: false },
   };
 }
 
-type PageOptions = { locale: Locale; slug: string; page: Page | null; settings: Settings | null };
+type PageOptions = {
+  locale: Locale;
+  slug: string;
+  page: Page | null;
+  settings: Settings | null;
+};
 
 /**
  * Page metadata. Title: the page's meta title as written, otherwise "Page title | Site title"
  * (the home page uses the site title alone). Description and share image fall back to the site defaults.
  */
-export function pageMetadata({ locale, slug, page, settings }: PageOptions): Metadata {
+export function pageMetadata({
+  locale,
+  slug,
+  page,
+  settings,
+}: PageOptions): Metadata {
   const site = siteTitle(settings);
-  const title = page?.seo?.title || (slug === homeSlug || !page?.title ? site : `${page.title} | ${site}`);
-  const description = page?.seo?.description || settings?.seo?.description || undefined;
+  const title =
+    page?.seo?.title ||
+    (slug === homeSlug || !page?.title ? site : `${page.title} | ${site}`);
+  const description =
+    page?.seo?.description || settings?.seo?.description || undefined;
   const image = page?.seo?.image ?? settings?.seo?.image ?? settings?.logo;
   const url = page?.seo?.canonical || pageUrl(locale, slug);
   const images = shareImage(image, title);
@@ -78,7 +111,11 @@ export function pageMetadata({ locale, slug, page, settings }: PageOptions): Met
     description,
     robots: page?.seo?.noIndex
       ? { index: false, follow: true }
-      : { index: true, follow: true, googleBot: { "max-image-preview": "large", "max-snippet": -1 } },
+      : {
+          index: true,
+          follow: true,
+          googleBot: { "max-image-preview": "large", "max-snippet": -1 },
+        },
     alternates: { canonical: url, languages: languageAlternates(slug) },
     openGraph: {
       type: "website",
@@ -90,7 +127,12 @@ export function pageMetadata({ locale, slug, page, settings }: PageOptions): Met
       alternateLocale: ogLocales[otherLocale(locale)],
       images,
     },
-    twitter: { card: images ? "summary_large_image" : "summary", title, description, images: images?.map((i) => i.url) },
+    twitter: {
+      card: images ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: images?.map((i) => i.url),
+    },
   };
 }
 
@@ -102,8 +144,13 @@ export function pageJsonLd({ locale, slug, page, settings }: PageOptions) {
   const site = siteTitle(settings);
   const home = pageUrl(locale);
   const url = pageUrl(locale, slug);
-  const ids = { organization: `${absoluteUrl()}#organization`, website: `${absoluteUrl()}#website` };
-  const profiles = settings?.seo?.profiles?.map((profile) => profile.url).filter(Boolean);
+  const ids = {
+    organization: `${absoluteUrl()}#organization`,
+    website: `${absoluteUrl()}#website`,
+  };
+  const profiles = settings?.seo?.profiles
+    ?.map((profile) => profile.url)
+    .filter(Boolean);
 
   const graph: object[] = [
     {
@@ -115,12 +162,20 @@ export function pageJsonLd({ locale, slug, page, settings }: PageOptions) {
       email: settings?.email || undefined,
       sameAs: profiles?.length ? profiles : undefined,
     },
-    { "@type": "WebSite", "@id": ids.website, name: site, url: home, inLanguage: locale, publisher: { "@id": ids.organization } },
+    {
+      "@type": "WebSite",
+      "@id": ids.website,
+      name: site,
+      url: home,
+      inLanguage: locale,
+      publisher: { "@id": ids.organization },
+    },
     {
       "@type": "WebPage",
       "@id": `${url}#webpage`,
       name: page?.title || site,
-      description: page?.seo?.description || settings?.seo?.description || undefined,
+      description:
+        page?.seo?.description || settings?.seo?.description || undefined,
       url,
       inLanguage: locale,
       isPartOf: { "@id": ids.website },

@@ -21,7 +21,11 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     background_color: "#111113",
     theme_color: "#111113",
     icons: favicon
-      ? [192, 512].map((size) => ({ src: cropImage(favicon.url, size), sizes: `${size}x${size}`, type: "image/png" }))
+      ? [192, 512].map((size) => ({
+          src: cropImage(favicon.url, size),
+          sizes: `${size}x${size}`,
+          type: "image/png",
+        }))
       : [{ src: "/favicon.svg", sizes: "any", type: "image/svg+xml" }],
   };
 }

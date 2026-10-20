@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
 import styles from "./section.module.css";
 
-type Props = { heading?: string | null; intro?: string | null; className?: string; children?: ReactNode };
+type Props = {
+  heading?: string | null;
+  intro?: string | null;
+  className?: string;
+  children?: ReactNode;
+};
 
 /** Standard section frame: centered container with an optional heading and intro. */
 export function Section({ heading, intro, className, children }: Props) {

@@ -46,7 +46,8 @@ type Label = { title?: string; description?: string };
 
 type Field =
   | Kind
-  | ({ type: Kind; options?: readonly string[]; source?: string } & Label & Rules)
+  | ({ type: Kind; options?: readonly string[]; source?: string } & Label &
+      Rules)
   | ({ type: "list"; fields: Fields } & Label & Rules)
   | ({ type: "group"; fields: Fields; tab?: boolean } & Label)
   | ({ type: "blocks"; of: readonly string[] } & Label);
@@ -128,10 +129,20 @@ const richTextBlock = defineArrayMember({
 
 /** Turn the shortcuts into one Sanity validation function (undefined when there are none). */
 function toValidation({ required, recommended, min, max, validation }: Rules) {
-  if (!required && !recommended && min === undefined && max === undefined && !validation)
+  if (
+    !required &&
+    !recommended &&
+    min === undefined &&
+    max === undefined &&
+    !validation
+  )
     return undefined;
   return (rule: Rule) => {
-    let result = required ? rule.required() : recommended ? rule.required().warning("Recommended") : rule;
+    let result = required
+      ? rule.required()
+      : recommended
+        ? rule.required().warning("Recommended")
+        : rule;
     if (min !== undefined) result = result.min(min);
     if (max !== undefined) result = result.max(max);
     return validation ? validation(result) : result;
@@ -224,7 +235,8 @@ const toField = (name: string, field: Field): FieldDefinition => {
   } as FieldDefinition;
 };
 
-const isTab = (field: Field) => typeof field === "object" && field.type === "group" && !!field.tab;
+const isTab = (field: Field) =>
+  typeof field === "object" && field.type === "group" && !!field.tab;
 
 const toFields = (fields: Fields): FieldDefinition[] =>
   Object.entries(fields).map(([name, field]) => toField(name, field));
@@ -234,13 +246,20 @@ const toFields = (fields: Fields): FieldDefinition[] =>
  * documents show their own title ("Home", "About") with the type underneath.
  */
 function toPreview({ title, fields }: Definition, type: "object" | "document") {
-  const kindOf = (field: Field) => (typeof field === "string" ? field : field.type);
-  const [name, field] = Object.entries(fields).find(([, f]) => kindOf(f) === "text" || kindOf(f) === "string") ?? [];
-  const path = field && kindOf(field) === "text" ? `${name}.${defaultLocale}` : name;
+  const kindOf = (field: Field) =>
+    typeof field === "string" ? field : field.type;
+  const [name, field] =
+    Object.entries(fields).find(
+      ([, f]) => kindOf(f) === "text" || kindOf(f) === "string",
+    ) ?? [];
+  const path =
+    field && kindOf(field) === "text" ? `${name}.${defaultLocale}` : name;
   return {
     select: path ? { label: path } : {},
     prepare: ({ label }: { label?: string }) =>
-      type === "object" ? { title, subtitle: label } : { title: label || title, subtitle: title },
+      type === "object"
+        ? { title, subtitle: label }
+        : { title: label || title, subtitle: title },
   };
 }
 
@@ -251,9 +270,15 @@ function toTabs({ fields }: Definition) {
   return {
     groups: [
       { name: "content", title: "Content", default: true },
-      ...tabs.map(([name, field]) => ({ name, title: (field as Label).title ?? titleOf(name) })),
+      ...tabs.map(([name, field]) => ({
+        name,
+        title: (field as Label).title ?? titleOf(name),
+      })),
     ],
-    fields: toFields(fields).map((field) => ({ ...field, group: field.group ?? "content" })),
+    fields: toFields(fields).map((field) => ({
+      ...field,
+      group: field.group ?? "content",
+    })),
   };
 }
 

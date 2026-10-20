@@ -3,7 +3,11 @@ import { Section } from "@/components/ui/section";
 import type { features } from "./schema";
 import styles from "./features.module.css";
 
-export function Features({ heading, intro, items }: SectionProps<typeof features>) {
+export function Features({
+  heading,
+  intro,
+  items,
+}: SectionProps<typeof features>) {
   return (
     <Section heading={heading} intro={intro}>
       <ul className={styles.grid}>

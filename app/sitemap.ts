@@ -9,6 +9,10 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = await getIndexablePages();
   return pages.flatMap(({ slug, updatedAt }) =>
-    locales.map((locale) => ({ url: pageUrl(locale, slug), lastModified: updatedAt, alternates: { languages: languageAlternates(slug) } })),
+    locales.map((locale) => ({
+      url: pageUrl(locale, slug),
+      lastModified: updatedAt,
+      alternates: { languages: languageAlternates(slug) },
+    })),
   );
 }

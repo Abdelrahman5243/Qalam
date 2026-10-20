@@ -19,7 +19,10 @@ async function resolve(params: Props["params"]) {
 /** Page and settings for SEO. Metadata is plain text, so the invisible click-to-edit markers are stripped. */
 async function getSeoData(params: Props["params"]) {
   const { locale, slug } = await resolve(params);
-  const [page, settings] = await Promise.all([getPage(slug, locale), getSettings(locale)]);
+  const [page, settings] = await Promise.all([
+    getPage(slug, locale),
+    getSettings(locale),
+  ]);
   return { locale, slug, page: stegaClean(page), settings };
 }
 
@@ -29,11 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { locale, slug } = await resolve(params);
-  const [page, seo, { isEnabled: isDraftMode }] = await Promise.all([getPage(slug, locale), getSeoData(params), draftMode()]);
+  const [page, seo, { isEnabled: isDraftMode }] = await Promise.all([
+    getPage(slug, locale),
+    getSeoData(params),
+    draftMode(),
+  ]);
   if (!page) notFound();
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd(seo)) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd(seo)) }}
+      />
       <Sections page={page} locale={locale} isDraftMode={isDraftMode} />
     </main>
   );

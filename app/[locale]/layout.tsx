@@ -16,7 +16,13 @@ export const dynamic = "force-dynamic";
 
 export const generateStaticParams = () => locales.map((locale) => ({ locale }));
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#111113", colorScheme: "dark" };
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#111113",
+  colorScheme: "dark",
+};
 
 type Props = { children: ReactNode; params: Promise<{ locale: string }> };
 
@@ -26,7 +32,11 @@ export async function generateMetadata({ params }: Props) {
 }
 
 /** Branding setting → the CSS variable it overrides. */
-const brandingVariables = { primaryColor: "--brand-green", accentColor: "--brand-green-hover", bodyFont: "--font-body" } as const;
+const brandingVariables = {
+  primaryColor: "--brand-green",
+  accentColor: "--brand-green-hover",
+  bodyFont: "--font-body",
+} as const;
 
 function brandingStyle(branding: Settings["branding"]) {
   const style: Record<string, string> = {};
@@ -44,17 +54,33 @@ export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
   // Only /ar and /en exist; anything else is a 404 (app/global-not-found.tsx).
   if (!isLocale(locale)) notFound();
-  const [{ isEnabled: isDraftMode }, settings] = await Promise.all([draftMode(), getSettings(locale)]);
+  const [{ isEnabled: isDraftMode }, settings] = await Promise.all([
+    draftMode(),
+    getSettings(locale),
+  ]);
 
   return (
     <html lang={locale} dir={direction(locale)} className="h-full antialiased">
-      <body className="min-h-full flex flex-col" style={brandingStyle(settings?.branding ?? null)}>
+      <body
+        className="min-h-full flex flex-col"
+        style={brandingStyle(settings?.branding ?? null)}
+      >
         {gtmId && (
           <noscript>
-            <iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`} height="0" width="0" hidden title="Google Tag Manager" />
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              hidden
+              title="Google Tag Manager"
+            />
           </noscript>
         )}
-        <SiteHeader locale={locale} logo={settings?.logo ?? null} menu={settings?.menu ?? []} />
+        <SiteHeader
+          locale={locale}
+          logo={settings?.logo ?? null}
+          menu={settings?.menu ?? []}
+        />
         {children}
         <SanityLive includeDrafts={isDraftMode} />
         {isDraftMode && <VisualEditing />}

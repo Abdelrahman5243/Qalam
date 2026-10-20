@@ -7,8 +7,7 @@ import type { SectionData } from "@/sections/render";
 import type { Data } from "./define";
 import type { page, settings } from "./documents";
 
-const { projectId, dataset, apiVersion, studioUrl, readToken } =
-  env.sanity;
+const { projectId, dataset, apiVersion, studioUrl, readToken } = env.sanity;
 
 export const client = createClient({
   projectId,
@@ -92,7 +91,12 @@ function localize<T>(value: unknown, locale: Locale): T {
       return walk(object[locale] || object[defaultLocale]);
     }
     return Object.fromEntries(
-      Object.entries(object).map(([key, item]) => [key, key === "href" && typeof item === "string" ? localizeHref(item, locale) : walk(item)]),
+      Object.entries(object).map(([key, item]) => [
+        key,
+        key === "href" && typeof item === "string"
+          ? localizeHref(item, locale)
+          : walk(item),
+      ]),
     );
   };
   return walk(value) as T;

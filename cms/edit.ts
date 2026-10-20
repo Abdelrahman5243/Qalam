@@ -12,9 +12,19 @@ const noEdit: Edit = () => undefined;
  * Text is click-to-edit automatically (stega). Elements without visible text — icons,
  * images, icon-only links — need an explicit `data-sanity={edit("field")}` instead.
  */
-export function createEdit(document: { _id: string; _type: string }, base: Path, enabled: boolean): Edit {
+export function createEdit(
+  document: { _id: string; _type: string },
+  base: Path,
+  enabled: boolean,
+): Edit {
   const { projectId, dataset, studioUrl } = env.sanity;
   if (!enabled || !projectId) return noEdit;
-  const attribute = createDataAttribute({ id: document._id, type: document._type, baseUrl: studioUrl, projectId, dataset });
+  const attribute = createDataAttribute({
+    id: document._id,
+    type: document._type,
+    baseUrl: studioUrl,
+    projectId,
+    dataset,
+  });
   return (...path) => attribute([...base, ...path]);
 }
