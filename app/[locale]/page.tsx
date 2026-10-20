@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { PlaceholderPage } from "@/features/site/components/placeholder-page";
+import { LandingPage } from "@/features/site/components/landing-page";
+import { getHomeHero } from "@/features/site/services/home-hero-service";
 import { getSiteSettings } from "@/features/site/services/site-settings-service";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 
@@ -10,5 +11,6 @@ export default async function LocaleHome({ params }: { params: Promise<{ locale:
   const { locale: value } = await params;
   if (!isLocale(value)) notFound();
   const locale: Locale = value;
-  return <PlaceholderPage locale={locale} settings={await getSiteSettings(locale)} />;
+  const [hero, settings] = await Promise.all([getHomeHero(locale), getSiteSettings(locale)]);
+  return <LandingPage locale={locale} hero={hero} logo={settings?.logo ?? null} />;
 }

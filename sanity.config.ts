@@ -1,7 +1,33 @@
 import { defineConfig } from "sanity";
-import { presentationTool } from "sanity/presentation";
+import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./sanity/schemas";
+
+const mainDocuments = defineDocuments([
+  { route: "/ar", type: "homeHero" },
+  { route: "/en", type: "homeHero" },
+]);
+
+const locations = {
+  homeHero: defineLocations({
+    select: {},
+    resolve: () => ({
+      locations: [
+        { title: "Home (Arabic)", href: "/ar" },
+        { title: "Home (English)", href: "/en" },
+      ],
+    }),
+  }),
+  siteSettings: defineLocations({
+    select: {},
+    resolve: () => ({
+      locations: [
+        { title: "Home (Arabic)", href: "/ar" },
+        { title: "Home (English)", href: "/en" },
+      ],
+    }),
+  }),
+};
 
 export default defineConfig({
   name: "default",
@@ -17,15 +43,21 @@ export default defineConfig({
         previewMode: { enable: "/api/draft-mode/enable", disable: "/api/draft-mode/disable" },
       },
       resolve: {
-        locations: {
-          siteSettings: {
-            select: {},
-            resolve: () => ({ locations: [{ title: "Home", href: "/ar" }, { title: "Home (English)", href: "/en" }] }),
-          },
-        },
+        mainDocuments,
+        locations,
       },
     }),
-    structureTool(),
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title("Website workspace")
+          .items([
+            S.listItem().title("Home hero").child(S.document().schemaType("homeHero").documentId("homeHero")),
+            S.listItem()
+              .title("Site settings")
+              .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
+          ]),
+    }),
   ],
   schema: { types: schemaTypes },
 });

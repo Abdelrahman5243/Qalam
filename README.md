@@ -4,8 +4,8 @@ A small Next.js App Router + TypeScript + Sanity starter with Arabic RTL and Eng
 
 ## What it does
 
-- Shows a simple dynamic placeholder at `/ar` and `/en`.
-- Reads company name, email, branding tokens, and SEO defaults from the `siteSettings` document.
+- Shows a complete editable landing page at `/ar` and `/en`.
+- Reads the single dynamic Home hero (status, name, role, location, introduction, actions, and social links) from the `homeHero` document. Global identity, branding, and SEO stay in `siteSettings`.
 - Keeps Sanity Studio at `/studio`, Draft Mode, live Sanity fetching, metadata, sitemap, and robots support.
 - Uses one independent deployment and Sanity project per client.
 
@@ -18,7 +18,7 @@ npm run dev
 
 Copy `.env.example` to `.env.local` and set the Sanity project, dataset, API version, site URL, and server-only `SANITY_API_READ_TOKEN`. Never expose that token through a `NEXT_PUBLIC_*` variable.
 
-In `/studio`, create a document with ID `siteSettings`. Add the company name in Arabic and English, then optionally add email, logo, colors, fonts, and SEO defaults. Missing data falls back to the built-in placeholder.
+In `/studio`, create singleton documents with IDs `siteSettings` and `homeHero`. Edit the complete single-screen hero from `Home hero`; each label, link, and localized text has its own field. Branding and SEO remain optional advanced settings in `Site settings`.
 
 ## Checks
 

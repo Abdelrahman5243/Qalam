@@ -1,0 +1,24 @@
+.page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: var(--surface-page);
+  color: var(--brand-ink);
+}
+
+.content {
+  width: min(100%, 42rem);
+  padding: clamp(2rem, 6vw, 5rem);
+  text-align: center;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.kicker { margin: 0 0 1rem; color: var(--brand-green); font-weight: 800; }
+.content h1 { margin: 0; font-size: clamp(2.25rem, 6vw, 4.5rem); line-height: 1; letter-spacing: -.04em; }
+.content p:not(.kicker) { margin: 1.25rem auto 0; color: #687069; line-height: 1.7; }
+.actions { display: flex; justify-content: center; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+.button { border: 0; padding: .85rem 1.2rem; background: var(--brand-green); color: #fff; cursor: pointer; font: inherit; font-weight: 700; text-decoration: none; }
+.button:hover { background: var(--brand-green-hover); }
+.button:focus-visible { outline: 3px solid var(--brand-green-hover); outline-offset: 4px; }

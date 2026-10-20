@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import styles from "./placeholder-page.module.css";
+import styles from "./status-page.module.css";
 
 export function StatusPage({ kind, onRetry }: { kind: "error" | "not-found"; onRetry?: () => void }) {
   const notFound = kind === "not-found";

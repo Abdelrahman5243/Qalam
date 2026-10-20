@@ -5,22 +5,8 @@ export type SiteImage = {
 
 export type SiteSettings = {
   logo: SiteImage | null;
-  footerLogo: SiteImage | null;
   companyName: string;
-  headline: string | null;
-  description: string | null;
-  nationalNumber: string | null;
-  taxNumber: string | null;
-  commercialRegistration: string | null;
-  emergencyPhone: string | null;
-  maintenancePhone: string | null;
-  phone: string | null;
-  whatsappUrl: string | null;
   email: string | null;
-  address: string | null;
-  mapUrl: string | null;
-  socialLinks: Array<{ platform: string; url: string; icon: SiteImage | null }>;
-  footerDescription: string | null;
   seo: {
     title: string | null;
     description: string | null;
@@ -34,3 +20,26 @@ export type SiteSettings = {
     headingFont: string | null;
   };
 };
+
+export type HomeHero = {
+  status: string | null;
+  headline: string | null;
+  role: string | null;
+  location: string | null;
+  richDescription: RichText | null;
+  primaryButtonLabel: string | null;
+  primaryButtonHref: string | null;
+  secondaryButtonLabel: string | null;
+  secondaryButtonHref: string | null;
+  socialLinks: Array<{ platform: string | null; label: string; url: string }>;
+};
+
+export type RichText = Array<{
+  _key?: string;
+  _type: "block";
+  style?: string;
+  listItem?: string;
+  level?: number;
+  children?: Array<{ _key?: string; _type: "span"; text?: string; marks?: string[] }>;
+  markDefs?: Array<{ _key?: string; _type: "link"; href?: string; blank?: boolean }>;
+}>;

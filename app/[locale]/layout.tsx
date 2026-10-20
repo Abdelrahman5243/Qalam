@@ -70,22 +70,7 @@ export default async function LocaleLayout({
       url: absoluteUrl(`/${locale}`),
       logo: settings?.logo?.url ? absoluteUrl(settings.logo.url) : undefined,
       image: settings?.logo?.url ? absoluteUrl(settings.logo.url) : undefined,
-      address: settings?.address
-        ? { "@type": "PostalAddress", streetAddress: settings.address }
-        : undefined,
-      contactPoint: settings?.phone
-        ? [
-            {
-              "@type": "ContactPoint",
-              telephone: settings.phone,
-              contactType: "customer service",
-              availableLanguage: ["ar", "en"],
-            },
-          ]
-        : undefined,
-      telephone: settings?.phone || undefined,
       email: settings?.email || undefined,
-      sameAs: settings?.socialLinks.map((link) => link.url) || undefined,
     },
   ];
   return (
@@ -121,7 +106,7 @@ export default async function LocaleLayout({
         />
       ))}
       {children}
-      <SanityLive />
+      <SanityLive includeDrafts={isDraftMode} />
       {isDraftMode && <SanityVisualEditing />}
     </div>
   );
