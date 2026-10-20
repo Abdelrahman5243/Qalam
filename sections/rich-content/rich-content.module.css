@@ -1,0 +1,6 @@
+/* A comfortable reading width for long text. */
+.body {
+  max-width: 72ch;
+  color: var(--muted);
+  font-size: 1.05rem;
+}

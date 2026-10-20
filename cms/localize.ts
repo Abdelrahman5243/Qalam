@@ -16,10 +16,14 @@ export function localize<T>(value: unknown, locale: Locale): T {
     const object = value as Record<string, unknown>;
     if (object._type === "slug") return object.current ?? null;
     if (object._type === "image") {
+      // _type and _key stay, so images inside rich text are still recognized as image blocks.
       return object.asset
         ? {
+            _type: "image",
+            _key: object._key,
             url: images.image(object).auto("format").width(1600).url(),
             alt: (object.alt as string) ?? "",
+            caption: (object.caption as string) || undefined,
           }
         : null;
     }

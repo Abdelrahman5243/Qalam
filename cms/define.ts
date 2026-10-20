@@ -5,6 +5,7 @@ import {
   type SchemaTypeDefinition,
 } from "sanity";
 import type { PortableTextBlock } from "@portabletext/react";
+import { createElement, type ReactNode } from "react";
 import { defaultLocale, locales, type Locale } from "../lib/i18n";
 import type { Edit } from "./edit";
 
@@ -54,7 +55,7 @@ type Field =
 
 type Fields = Record<string, Field>;
 
-export type Image = { url: string; alt: string };
+export type Image = { url: string; alt: string; caption?: string };
 export type Link = { label: string | null; href: string | null };
 
 type Value<F> = F extends { type: "list"; fields: infer Of extends Fields }
@@ -100,13 +101,25 @@ export type SectionProps<D extends Definition> = Data<D["fields"]> & {
 
 /* ---------- definition → Sanity schema ---------- */
 
+/**
+ * How a quote looks inside the Studio editor. Sanity's default wraps the line in a <p> that
+ * ends up containing a <div> (invalid HTML, a hydration warning in development).
+ */
+const EditorQuote = ({ children }: { children?: ReactNode }) =>
+  createElement(
+    "blockquote",
+    { style: { margin: 0, paddingInlineStart: "0.75rem", borderInlineStart: "3px solid var(--card-border-color)" } },
+    children,
+  );
+
 const richTextBlock = defineArrayMember({
   type: "block",
   styles: [
     { title: "Paragraph", value: "normal" },
+    { title: "Heading 2", value: "h2" },
     { title: "Heading 3", value: "h3" },
     { title: "Heading 4", value: "h4" },
-    { title: "Quote", value: "blockquote" },
+    { title: "Quote", value: "blockquote", component: EditorQuote },
   ],
   marks: {
     annotations: [
@@ -138,6 +151,16 @@ const richTextBlock = defineArrayMember({
   },
 });
 
+/** An image placed between paragraphs, with alt text and an optional caption. */
+const richTextImage = defineArrayMember({
+  type: "image",
+  options: { hotspot: true },
+  fields: [
+    { name: "alt", title: "Alt text", type: "string", description: "Describe the image for screen readers and Google." },
+    { name: "caption", title: "Caption", type: "string" },
+  ],
+});
+
 /** Turn the shortcuts into one Sanity validation function (undefined when there are none). */
 function toValidation({ required, recommended, min, max, validation }: Rules) {
   if (
@@ -163,7 +186,7 @@ function toValidation({ required, recommended, min, max, validation }: Rules) {
 const localizedTypes = {
   text: { type: "string" },
   paragraph: { type: "text", rows: 4 },
-  richText: { type: "array", of: [richTextBlock] },
+  richText: { type: "array", of: [richTextBlock, richTextImage] },
 };
 
 const isLocalized = (type: string): type is keyof typeof localizedTypes =>

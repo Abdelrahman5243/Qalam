@@ -8,6 +8,7 @@ import { Cta } from "./cta/cta";
 import { Faq } from "./faq/faq";
 import { Features } from "./features/features";
 import { Hero } from "./hero/hero";
+import { RichContent } from "./rich-content/rich-content";
 import { TextImage } from "./text-image/text-image";
 
 type Section = (typeof sections)[number];
@@ -27,6 +28,7 @@ const components: {
   hero: Hero,
   features: Features,
   textImage: TextImage,
+  richContent: RichContent,
   faq: Faq,
   cta: Cta,
 };
