@@ -1,27 +1,11 @@
 import type { MetadataRoute } from "next";
-import { publicConfig } from "@/config/public";
-import { environment } from "@/config/environment";
+import { env } from "@/lib/env";
+import { absoluteUrl } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
-  const isPreview = environment.isPreview;
-
-  if (isPreview) {
-    return {
-      rules: {
-        userAgent: "*",
-        disallow: "/",
-      },
-    };
-  }
-
-  const siteUrl = publicConfig.siteUrl.replace(/\/$/, "");
-
+  if (env.isPreview) return { rules: { userAgent: "*", disallow: "/" } };
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/studio", "/api/"],
-    },
-    sitemap: `${siteUrl}/sitemap.xml`,
+    rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/api/"] },
+    sitemap: absoluteUrl("/sitemap.xml"),
   };
 }

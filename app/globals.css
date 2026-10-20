@@ -1,62 +1,7 @@
 @import "tailwindcss";
+@import "@fontsource/cairo/400.css";
+@import "@fontsource/cairo/500.css";
+@import "@fontsource/cairo/600.css";
+@import "@fontsource/cairo/700.css";
 @import "../styles/tokens.css";
 @import "../styles/base.css";
-@import "../styles/layout.css";
-.locale-ar,
-.locale-en {
-  font-family: var(--font-body);
-}
-
-.locale-ar {
-  --font-body:
-    var(--font-arabic), var(--font-brand), "Segoe UI", Tahoma, Arial, sans-serif;
-  --font-display:
-    var(--font-arabic), var(--font-brand), "Segoe UI", Tahoma, Arial, sans-serif;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-html,
-body {
-  border-top: 0 !important;
-}
-
-html,
-body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  overflow-x: clip;
-}
-
-*,
-*::before,
-*::after {
-  min-width: 0;
-}
-
-img,
-svg,
-video,
-iframe {
-  max-width: 100%;
-}
-
-h1,
-h2,
-h3,
-p,
-a,
-span {
-  overflow-wrap: anywhere;
-}
-
-:root {
-  --header-ink: var(--surface-dark);
-  --header-line: rgba(255, 255, 255, 0.14);
-  --header-accent: var(--brand-green);
-}

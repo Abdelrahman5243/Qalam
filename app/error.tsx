@@ -1,7 +1,14 @@
 "use client";
 
-import { StatusPage } from "@/features/site/components/status-page";
+import { StatusPage } from "@/components/status-page";
 
-export default function Error({ reset }: { reset: () => void }) {
-  return <StatusPage kind="error" onRetry={reset} />;
+export default function ErrorPage({ reset }: { reset: () => void }) {
+  return (
+    <StatusPage
+      label="خطأ"
+      title="حدث خطأ غير متوقع"
+      message="حاول تحديث الصفحة."
+      onRetry={reset}
+    />
+  );
 }

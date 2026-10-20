@@ -1,73 +1,61 @@
 import type { Metadata } from "next";
-import type { Locale } from "@/lib/i18n";
-import type { SiteSettings } from "@/features/site/types";
-import { publicConfig } from "@/config/public";
-import { cleanSanityText } from "@/lib/sanity/text";
+import type { Page, Settings } from "@/cms/sanity";
+import { env } from "@/lib/env";
+import { defaultLocale, locales, type Locale } from "@/lib/i18n";
 
-export const siteUrl = publicConfig.siteUrl.replace(/\/$/, "");
-export const metadataBase = new URL(siteUrl);
+export const siteName = "New website";
 
-export function absoluteUrl(path = "") {
-  return new URL(path.replace(/^\/+/, "/"), metadataBase).toString();
-}
+/** The slug of the page served at /{locale}. */
+export const homeSlug = "home";
 
-type PageMetadataOptions = {
-  locale: Locale;
-  path: string;
-  title: string;
-  description: string;
-  settings?: SiteSettings | null;
-  image?: { url: string; alt?: string } | null;
-};
+export const absoluteUrl = (path = "") => `${env.siteUrl}${path}`;
 
-export function createPageMetadata({
-  locale,
-  path,
-  title,
-  description,
-  settings,
-  image: pageImage,
-}: PageMetadataOptions): Metadata {
-  const cleanTitle = cleanSanityText(title);
-  const cleanDescription = cleanSanityText(description);
-  const image = settings?.seo.ogImage || pageImage;
-  const canonical = absoluteUrl(path);
-  const alternateLocale: Locale = locale === "ar" ? "en" : "ar";
-  const alternatePath = path.replace(
-    /^\/(ar|en)(?=\/|$)/,
-    `/${alternateLocale}`,
-  );
+/** Site path of a page: the home page lives at /{locale}, others at /{locale}/{slug}. */
+export const pagePath = (locale: Locale, slug = homeSlug) =>
+  slug === homeSlug ? `/${locale}` : `/${locale}/${slug}`;
+
+export const pageUrl = (locale: Locale, slug?: string) =>
+  absoluteUrl(pagePath(locale, slug));
+
+/** hreflang map: the same page in every language. */
+export const languageAlternates = (slug?: string) => ({
+  ...Object.fromEntries(
+    locales.map((locale) => [locale, pageUrl(locale, slug)]),
+  ),
+  "x-default": pageUrl(defaultLocale, slug),
+});
+
+type MetadataOptions = { locale: Locale; slug: string; page: Page | null; settings: Settings | null };
+
+/**
+ * Title: the page's meta title as written, otherwise "Page title | Site title" (the home page uses the site title alone).
+ * Description and share image: the page's own, otherwise the site-wide defaults.
+ */
+export function pageMetadata({ locale, slug, page, settings }: MetadataOptions): Metadata {
+  const siteTitle = settings?.seo?.title || settings?.companyName || siteName;
+  const isHome = slug === homeSlug;
+  const title = page?.seo?.title || (isHome || !page?.title ? siteTitle : `${page.title} | ${siteTitle}`);
+  const description = page?.seo?.description || settings?.seo?.description || undefined;
+  const image = page?.seo?.image ?? settings?.seo?.image ?? settings?.logo;
+  const url = page?.seo?.canonical || pageUrl(locale, slug);
   return {
-    title: cleanTitle,
-    description: cleanDescription,
-    alternates: {
-      canonical,
-      languages: {
-        [locale]: canonical,
-        [alternateLocale]: absoluteUrl(alternatePath),
-        "x-default": absoluteUrl(path.replace(/^\/(ar|en)(?=\/|$)/, "/ar")),
-      },
-    },
-    openGraph: {
-      type: "website",
-      title: cleanTitle,
-      description: cleanDescription,
-      url: canonical,
-      siteName: "مصاعد الجيل القادم",
-      locale,
-      images: [
-        {
-          url: image?.url || absoluteUrl("/og/og-image-1200x630.png"),
-          alt: image?.alt || cleanTitle,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: cleanTitle,
-      description: cleanDescription,
-      images: [image?.url || absoluteUrl("/og/og-image-1200x630.png")],
-    },
-    robots: { index: true, follow: true },
+    title: { absolute: title },
+    description,
+    robots: page?.seo?.noIndex ? { index: false, follow: true } : undefined,
+    alternates: { canonical: url, languages: languageAlternates(slug) },
+    openGraph: { type: "website", title, description, url, locale, siteName: siteTitle, images: image ? [image] : undefined },
+    twitter: { card: "summary_large_image", title, description, images: image ? [image.url] : undefined },
   };
 }
+
+export const organizationJsonLd = (
+  locale: Locale,
+  settings: Settings | null,
+) => ({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: settings?.companyName || siteName,
+  url: pageUrl(locale),
+  logo: settings?.logo?.url,
+  email: settings?.email ?? undefined,
+});

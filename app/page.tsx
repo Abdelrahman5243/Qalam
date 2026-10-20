@@ -1,5 +1,6 @@
 import { permanentRedirect } from "next/navigation";
+import { defaultLocale } from "@/lib/i18n";
 
-export default function Home() {
-  permanentRedirect("/ar");
+export default function RootRedirect() {
+  permanentRedirect(`/${defaultLocale}`);
 }

@@ -1,0 +1,24 @@
+.list {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 48rem;
+}
+.item {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface);
+}
+.item summary {
+  padding: 1.1rem 1.3rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.item[open] summary {
+  color: var(--accent);
+}
+.item p {
+  margin: 0;
+  padding: 0 1.3rem 1.2rem;
+  color: var(--muted);
+  line-height: 1.8;
+}

@@ -1,168 +1,172 @@
-# Next Generation Elevators
+# Qalam قلم
 
-A bilingual Arabic/English marketing website for an elevator and escalator company. The application is built with Next.js App Router, TypeScript, Sanity Studio, Framer Motion, and a feature-oriented frontend architecture.
+**A schema-driven, bilingual (Arabic / English) website starter built on Next.js 16 and Sanity.**
 
-## What is included
+Describe a section once as a plain object, and Qalam generates the CMS form, its validation, and fully inferred TypeScript props from it. Editors build any number of pages from those sections and edit them live, in place, in both languages.
 
-- Arabic RTL and English LTR routes under `/{locale}`.
-- Sanity-powered hero, services, projects, about, brands, contact, and cabin gallery content.
-- Embedded Sanity Studio at `/studio`.
-- Draft Mode and Sanity Presentation Tool support.
-- Localized metadata, canonical URLs, Open Graph, sitemap, robots, and JSON-LD.
-- Responsive layouts with reduced-motion support.
-- WhatsApp, phone, email, and contact-form flows.
+```
+Next.js 16 (App Router) · React 19 · TypeScript (strict) · Sanity v5 · Visual Editing · Tailwind v4
+```
 
-## Requirements
+---
 
-- Node.js 22.12 or newer.
-- npm 10 or newer.
-- A Sanity project and dataset for CMS-backed content.
+## The problem
 
-The current Next.js and Sanity dependency versions require Node 22.12+. Using Node 20 can make the development server appear to work while failing during production compilation.
+In a typical Next.js + Sanity project, adding one section means keeping the same data shape in sync across many places:
+
+| Where | What you write by hand |
+|---|---|
+| Sanity schema | `defineField` for every field, for every language |
+| GROQ query | a projection that picks the fields again |
+| TypeScript | a type that describes them a third time |
+| Mapping layer | code that picks the right language and cleans each field |
+| Studio config | structure, preview routes, document locations |
+| Component | `data-sanity` attributes for click-to-edit |
+
+That was the state of this project before the refactor: **one section touched 8 files, and the shape was declared 4 times.** Each copy can drift, and nothing tells you when it does.
+
+## The solution: one definition, everything else derived
+
+```ts
+// sections/faq/schema.ts: the only place the shape exists
+export const faq = defineSection({
+  name: "faq",
+  title: "FAQ",
+  fields: {
+    heading: { type: "text", required: true, max: 80 },
+    items: {
+      type: "list",
+      min: 1,
+      fields: {
+        question: { type: "text", required: true },
+        answer: { type: "paragraph", required: true },
+      },
+    },
+  },
+});
+```
+
+From that object:
+
+- **The Studio form** is generated. `text` becomes one input per language side by side, `list` a sortable array, and `required` / `min` / `max` become validation applied to every language.
+- **The component props** are inferred at compile time, already resolved to the visitor's language:
+
+```tsx
+// sections/faq/faq.tsx
+export function Faq({ heading, items }: SectionProps<typeof faq>) {
+  //                 ^ string | null   ^ Array<{ _key; question: string | null; answer: string | null }> | null
+}
+```
+
+- **Registration is type-checked.** Forget to map a section to its component and the build fails.
+
+**Adding a section is now 2 files plus 2 lines.** Changing a field is one line.
+
+## Features
+
+**For editors**
+- **Page builder**: unlimited pages, each composed of reorderable sections (`/ar/<slug>` and `/en/<slug>`).
+- **Visual Editing**: click any text on the live preview to edit it. Icons and images are click-to-edit too.
+- **Side-by-side languages**: Arabic and English fields next to each other, with a full RTL / LTR layout.
+- **SEO tab per page**: meta title and description with length warnings that guide without blocking publishing, a share image, `noindex`, and a canonical URL. Site-wide defaults live in a separate settings document.
+- **Menu and branding from the dashboard**: internal links are written once (`/about`) and prefixed with the right language automatically.
+
+**For developers**
+- **Inferred types end to end**, with no codegen step and no hand-written content types.
+- **A single CMS boundary.** Only `cms/` knows Sanity exists, so components receive plain, typed, language-resolved props.
+- **Content migrations** via the Sanity CLI: dry-run by default and idempotent.
+- **SEO handled at the framework level**: `hreflang` alternates, canonical URLs, Open Graph, JSON-LD organization data, and a sitemap that refreshes hourly and respects `noindex`.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Definition
+    S["sections/*/schema.ts<br/>defineSection({...})"]
+  end
+  S -->|toSchema| ST["Sanity Studio<br/>/admin"]
+  S -->|SectionProps&lt;typeof x&gt;| C["Section components"]
+  ST -->|content| DB[(Sanity Content Lake)]
+  DB -->|"getPage(slug, locale)<br/>localize()"| R["app/[locale]/[[...slug]]"]
+  R -->|"&lt;Sections /&gt;"| C
+```
+
+One request, end to end:
+
+1. `/en/about` matches `app/[locale]/[[...slug]]/page.tsx`.
+2. `getPage("about", "en")` fetches the page. `localize()` walks the raw document once: `{ ar, en }` becomes the English value, images become `{ url, alt }`, slugs become strings, and internal links get the `/en` prefix.
+3. `<Sections>` maps each section's `_type` to its component and spreads its fields as props.
+
+```
+app/            routes only (layouts, pages, sitemap, robots, /admin)
+cms/            the only code that knows about Sanity
+  define.ts     field DSL → Studio schema + TypeScript types
+  documents.ts  "page" and "settings" documents
+  sanity.ts     client, live fetching, localize()
+  edit.ts       click-to-edit attributes for non-text elements
+sections/       one folder per section: schema.ts + component + CSS
+components/     site header, status pages, ui/ (Section, ButtonLink, RichText)
+lib/            i18n, env, seo
+migrations/     content migrations
+```
+
+## Design decisions
+
+- **A TypeScript DSL instead of JSON.** A `.json` file would look the same but would lose literal-type inference and custom validation functions. `defineSection({...})` keeps the readability of JSON and adds both.
+- **Resolve the language in one place.** Instead of a query per field, the whole document is fetched once and `localize()` picks the language recursively. That removed an entire service and mapping layer.
+- **Stega first, explicit attributes second.** Sanity's stega encoding makes text click-to-edit with no markup. An explicit `edit()` helper covers the cases stega cannot (icons, images), and it renders nothing outside draft mode.
+- **Warnings over errors for SEO.** Length limits warn editors without blocking a publish, because content teams need guidance, not gates.
+- **`noindex` instead of `robots.txt` for hidden pages.** Disallowing a URL stops crawlers from ever seeing the `noindex`, so hidden pages stay crawlable but are marked not to be indexed.
 
 ## Getting started
 
 ```bash
 npm install
+cp .env.example .env.local   # Sanity project ID, dataset, read token, site URL
 npm run dev
 ```
 
-Open:
+- Website: `http://localhost:3000/ar` and `/en`
+- Dashboard: `http://localhost:3000/admin`
 
-- Website: `http://localhost:3000`
-- Arabic home: `http://localhost:3000/ar`
-- English home: `http://localhost:3000/en`
-- Sanity Studio: `http://localhost:3000/studio`
+Seed the example pages (About, Services) and the menu:
 
-The root route redirects to `/ar`.
-
-## Environment variables
-
-Create `.env.local` in the project root:
-
-```env
-NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
-NEXT_PUBLIC_SANITY_DATASET=production
-NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
-NEXT_PUBLIC_SANITY_STUDIO_URL=http://localhost:3000/studio
-NEXT_PUBLIC_SANITY_PREVIEW_URL=http://localhost:3000
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Viewer-only token used by browser live preview.
-NEXT_PUBLIC_SANITY_API_READ_TOKEN=viewer-only-token
-
-# Server-only token used for draft content and must never be exposed to the browser.
-SANITY_API_READ_TOKEN=server-only-token
-
-# Optional public fallbacks and tracking.
-NEXT_PUBLIC_WHATSAPP_URL=https://wa.me/your-number
-NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=
-NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=
+```bash
+npx sanity login
+npx sanity migrations run example-pages               # dry run: prints the changes
+npx sanity migrations run example-pages --no-dry-run  # applies them
 ```
 
-Public values are read through `config/public.ts`. Server-only values stay inside the Sanity infrastructure boundary.
+## Adding a section
 
-## Architecture
+1. `sections/about/schema.ts`: `defineSection({ name: "about", title: "About", fields: {...} })`
+2. `sections/about/about.tsx`: `export function About(props: SectionProps<typeof about>)`
+3. Register it in `sections/index.ts` and `sections/render.tsx`.
 
-```text
-app/                  routes, layouts, metadata, JSON-LD
-features/             domain-owned UI, services, schemas, and types
-  site/               shared site chrome and page primitives
-lib/                  Sanity, SEO, i18n, images, and cross-cutting adapters
-config/               environment and public runtime configuration
-styles/               design tokens, base rules, and shared layout foundations
-sanity/               Sanity Studio schemas
-```
+Field types: `text`, `paragraph`, `richText`, `link` (localized); `string`, `url`, `email`, `image`, `boolean`, `slug`; `list`, `group` (or a tab with `tab: true`), `blocks`.
+Options on any field: `title`, `description`, `required`, `recommended`, `min`, `max`, `validation`.
 
-The dependency direction is:
+## Included sections
 
-```text
-app → features → lib/config
-                    ↓
-             Sanity / Next / browser APIs
-```
+| Section | Shows |
+|---|---|
+| `hero` | status badge, headline, role, location, rich-text intro, two buttons, social links |
+| `features` | heading, intro, grid of cards |
+| `textImage` | heading, rich text, image on either side, button |
+| `faq` | accessible accordion (`<details>`, no JavaScript) |
+| `cta` | heading, text, button |
 
-Feature components receive UI-safe domain data. They do not create Sanity clients, read environment variables, or map CMS response objects.
-
-### Sanity data access
-
-All read-only Sanity queries use the small boundary below:
-
-```ts
-const data = await querySanity({
-  query,
-  params: { locale },
-  schema,
-  name: "feature content",
-});
-```
-
-`lib/sanity/live.ts` owns configuration checks, live/draft fetching, optional Zod validation, and diagnostics. Each feature still owns its query, fallback content, mapper, and UI-safe types.
-
-Sanity images use:
-
-```ts
-getImageUrl(source, { width: 1200, height: 900, fit: "crop" });
-```
-
-This keeps the Sanity image builder out of feature UI and gives each feature control over its intended crop and dimensions.
-
-### CSS architecture
-
-CSS is organized by ownership:
-
-- `styles/tokens.css`: semantic colors, typography, spacing, containers, and motion values.
-- `styles/base.css`: reset and document-level defaults.
-- `styles/layout.css`: shared page geometry.
-- `features/*/components/*.module.css`: feature-owned styles.
-- `features/site/components/site.module.css`: shared site chrome and interior-page styles.
-- `app/globals.css`: only Tailwind import, foundation imports, and genuinely global rules.
-
-Feature modules currently use `:global(...)` selectors during migration so existing markup and visual behavior remain stable. This is intentional: ownership is separated first, then selectors can be converted to hashed `styles.*` APIs incrementally with browser comparison.
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/CSS_ARCHITECTURE_AUDIT.md](docs/CSS_ARCHITECTURE_AUDIT.md) for detailed boundaries, migration decisions, and remaining CSS debt.
-
-## Content workflow
-
-1. Open `/studio`.
-2. Create or edit the relevant document.
-3. Publish the document for production content.
-4. Use Presentation Tool/Draft Mode to preview unpublished content.
-
-The primary Sanity schemas live in `sanity/schemas/`. Feature services validate and map external content before it reaches React components.
-
-## Quality checks
+## Checks
 
 ```bash
 npm run lint
 npx tsc --noEmit
+npx sanity schema validate
 npm run build
 ```
 
-If npm executable links are disabled in the environment, run the installed binaries directly:
+## What's next
 
-```bash
-node node_modules/eslint/bin/eslint.js
-node node_modules/typescript/bin/tsc --noEmit
-node node_modules/next/dist/bin/next build --webpack
-```
-
-Before changing large CSS areas, verify Arabic and English routes at desktop and mobile widths. Preserve RTL/LTR behavior, reduced motion, keyboard focus, form states, and CMS fallback states.
-
-## Useful scripts
-
-```bash
-npm run dev
-npm run lint
-npm run build
-npm run sanity:seed
-npm run sanity:prepare-import
-```
-
-## Further documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [CSS architecture audit](docs/CSS_ARCHITECTURE_AUDIT.md)
-- [Design system](docs/DESIGN_SYSTEM.md)
-- [Client content guide](docs/CLIENT_CONTENT.md)
-- [New section workflow](docs/NEW_SECTION_WORKFLOW.md)
+- Unit tests for `localize()` and the schema generator, which are the two pieces everything depends on
+- Generic `defineDocument` collections (blog posts, projects) with listing pages
+- Scheduled publishing and per-page preview links for content reviews

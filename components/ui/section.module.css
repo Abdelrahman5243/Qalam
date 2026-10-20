@@ -1,0 +1,21 @@
+.section {
+  width: min(100% - 2.5rem, 1100px);
+  margin-inline: auto;
+  padding-block: clamp(4rem, 9vw, 7rem);
+}
+.header {
+  max-width: 44rem;
+  margin-bottom: 2.5rem;
+}
+.header h2 {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.header p {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
