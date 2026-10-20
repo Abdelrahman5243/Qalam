@@ -1,63 +1,67 @@
 import { defineConfig } from "sanity";
-import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
+import { defineLocations, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
-import { schemaTypes } from "./sanity/schemas";
-
-const mainDocuments = defineDocuments([
-  { route: "/ar", type: "homeHero" },
-  { route: "/en", type: "homeHero" },
-]);
-
-const locations = {
-  homeHero: defineLocations({
-    select: {},
-    resolve: () => ({
-      locations: [
-        { title: "Home (Arabic)", href: "/ar" },
-        { title: "Home (English)", href: "/en" },
-      ],
-    }),
-  }),
-  siteSettings: defineLocations({
-    select: {},
-    resolve: () => ({
-      locations: [
-        { title: "Home (Arabic)", href: "/ar" },
-        { title: "Home (English)", href: "/en" },
-      ],
-    }),
-  }),
-};
+import { schemaTypes } from "./cms/documents";
+import { env } from "./lib/env";
+import { defaultLocale, locales } from "./lib/i18n";
+import { homeSlug, pagePath } from "./lib/seo";
 
 export default defineConfig({
   name: "default",
-  title: "Website starter",
-  basePath: "/studio",
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "",
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
+  title: "Website",
+  basePath: "/admin",
+  projectId: env.sanity.projectId,
+  dataset: env.sanity.dataset,
+  schema: { types: schemaTypes },
+  // Presentation comes first, so editors land on the live page and edit in place.
   plugins: [
     presentationTool({
       allowOrigins: ["http://localhost:3000", "http://preview.localhost:3000"],
       previewUrl: {
-        initial: process.env.NEXT_PUBLIC_SANITY_PREVIEW_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-        previewMode: { enable: "/api/draft-mode/enable", disable: "/api/draft-mode/disable" },
+        initial: env.sanity.previewUrl,
+        previewMode: {
+          enable: "/api/draft-mode/enable",
+          disable: "/api/draft-mode/disable",
+        },
       },
       resolve: {
-        mainDocuments,
-        locations,
+        // Open the right document when the preview navigates to a URL.
+        mainDocuments: [
+          {
+            route: "/:locale",
+            filter: `_type == "page" && slug.current == "${homeSlug}"`,
+          },
+          {
+            route: "/:locale/:slug",
+            filter: `_type == "page" && slug.current == $slug`,
+          },
+        ],
+        // Show where a document appears on the site.
+        locations: {
+          page: defineLocations({
+            select: { title: `title.${defaultLocale}`, slug: "slug.current" },
+            resolve: (doc) => ({
+              locations: locales.map((locale) => ({
+                title: `${doc?.title} (${locale})`,
+                href: pagePath(locale, doc?.slug ?? homeSlug),
+              })),
+            }),
+          }),
+        },
       },
     }),
     structureTool({
       structure: (S) =>
         S.list()
-          .title("Website workspace")
+          .title("Website")
           .items([
-            S.listItem().title("Home hero").child(S.document().schemaType("homeHero").documentId("homeHero")),
+            S.documentTypeListItem("page").title("Pages"),
             S.listItem()
               .title("Site settings")
-              .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
+              .child(
+                S.document().schemaType("settings").documentId("settings"),
+              ),
           ]),
     }),
   ],
-  schema: { types: schemaTypes },
 });

@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
-
+import { defaultLocale } from "@/lib/i18n";
+import { siteName } from "@/lib/seo";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "New website",
-    short_name: "Website",
-    description: "A simple bilingual website starter.",
-    start_url: "/ar",
+    name: siteName,
+    short_name: siteName,
+    start_url: `/${defaultLocale}`,
     display: "standalone",
-    background_color: "#f7f8f3",
-    theme_color: "#1d4034",
+    background_color: "#111113",
+    theme_color: "#111113",
   };
 }

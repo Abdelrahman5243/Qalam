@@ -1,6 +1,7 @@
 import { defineEnableDraftMode } from "next-sanity/draft-mode";
-import { sanityClient } from "@/lib/sanity/config";
+import { client } from "@/cms/sanity";
+import { env } from "@/lib/env";
 
 export const { GET } = defineEnableDraftMode({
-  client: sanityClient.withConfig({ token: process.env.SANITY_API_READ_TOKEN }),
+  client: client.withConfig({ token: env.sanity.readToken }),
 });

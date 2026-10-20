@@ -1,53 +1,42 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
+import { env } from "@/lib/env";
+import { siteName } from "@/lib/seo";
 import "./globals.css";
-import { metadataBase } from "@/lib/seo";
-import { publicConfig } from "@/config/public";
 
 export const metadata: Metadata = {
-  metadataBase,
-  title: {
-    default: "New website",
-    template: "%s | New website",
-  },
-  description:
-    "A simple, bilingual website starter.",
+  metadataBase: new URL(env.siteUrl),
+  title: siteName,
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-} as const;
+};
+
+const { googleTagManagerId: gtmId, googleAnalyticsId: gaId } = env;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className="h-full antialiased"
-    >
+    <html lang="ar" dir="rtl" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        {publicConfig.googleTagManagerId ? (
+        {gtmId && (
           <noscript>
             <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${publicConfig.googleTagManagerId}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
               height="0"
               width="0"
-              style={{ display: "none", visibility: "hidden" }}
+              hidden
               title="Google Tag Manager"
             />
           </noscript>
-        ) : null}
+        )}
         {children}
       </body>
-      {publicConfig.googleTagManagerId ? (
-        <GoogleTagManager gtmId={publicConfig.googleTagManagerId} />
-      ) : null}
-      {publicConfig.googleAnalyticsId ? (
-        <GoogleAnalytics gaId={publicConfig.googleAnalyticsId} />
-      ) : null}
+      {gtmId && <GoogleTagManager gtmId={gtmId} />}
+      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }

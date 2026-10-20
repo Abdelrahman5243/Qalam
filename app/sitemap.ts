@@ -1,11 +1,17 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl } from "@/lib/seo";
+import { getPageSlugs } from "@/cms/sanity";
+import { locales } from "@/lib/i18n";
+import { languageAlternates, pageUrl } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return ["ar", "en"].map((locale) => ({
-    url: absoluteUrl(`/${locale}`),
-    alternates: {
-      languages: { ar: absoluteUrl("/ar"), en: absoluteUrl("/en"), "x-default": absoluteUrl("/ar") },
-    },
-  }));
+// Pages are added from the dashboard, so refresh the list hourly.
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const slugs = await getPageSlugs();
+  return slugs.flatMap((slug) =>
+    locales.map((locale) => ({
+      url: pageUrl(locale, slug),
+      alternates: { languages: languageAlternates(slug) },
+    })),
+  );
 }
