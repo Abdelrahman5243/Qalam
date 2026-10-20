@@ -34,9 +34,9 @@
   min-height: 2.5rem;
   margin-inline-start: auto;
   padding: 0.55rem 0.8rem;
-  border: 1px solid #343438;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  color: #c7c7cc;
+  color: var(--muted);
   font-size: 0.82rem;
   font-weight: 600;
   text-decoration: none;
@@ -46,12 +46,12 @@
     background 180ms ease;
 }
 .languageSwitch:hover {
-  color: #ffbd25;
-  border-color: #ffbd25;
-  background: #1b1b1f;
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--surface);
 }
 .languageSwitch:focus-visible {
-  outline: 3px solid #ffbd25;
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 @media (max-width: 700px) {

@@ -3,18 +3,14 @@ import { StatusPage } from "@/components/status-page";
 import { defaultLocale, direction } from "@/lib/i18n";
 import "./globals.css";
 
-export const metadata: Metadata = { title: "الصفحة غير موجودة" };
+export const metadata: Metadata = { title: "404" };
 
 /** URLs that match no route at all (e.g. /xx). The site has several root layouts, so this page brings its own <html>. */
 export default function GlobalNotFound() {
   return (
     <html lang={defaultLocale} dir={direction(defaultLocale)}>
       <body>
-        <StatusPage
-          label="404"
-          title="الصفحة غير موجودة"
-          message="تحقق من الرابط وحاول مرة أخرى."
-        />
+        <StatusPage kind="not-found" />
       </body>
     </html>
   );

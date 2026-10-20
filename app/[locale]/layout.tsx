@@ -4,15 +4,13 @@ import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { getSettings, SanityLive, type Settings } from "@/cms/sanity";
+import { createEdit } from "@/cms/edit";
 import { VisualEditing } from "@/cms/visual-editing";
 import { SiteHeader } from "@/components/site-header";
 import { env } from "@/lib/env";
 import { direction, isLocale, locales } from "@/lib/i18n";
 import { siteMetadata } from "@/lib/seo";
 import "../globals.css";
-
-// Settings (logo, branding) can change at any time, so render on every request.
-export const dynamic = "force-dynamic";
 
 export const generateStaticParams = () => locales.map((locale) => ({ locale }));
 
@@ -33,8 +31,8 @@ export async function generateMetadata({ params }: Props) {
 
 /** Branding setting → the CSS variable it overrides. */
 const brandingVariables = {
-  primaryColor: "--brand-green",
-  accentColor: "--brand-green-hover",
+  primaryColor: "--accent",
+  accentColor: "--accent-hover",
   bodyFont: "--font-body",
 } as const;
 
@@ -80,6 +78,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           locale={locale}
           logo={settings?.logo ?? null}
           menu={settings?.menu ?? []}
+          edit={createEdit({ _id: "settings", _type: "settings" }, [], isDraftMode)}
         />
         {children}
         <SanityLive includeDrafts={isDraftMode} />

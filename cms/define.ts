@@ -114,12 +114,23 @@ const richTextBlock = defineArrayMember({
         name: "link",
         type: "object",
         fields: [
-          { name: "href", type: "url", validation: (rule) => rule.required() },
+          {
+            name: "href",
+            title: "Link",
+            type: "string",
+            description:
+              "/about for a page on this site, or a full https://… address.",
+            validation: (rule) =>
+              rule.required().regex(/^(\/|https?:\/\/|mailto:|tel:)/, {
+                name: "link",
+                invert: false,
+              }),
+          },
           {
             name: "blank",
             title: "Open in new tab",
             type: "boolean",
-            initialValue: true,
+            initialValue: false,
           },
         ],
       },

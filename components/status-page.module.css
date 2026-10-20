@@ -16,7 +16,7 @@
 
 .label {
   margin: 0 0 1rem;
-  color: var(--brand-green);
+  color: var(--accent);
   font-weight: 800;
 }
 .content h1 {
@@ -27,7 +27,7 @@
 }
 .content p:not(.label) {
   margin: 1.25rem auto 0;
-  color: #aeb0ba;
+  color: var(--muted);
   line-height: 1.7;
 }
 .actions {
@@ -40,17 +40,17 @@
 .button {
   border: 0;
   padding: 0.85rem 1.2rem;
-  background: var(--brand-green);
-  color: #fff;
+  background: var(--accent);
+  color: var(--on-accent);
   cursor: pointer;
   font: inherit;
   font-weight: 700;
   text-decoration: none;
 }
 .button:hover {
-  background: var(--brand-green-hover);
+  background: var(--accent-hover);
 }
 .button:focus-visible {
-  outline: 3px solid var(--brand-green-hover);
+  outline: 3px solid var(--accent-hover);
   outline-offset: 4px;
 }

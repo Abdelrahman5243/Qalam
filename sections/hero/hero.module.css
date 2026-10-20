@@ -16,9 +16,9 @@
   align-items: center;
   gap: 0.55rem;
   padding: 0.55rem 0.85rem;
-  border: 1px solid #343438;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  color: #c7c7cc;
+  color: var(--muted);
   font-size: 0.83rem;
   line-height: 1;
 }
@@ -26,13 +26,13 @@
   width: 0.48rem;
   height: 0.48rem;
   border-radius: 50%;
-  background: #13c58b;
-  box-shadow: 0 0 0 4px rgb(19 197 139 / 10%);
+  background: var(--success);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--success) 10%, transparent);
 }
 .hero h1 {
   max-width: 100%;
   margin: 1.75rem 0 0.5rem;
-  color: #fbfbfc;
+  color: var(--foreground);
   font-family: var(--font-body);
   font-size: clamp(3.5rem, 8vw, 6.8rem);
   font-weight: 800;
@@ -42,7 +42,7 @@
 }
 .hero h2 {
   margin: 0;
-  color: #ffbd25;
+  color: var(--accent);
   font-family: var(--font-body);
   font-size: clamp(1.4rem, 2.4vw, 2rem);
   font-weight: 500;
@@ -53,16 +53,16 @@
   align-items: center;
   gap: 0.35rem;
   margin: 1.1rem 0 0;
-  color: #aeb0ba;
+  color: var(--muted);
   font-size: 0.94rem;
 }
 .location svg {
-  color: #ffbd25;
+  color: var(--accent);
 }
 .description {
   max-width: 66ch;
   margin: 1.75rem 0 0;
-  color: #b9bac2;
+  color: var(--muted);
   font-size: clamp(1rem, 1.6vw, 1.28rem);
   line-height: 1.9;
   text-wrap: balance;
@@ -73,15 +73,15 @@
 .description h3,
 .description h4 {
   margin: 1rem 0 0.45rem;
-  color: #f7f7f8;
+  color: var(--foreground);
   font-size: 1.05em;
   line-height: 1.35;
 }
 .description blockquote {
   margin: 1rem 0;
   padding-inline: 1rem;
-  border-inline-start: 2px solid #ffbd25;
-  color: #d8d8df;
+  border-inline-start: 2px solid var(--accent);
+  color: var(--foreground);
 }
 .description ul,
 .description ol {
@@ -92,11 +92,11 @@
   text-align: start;
 }
 .description a {
-  color: #ffbd25;
+  color: var(--accent);
   text-underline-offset: 0.2em;
 }
 .description strong {
-  color: #f7f7f8;
+  color: var(--foreground);
   font-weight: 700;
 }
 .actions {
@@ -124,20 +124,20 @@
     border-color 180ms ease;
 }
 .primaryButton {
-  background: #ffbd25;
-  color: #151517;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .primaryButton:hover {
-  background: #ffd05c;
+  background: var(--accent-hover);
   transform: translateY(-2px);
 }
 .secondaryButton {
-  border: 1px solid #37373d;
-  color: #f5f5f7;
+  border: 1px solid var(--border);
+  color: var(--foreground);
 }
 .secondaryButton:hover {
-  border-color: #777780;
-  background: #1b1b1f;
+  border-color: var(--muted);
+  background: var(--surface);
   transform: translateY(-2px);
 }
 .socials {
@@ -152,7 +152,7 @@
   width: 25px;
   height: 25px;
   place-items: center;
-  color: #aaaab4;
+  color: var(--muted);
   font-size: 1.25rem;
   font-weight: 500;
   text-decoration: none;
@@ -161,13 +161,13 @@
     transform 180ms ease;
 }
 .socials a:hover {
-  color: #ffbd25;
+  color: var(--accent);
   transform: translateY(-2px);
 }
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
 .socials a:focus-visible {
-  outline: 3px solid #ffbd25;
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 @media (max-width: 700px) {

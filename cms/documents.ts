@@ -127,9 +127,19 @@ export const settings = defineDocument({
       type: "group",
       tab: true,
       fields: {
-        primaryColor: "string",
-        accentColor: "string",
-        bodyFont: "string",
+        primaryColor: {
+          type: "string",
+          description:
+            "Buttons, links and highlights. Any CSS color, e.g. #ffbd25.",
+        },
+        accentColor: {
+          type: "string",
+          description: "Hover state of the primary color.",
+        },
+        bodyFont: {
+          type: "string",
+          description: 'A CSS font-family, e.g. "Cairo", sans-serif.',
+        },
       },
     },
   },

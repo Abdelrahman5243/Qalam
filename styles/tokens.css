@@ -4,16 +4,20 @@
   --font-sans: var(--font-body);
 }
 
+/*
+ * Design tokens. Sections and components use only these variables, so the
+ * Branding tab in Site settings (primary color, accent color, font) restyles the whole site.
+ */
 :root {
   --background: #111113;
   --foreground: #f7f7f8;
-  --border: #343438;
   --muted: #aeb0ba;
   --surface: #1b1b1f;
+  --border: #343438;
   --accent: #ffbd25;
   --accent-hover: #ffd05c;
-  --ring: #4f946c;
-  --brand-green: #4f946c;
-  --brand-green-hover: #62a37c;
+  --on-accent: #151517;
+  --success: #13c58b;
+  --ring: var(--accent);
   --font-body: "Cairo", sans-serif;
 }
