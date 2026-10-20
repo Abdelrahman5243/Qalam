@@ -75,7 +75,9 @@ export function Faq({ heading, items }: SectionProps<typeof faq>) {
 - **Inferred types end to end**, with no codegen step and no hand-written content types.
 - **A single CMS boundary.** Only `cms/` knows Sanity exists, so components receive plain, typed, language-resolved props.
 - **Content migrations** via the Sanity CLI: dry-run by default and idempotent.
-- **SEO handled at the framework level**: `hreflang` alternates, canonical URLs, Open Graph, JSON-LD organization data, and a sitemap that refreshes hourly and respects `noindex`.
+- **SEO handled at the framework level**: `<html lang dir>` per language, `hreflang` alternates, canonical URLs, Open Graph with 1200×630 crops and `og:locale`, a JSON-LD graph (Organization, WebSite, WebPage, BreadcrumbList), and a sitemap with `lastModified` that respects `noindex`.
+- **Favicon, manifest and Search Console verification** managed from Site settings, with a built-in default icon.
+- **Language-less URLs redirect** to the default language (`/about` → `/ar/about`) through `proxy.ts`.
 
 ## Architecture
 

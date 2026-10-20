@@ -60,6 +60,7 @@ export const settings = defineDocument({
   title: "Site settings",
   fields: {
     logo: "image",
+    favicon: { type: "image", description: "The small icon in the browser tab. Square PNG or SVG, at least 512×512." },
     companyName: "text",
     email: "email",
     menu: {
@@ -78,6 +79,17 @@ export const settings = defineDocument({
       fields: {
         ...seoFields,
         title: { ...seoFields.title, title: "Site title", description: 'Added after every page title: "About | Site title".' },
+        profiles: {
+          type: "list",
+          title: "Social profiles",
+          description: "LinkedIn, GitHub, X… Helps Google connect the site to your profiles.",
+          fields: { url: { type: "url", required: true } },
+        },
+        googleVerification: {
+          type: "string",
+          title: "Google Search Console code",
+          description: 'Advanced. The content value of the "google-site-verification" meta tag.',
+        },
       },
     },
     branding: {

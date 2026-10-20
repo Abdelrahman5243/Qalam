@@ -7,7 +7,7 @@ import type { SectionData } from "@/sections/render";
 import type { Data } from "./define";
 import type { page, settings } from "./documents";
 
-const { projectId, dataset, apiVersion, studioUrl, readToken, browserToken } =
+const { projectId, dataset, apiVersion, studioUrl, readToken } =
   env.sanity;
 
 export const client = createClient({
@@ -21,7 +21,8 @@ export const client = createClient({
 const { sanityFetch, SanityLive } = defineLive({
   client,
   serverToken: readToken,
-  browserToken,
+  // The same server-only token: next-sanity hands it to the browser only in draft mode (live preview).
+  browserToken: readToken,
 });
 export { SanityLive };
 
@@ -61,10 +62,10 @@ export const getPage = async (slug: string, locale: Locale) =>
     locale,
   );
 
-/** Slugs of every page that search engines may index (used by the sitemap). */
-export const getPageSlugs = async () =>
-  (await query<string[]>(
-    `*[_type == "page" && defined(slug.current) && seo.noIndex != true].slug.current`,
+/** Every page search engines may index, with its last edit date (used by the sitemap). */
+export const getIndexablePages = async () =>
+  (await query<Array<{ slug: string; updatedAt: string }>>(
+    `*[_type == "page" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, "updatedAt": _updatedAt }`,
   )) ?? [];
 
 /** Shape raw Sanity data for the site: pick one language, turn images into URLs and slugs into strings, prefix internal links. */

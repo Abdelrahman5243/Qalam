@@ -17,6 +17,5 @@ export const env = {
       process.env.NEXT_PUBLIC_SITE_URL ??
       "http://localhost:3000",
     readToken: process.env.SANITY_API_READ_TOKEN,
-    browserToken: process.env.NEXT_PUBLIC_SANITY_API_READ_TOKEN,
   },
 };
