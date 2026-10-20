@@ -16,7 +16,9 @@ export default defineConfig({
   // Presentation comes first, so editors land on the live page and edit in place.
   plugins: [
     presentationTool({
-      allowOrigins: ["http://localhost:3000", "http://preview.localhost:3000"],
+      // Sites the preview may load from: this deployment, plus local development.
+      // Each one must also be a CORS origin (with credentials) in the Sanity project.
+      allowOrigins: [...new Set([new URL(env.sanity.previewUrl).origin, new URL(env.siteUrl).origin, "http://localhost:3000"])],
       previewUrl: {
         initial: env.sanity.previewUrl,
         previewMode: {
