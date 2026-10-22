@@ -212,7 +212,14 @@ function toShape(field: Exclude<Field, Kind>): object {
     case "list":
       return {
         type: "array",
-        of: [{ type: "object", fields: toFields(field.fields) }],
+        of: [
+          {
+            type: "object",
+            fields: toFields(field.fields),
+            // Show "مواقع شركات" for a list item, not the raw {ar, en} object.
+            preview: { select: { title: labelPath(field.fields) ?? "_key" } },
+          },
+        ],
         validation: toValidation(field),
       };
     case "group":
@@ -275,19 +282,21 @@ const isTab = (field: Field) =>
 const toFields = (fields: Fields): FieldDefinition[] =>
   Object.entries(fields).map(([name, field]) => toField(name, field));
 
+const kindOf = (field: Field) => (typeof field === "string" ? field : field.type);
+
+/** Path of the first field that can label an item: text in the default language, or a plain string / URL. */
+function labelPath(fields: Fields) {
+  const [name, field] = Object.entries(fields).find(([, f]) => ["text", "string", "url"].includes(kindOf(f))) ?? [];
+  if (!name || !field) return undefined;
+  return kindOf(field) === "text" ? `${name}.${defaultLocale}` : name;
+}
+
 /**
  * Studio preview. Sections show their type ("Hero") with their first text underneath;
  * documents show their own title ("Home", "About") with the type underneath.
  */
 function toPreview({ title, fields }: Definition, type: "object" | "document") {
-  const kindOf = (field: Field) =>
-    typeof field === "string" ? field : field.type;
-  const [name, field] =
-    Object.entries(fields).find(
-      ([, f]) => kindOf(f) === "text" || kindOf(f) === "string",
-    ) ?? [];
-  const path =
-    field && kindOf(field) === "text" ? `${name}.${defaultLocale}` : name;
+  const path = labelPath(fields);
   return {
     select: path ? { label: path } : {},
     prepare: ({ label }: { label?: string }) =>
