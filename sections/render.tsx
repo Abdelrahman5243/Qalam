@@ -18,6 +18,7 @@ export type SectionData = {
   [S in Section as S["name"]]: Data<S["fields"]> & {
     _type: S["name"];
     _key: string;
+    isHidden?: boolean;
   };
 }[Section["name"]];
 
@@ -36,14 +37,16 @@ const components: {
 type Props = { page: Page; locale: Locale; isDraftMode: boolean };
 
 export function Sections({ page, locale, isDraftMode }: Props) {
-  return page.sections?.map(({ _key, _type, ...fields }) => {
+  return page.sections?.flatMap(({ _key, _type, isHidden, ...fields }) => {
+    if (isHidden) return [];
+
     const Component = components[_type] as
       ComponentType<SectionProps<Section>> | undefined;
     const edit = createEdit(page, ["sections", { _key }], isDraftMode);
-    return (
+    return [
       Component && (
         <Component key={_key} {...fields} locale={locale} edit={edit} />
       )
-    );
+    ];
   });
 }

@@ -4,6 +4,7 @@ import { defineSection } from "@/cms/define";
 export const richContent = defineSection({
   name: "richContent",
   title: "Rich content",
+  description: "Flexible long-form content for simple pages, policies and articles.",
   fields: {
     heading: { type: "text", max: 100, description: "Optional. Shown above the content as the page heading." },
     body: {

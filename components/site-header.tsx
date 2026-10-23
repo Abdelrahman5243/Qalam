@@ -15,6 +15,8 @@ type Props = {
 };
 
 export function SiteHeader({ locale, logo, menu, edit }: Props) {
+  const menuEdit = edit("menu");
+
   return (
     <header className={styles.header}>
       {logo && (
@@ -27,12 +29,22 @@ export function SiteHeader({ locale, logo, menu, edit }: Props) {
           {menu.map(
             ({ _key, label, href }) =>
               href && (
-                <Link key={_key} href={href} data-sanity={edit("menu", { _key })}>
+                <Link key={_key} href={href}>
                   {label}
                 </Link>
               ),
           )}
         </nav>
+      )}
+      {menuEdit && (
+        <button
+          type="button"
+          className={styles.menuEditor}
+          data-sanity={menuEdit}
+          aria-label="تعديل القائمة"
+        >
+          ✎ تعديل القائمة
+        </button>
       )}
       <LanguageSwitch className={styles.languageSwitch} locale={locale} />
     </header>

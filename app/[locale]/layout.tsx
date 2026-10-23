@@ -7,6 +7,7 @@ import { getSettings, SanityLive, type Settings } from "@/cms/sanity";
 import { createEdit } from "@/cms/edit";
 import { VisualEditing } from "@/cms/visual-editing";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { env } from "@/lib/env";
 import { direction, isLocale, locales } from "@/lib/i18n";
 import { siteMetadata } from "@/lib/seo";
@@ -81,6 +82,11 @@ export default async function LocaleLayout({ children, params }: Props) {
           edit={createEdit({ _id: "settings", _type: "settings" }, [], isDraftMode)}
         />
         {children}
+        <SiteFooter
+          locale={locale}
+          settings={settings}
+          edit={createEdit({ _id: "settings", _type: "settings" }, [], isDraftMode)}
+        />
         <SanityLive includeDrafts={isDraftMode} />
         {isDraftMode && <VisualEditing />}
       </body>

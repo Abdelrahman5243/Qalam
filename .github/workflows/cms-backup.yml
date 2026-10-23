@@ -1,0 +1,48 @@
+name: CMS backup
+
+on:
+  schedule:
+    # GitHub Actions uses UTC. This runs daily at 02:00 UTC (roughly 04:00-05:00 Cairo).
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+      NEXT_PUBLIC_SANITY_DATASET: ${{ vars.SANITY_DATASET }}
+      SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+      SANITY_API_READ_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export portable JSON
+        run: npm run cms:export-json
+
+      - name: Export Sanity archive
+        run: npm run cms:backup
+
+      - name: Upload backup files
+        uses: actions/upload-artifact@v4
+        with:
+          name: cms-backup-${{ github.run_number }}
+          path: |
+            backups/*.json
+            backups/*.tar.gz
+          if-no-files-found: error
+          retention-days: 30

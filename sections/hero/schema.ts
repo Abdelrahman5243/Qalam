@@ -3,6 +3,7 @@ import { defineSection } from "@/cms/define";
 export const hero = defineSection({
   name: "hero",
   title: "Hero",
+  description: "The first section visitors see: headline, intro and primary actions.",
   fields: {
     status: { type: "text", max: 40 },
     headline: { type: "text", required: true, min: 2, max: 80 },

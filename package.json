@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cms:backup": "node scripts/backup-cms.mjs",
+    "cms:export-json": "node scripts/export-cms-json.mjs"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.3.0",

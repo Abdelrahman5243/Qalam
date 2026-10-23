@@ -2,6 +2,7 @@ import {
   defineArrayMember,
   type FieldDefinition,
   type Rule,
+  type ObjectInputProps,
   type SchemaTypeDefinition,
 } from "sanity";
 import type { PortableTextBlock } from "@portabletext/react";
@@ -63,7 +64,7 @@ type Value<F> = F extends { type: "list"; fields: infer Of extends Fields }
   : F extends { type: "group"; fields: infer Of extends Fields }
     ? Data<Of> | null
     : F extends { type: "blocks" }
-      ? Array<{ _type: string; _key: string }> | null
+      ? Array<{ _type: string; _key: string; isHidden?: boolean }> | null
       : F extends { type: infer K extends Kind }
         ? Value<K>
         : F extends "richText"
@@ -82,6 +83,7 @@ export type Data<F extends Fields> = { [K in keyof F]: Value<F[K]> };
 type Definition<F extends Fields = Fields, N extends string = string> = {
   name: N;
   title: string;
+  description?: string;
   fields: F;
 };
 
@@ -282,6 +284,39 @@ const isTab = (field: Field) =>
 const toFields = (fields: Fields): FieldDefinition[] =>
   Object.entries(fields).map(([name, field]) => toField(name, field));
 
+const sectionVisibilityField: FieldDefinition = {
+  name: "isHidden",
+  title: "Hide this section",
+  type: "boolean",
+  initialValue: false,
+  description: "Keep the content, but temporarily remove this section from the website.",
+};
+
+/** Show a section's author-facing description above its fields in Studio. */
+function SectionInput(props: ObjectInputProps) {
+  const description = props.schemaType.description;
+  return createElement(
+    "div",
+    null,
+    description &&
+      createElement(
+        "p",
+        {
+          style: {
+            margin: "0 1rem 1rem",
+            padding: "0.75rem 1rem",
+            borderInlineStart: "3px solid var(--card-accent-color)",
+            color: "var(--card-muted-fg-color)",
+            fontSize: "0.875rem",
+            lineHeight: 1.5,
+          },
+        },
+        description,
+      ),
+    props.renderDefault(props),
+  );
+}
+
 const kindOf = (field: Field) => (typeof field === "string" ? field : field.type);
 
 /** Path of the first field that can label an item: text in the default language, or a plain string / URL. */
@@ -332,8 +367,13 @@ export const toSchema = (
   ({
     name: definition.name,
     title: definition.title,
+    description: definition.description,
     type,
-    fields: toFields(definition.fields),
+    fields:
+      type === "object"
+        ? [...toFields(definition.fields), sectionVisibilityField]
+        : toFields(definition.fields),
+    components: type === "object" ? { input: SectionInput } : undefined,
     ...toTabs(definition),
     preview: toPreview(definition, type),
   }) as SchemaTypeDefinition;

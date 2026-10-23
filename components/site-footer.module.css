@@ -1,0 +1,88 @@
+.footer {
+  margin-top: 5rem;
+  padding: 3.5rem 1.25rem 1.25rem;
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 42%, var(--background));
+}
+.inner,
+.bottom {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+.inner {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.4fr) minmax(12rem, 1fr) minmax(10rem, 0.8fr);
+  gap: 2rem;
+  align-items: start;
+}
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.logo {
+  width: auto;
+  height: 2.5rem;
+  object-fit: contain;
+}
+.name {
+  color: var(--foreground);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.email,
+.links a,
+.profiles a {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+.email:hover,
+.links a:hover,
+.profiles a:hover {
+  color: var(--accent);
+}
+.links,
+.profiles {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.email:focus-visible,
+.name:focus-visible,
+.links a:focus-visible,
+.profiles a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .footer {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+  }
+  .inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 1.25rem;
+  }
+  .brand {
+    grid-column: 1 / -1;
+  }
+  .bottom {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+}
