@@ -64,6 +64,7 @@ export default defineConfig({
           .title("Website")
           .items([
             S.documentTypeListItem("page").title("Pages"),
+            S.documentTypeListItem("project").title("Projects"),
             S.listItem()
               .title("Site settings")
               .child(

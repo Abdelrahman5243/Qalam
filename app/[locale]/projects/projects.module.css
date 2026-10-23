@@ -1,0 +1,98 @@
+.page {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+  padding: 11rem 2rem 5rem;
+}
+.intro {
+  max-width: 48rem;
+  margin-bottom: 3rem;
+}
+.kicker {
+  margin: 0 0 0.7rem;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.intro h1 {
+  margin: 0;
+  font-size: clamp(2.7rem, 7vw, 5.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.intro > p:last-child {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  text-decoration: none;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+.card:focus-visible,
+.back:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+.media {
+  position: relative;
+}
+.media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.badge {
+  position: absolute;
+  top: 0.85rem;
+  inset-inline-start: 0.85rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.cardBody {
+  padding: 1.35rem;
+}
+.cardBody h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+.cardBody p {
+  margin: 0.55rem 0 1rem;
+  color: var(--muted);
+}
+.cardBody span {
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.empty {
+  color: var(--muted);
+}
+@media (max-width: 700px) {
+  .page {
+    padding: 10rem 1.25rem 3rem;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

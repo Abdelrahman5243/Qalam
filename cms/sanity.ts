@@ -6,6 +6,7 @@ import type { SectionData } from "@/sections/render";
 import type { Data } from "./define";
 import { localize } from "./localize";
 import type { page, settings } from "./documents";
+import type { project } from "./project";
 
 const { projectId, dataset, apiVersion, studioUrl, readToken } = env.sanity;
 
@@ -30,6 +31,10 @@ export type Page = Omit<Data<typeof page.fields>, "sections"> & {
   _id: string;
   _type: "page";
   sections: SectionData[] | null;
+};
+export type Project = Data<typeof project.fields> & {
+  _id: string;
+  _type: "project";
 };
 
 /** Run a GROQ query; returns null when Sanity is not configured or the query fails. */
@@ -56,6 +61,20 @@ export const getSettings = async (locale: Locale) =>
 export const getPage = async (slug: string, locale: Locale) =>
   localize<Page>(
     await query(`*[_type == "page" && slug.current == $slug][0]`, { slug }),
+    locale,
+  );
+
+export const getProjects = async (locale: Locale) =>
+  localize<Project[]>(
+    await query(
+      `*[_type == "project" && defined(slug.current)] | order(featured desc, _createdAt desc)`,
+    ),
+    locale,
+  );
+
+export const getProject = async (slug: string, locale: Locale) =>
+  localize<Project | null>(
+    await query(`*[_type == "project" && slug.current == $slug][0]`, { slug }),
     locale,
   );
 

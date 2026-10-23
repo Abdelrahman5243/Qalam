@@ -1,6 +1,7 @@
 import type { Rule } from "sanity";
 import { defineDocument, toSchema } from "./define";
 import { sections } from "../sections";
+import { project } from "./project";
 
 /** Length guidance as warnings: editors are told, publishing is not blocked. */
 const maxLength = (max: number) => (rule: Rule) =>
@@ -148,5 +149,6 @@ export const settings = defineDocument({
 export const schemaTypes = [
   toSchema(page, "document"),
   toSchema(settings, "document"),
+  toSchema(project, "document"),
   ...sections.map((section) => toSchema(section)),
 ];
